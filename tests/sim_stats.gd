@@ -31,5 +31,5 @@ func run() -> void:
 	var report := {"scope":"three repeat runs, one deterministic map; not statistical original AI fidelity","deterministic":identical,"runs":runs}
 	var f := FileAccess.open("res://tests/simulation_stats.json", FileAccess.WRITE)
 	f.store_string(JSON.stringify(report,"\t"))
-	print("SIM STATS ", "PASS" if identical else "FAIL", ": 3 repeat runs; ticks=",runs[0].ticks," outcome=",runs[0].result," peak_units=",runs[0].peak_units)
+	print("SIM STATS ", "PASS" if identical else "FAIL", ": 3 repeat runs; ticks=",runs[0].ticks," outcome=",runs[0].outcome," peak_units=",runs[0].peak_units)
 	quit(0 if identical else 1)

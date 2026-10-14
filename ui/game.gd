@@ -6,16 +6,17 @@ const COLORS = [Color("54b9f3"), Color("ee7771"), Color("e9b959"), Color("8bcfa6
 const ORDERS = [
 	["move", "移動", "選択した部隊を目的地へ移動。王に出せる行動命令は移動だけです。"],
 	["wait", "待機", "現在地で停止。自国の村に待機すると自然減少を抑えられます。"],
-	["auto", "オート", "開墾を優先し、村の建設・進軍を自動判断。判断の細部は暫定ルールです。"],
+	["auto", "オート", "住居建設を優先。戦力を集め、城の防御も含めて十分有利なときに攻撃します。"],
+	["develop", "住居オート", "住居を繰り返し建設。必要な開墾も行い、兵力や資金が足りないときは自国の村で待機します。攻撃は行いません。"],
 	["defend", "拠点防衛", "目的の自国拠点を防衛。"],
 	["reinforce", "援軍", "目的地の味方へ合流。合流先の命令を維持します。"],
 	["build_base", "村建設", "さら地に村を建設。資金100。人口移転量は暫定値です。"],
 	["destroy_base", "村破壊", "目的地の村を破壊。"],
 	["reclaim", "開墾", "荒れ地をさら地にします。"],
-	["build_bridge", "橋建設", "水面に橋を架けます。新設は耐久1ごと資金30、修理は2。"],
-	["destroy_bridge", "橋破壊", "橋を破壊して相手の進軍や税路を断ちます。"],
-	["build_fence", "柵建設", "柵で進軍・税路を遮断。耐久4ごと資金1。"],
-	["destroy_fence", "柵破壊", "目的地の柵を破壊。"],
+	["build_bridge", "橋建設", "隣の陸地から水面に橋を架けます。新設は耐久1ごと資金30、修理は2。"],
+	["destroy_bridge", "橋破壊", "橋に隣接する陸地から破壊し、相手の進軍や税路を断ちます。"],
+	["build_fence", "柵建設", "隣の陸地から柵を建設。耐久4ごと資金1。"],
+	["destroy_fence", "柵破壊", "隣の陸地から目的地の柵を破壊。"],
 	["seal_cave", "洞窟封鎖", "魔物の洞窟を封鎖。魔物の数値・周期は暫定値です。"]
 ]
 
@@ -56,6 +57,7 @@ var audio_player: AudioStreamPlayer
 var _last_status_ms: int = 0
 var _manual_status: String = ""
 var _layout_busy: bool = false
+var web_file_callback
 
 func _ready() -> void:
 	_setup_theme()
@@ -175,7 +177,7 @@ func _setup_ui() -> void:
 	board.range_selected.connect(_on_range_selected)
 	board.cancel_requested.connect(_cancel_order)
 	board.inspect_requested.connect(_inspect_cell)
-	board.path_provider = Callable(sim, "path_preview")
+	board.path_provider = Callable(self, "_preview_order_path")
 	root_column.add_child(board)
 	bottom = PanelContainer.new()
 	root_column.add_child(bottom)
@@ -314,14 +316,17 @@ func _refresh() -> void:
 	var valid_ids: Array = []
 	var power: int = 0
 	var king_selected: bool = false
+	var developers: int = 0
 	for id in selected:
 		var entity: Dictionary = _actor(int(id))
 		if not entity.is_empty():
 			valid_ids.append(id)
 			power += int(entity.power)
 			king_selected = king_selected or entity.get("is_leader", false)
+			if entity.get("auto_mode", "") == "develop": developers += 1
 	selected = valid_ids
 	selection_label.text = "部隊を選択してください" if selected.is_empty() else str(selected.size()) + "隊選択  ·  強さ " + str(power) + ("  王を含む" if king_selected else "")
+	if developers > 0: selection_label.text += "  ·  住居オート " + str(developers) + "隊"
 	for action in order_buttons:
 		order_buttons[action].disabled = replay_playback or selected.is_empty() or (king_selected and action != "move")
 		order_buttons[action].add_theme_stylebox_override("normal", _style(Color("65745a") if active_order == action else Color("253543"), Color("ead291") if active_order == action else Color("4b6068"), 8))
@@ -381,7 +386,7 @@ func _on_range_selected(cells: Array, additive: bool) -> void:
 func _choose_order(action: String) -> void:
 	if selected.is_empty():
 		return
-	if action == "wait" or action == "auto":
+	if action in ["wait", "auto", "develop"]:
 		_submit(action, selected, -1)
 		active_order = ""
 	else:
@@ -395,11 +400,14 @@ func _submit(action: String, actors: Array, target: int = -1, extra: Dictionary 
 		return
 	var result: Dictionary = sim.issue(action, actors, target, extra)
 	if bool(result.get("accepted", false)):
-		pending.append(result.command)
+		pending.append(result)
 		_set_status(_order_name(action) + "を予約。" + ("再開すると適用します。" if paused else "次のtickで適用します。"))
 		_play_cue("command")
 	else:
 		_set_status("命令できません：" + str(result.get("reason", "不明な理由")), true)
+
+func _preview_order_path(id: int, target: int) -> Array:
+	return sim.path_preview(id, target, active_order)
 
 func _set_status(value: String, error: bool = false) -> void:
 	_manual_status = value
@@ -516,7 +524,7 @@ func _show_files() -> void:
 	column.add_child(_button("閉じる", _close_modal))
 
 func _replay_document() -> Dictionary:
-	return {"format": 1, "ruleset_id": sim.rules.get("id", "playable_experimental"), "rng_state": "unused", "initial_snapshot": replay_initial, "initial_hash": sim.snapshot_hash(replay_initial), "commands": command_log, "checkpoints": checkpoints, "final_tick": int(sim.state.tick), "final_hash": sim.state_hash()}
+	return {"format": 1, "ruleset_id": sim.rules.get("id", "playable_experimental"), "rng_state": "unused", "initial_snapshot": replay_initial, "initial_hash": sim.snapshot_state_hash(replay_initial), "commands": command_log, "checkpoints": checkpoints, "final_tick": int(sim.state.tick), "final_hash": sim.state_hash()}
 
 func _export_replay() -> void:
 	var file: FileAccess = FileAccess.open("user://crownfield_replay.json", FileAccess.WRITE)
@@ -568,6 +576,15 @@ func _show_file_dialog_choices() -> void:
 func _file_dialog(save: bool, replay: bool) -> void:
 	_close_modal()
 	paused = true
+	if OS.has_feature("web"):
+		if save:
+			var document: Dictionary = _replay_document() if replay else {"format": 1, "snapshot": sim.snapshot(), "pending": pending}
+			JavaScriptBridge.download_buffer(JSON.stringify(document, "\t").to_utf8_buffer(), "crownfield_replay.json" if replay else "crownfield_save.json", "application/json")
+			_set_status("JSONファイルをダウンロードしました。")
+		else:
+			web_file_callback = JavaScriptBridge.create_callback(_web_import_json)
+			JavaScriptBridge.get_interface("window").crownfieldPickJSON(web_file_callback)
+		return
 	board.input_enabled = false
 	var dialog: FileDialog = FileDialog.new()
 	dialog.access = FileDialog.ACCESS_FILESYSTEM
@@ -604,12 +621,28 @@ func _file_dialog(save: bool, replay: bool) -> void:
 	)
 	dialog.popup_centered_ratio(0.8)
 
+func _web_import_json(arguments: Array) -> void:
+	if arguments.is_empty(): return
+	var data = JSON.parse_string(str(arguments[0]))
+	if data is Dictionary and data.has("initial_snapshot"):
+		_start_playback(data)
+	elif data is Dictionary and sim.restore(data.get("snapshot", data)):
+		_new_recording()
+		pending = data.get("pending", [])
+		selected.clear()
+		active_order = ""
+		paused = true
+		_refresh()
+		_set_status("JSONから状態を読み込みました。再開で続けられます。")
+	else:
+		_set_status("互換性のあるJSONではありません。", true)
+
 func _show_tax() -> void:
 	var column: VBoxContainer = _open_modal("税率を変更")
 	_add_modal_text(column, "低税率では人口増加を優先。高税率では資金を確保。王が城中央を離れたり、税路が途切れると収入が止まります。税率の範囲・収入額は実験用Cです。")
 	for rate in [0, 5, 10, 15, 20, 25, 30]:
 		column.add_child(_button(str(rate) + "%", func():
-			_submit("tax", [], -1, {"team": 0, "rate": rate})
+			_submit("tax", [], -1, {"team": 0, "value": rate})
 			_close_modal()
 		))
 	column.add_child(_button("閉じる", _close_modal))
@@ -617,7 +650,7 @@ func _show_tax() -> void:
 func _show_initial_order() -> void:
 	var column: VBoxContainer = _open_modal("出兵直後の行動")
 	_add_modal_text(column, "村から新しく出た部隊へ自動的に与える行動です。")
-	for action in ["auto", "wait"]:
+	for action in ["auto", "develop", "wait"]:
 		column.add_child(_button(_order_name(action), func():
 			_submit("initial_order", [], -1, {"team": 0, "order": action})
 			_close_modal()

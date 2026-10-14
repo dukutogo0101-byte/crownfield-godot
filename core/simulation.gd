@@ -1,7 +1,8 @@
 extends RefCounted
 const Path = preload("res://core/pathfinder.gd")
 const Combat = preload("res://core/combat_resolver.gd")
-const ACTIONS := ["move", "wait", "auto", "defend", "reinforce", "destroy_base", "build_base", "destroy_village", "build_village", "build_fence", "build_bridge", "reclaim", "destroy_fence", "destroy_bridge", "seal_cave", "tax", "initial_order"]
+const ACTIONS := ["move", "wait", "auto", "develop", "defend", "reinforce", "destroy_base", "build_base", "destroy_village", "build_village", "build_fence", "build_bridge", "reclaim", "destroy_fence", "destroy_bridge", "seal_cave", "tax", "initial_order"]
+const BANK_WORK := ["build_bridge", "destroy_bridge", "build_fence", "destroy_fence", "seal_cave"]
 var state: Dictionary = {}
 var rules: Dictionary = {}
 var command_log: Array = []
@@ -18,6 +19,7 @@ func new_game(map_path: String = "res://data/maps/four_rivers.json", rules_path:
 	state = _integers(JSON.parse_string(FileAccess.get_file_as_string(map_path)))
 	state.merge({"tick":0,"day":0,"limit_days":rules.get("limit_days",600),"result":"playing","winner":-1,"events":[],"losses":[0,0,0,0],"combat_losses":[0,0,0,0]})
 	for king in state.leaders: king["alive"] = true
+	for unit in state.units: unit["auto_mode"] = "auto" if unit.order == "auto" else ""
 	command_log.clear(); pending.clear(); issued_sequence = 0
 	replay_origin = snapshot(false)
 	return true
@@ -50,6 +52,8 @@ func state_hash() -> String: return _canonical({"state":state,"rules":rules}).sh
 func snapshot_hash(saved: Dictionary) -> String:
 	var clean: Dictionary = saved.duplicate(true); clean.erase("checksum")
 	return _canonical(clean).sha256_text()
+func snapshot_state_hash(saved: Dictionary) -> String:
+	return _canonical({"state": _integers(saved.state), "rules": _integers(saved.rules)}).sha256_text()
 func snapshot(include_origin: bool = true) -> Dictionary:
 	var saved: Dictionary = {"schema":1,"state":state.duplicate(true),"rules":rules.duplicate(true),"issued_sequence":issued_sequence,"command_log":command_log.duplicate(true),"pending":pending.duplicate(true)}
 	if include_origin and not replay_origin.is_empty(): saved["replay_origin"] = replay_origin.duplicate(true)
@@ -168,9 +172,23 @@ func _passable(pos: int) -> bool:
 	var c: Dictionary=state.cells[pos]
 	return c.fence==0 and (c.terrain!=2 or c.bridge>0) and c.terrain!=3
 func path_to(start: int,target: int) -> Array: return Path.path(start,target,state.w,state.h,_passable,rules.path_neighbor_order)
-func path_preview(id: int,target: int) -> Array:
+func _land(pos: int) -> bool:
+	return state.cells[pos].terrain in [0, 1] and _passable(pos)
+
+func _work_route(start: int, target: int) -> Dictionary:
+	var best: Dictionary = {"goal": -1, "route": []}
+	for bank in neighbors(target):
+		if not _land(bank): continue
+		if bank == start: return {"goal": bank, "route": []}
+		var route: Array = Path.path(start, bank, state.w, state.h, func(p): return p != target and _passable(p), rules.path_neighbor_order)
+		if not route.is_empty() and (best.goal < 0 or route.size() < best.route.size()):
+			best = {"goal": bank, "route": route}
+	return best
+
+func path_preview(id: int,target: int, action: String = "") -> Array:
 	var u: Dictionary=get_unit(id)
-	return [] if u.is_empty() or target<0 or target>=state.cells.size() else path_to(u.pos,target)
+	if u.is_empty() or target < 0 or target >= state.cells.size(): return []
+	return _work_route(u.pos, target).route if action in BANK_WORK else path_to(u.pos,target)
 func population(team: int) -> int:
 	var pop := 0
 	for b in state.bases:
@@ -203,7 +221,11 @@ func issue(action: String, actor_ids: Array, target: int = -1, extra: Dictionary
 		for id in actor_ids:
 			var u: Dictionary=get_unit(int(id))
 			if u.is_empty() or u.team!=0 or (u.get("king",false) and action not in ["move","wait"]):return {"accepted":false,"reason":"Invalid actor / leader may only move"}
-		if action not in ["wait","auto"] and target<0:return {"accepted":false,"reason":"Choose destination"}
+		if action not in ["wait","auto","develop"] and target<0:return {"accepted":false,"reason":"Choose destination"}
+		if action in BANK_WORK:
+			for id in actor_ids:
+				if _work_route(get_unit(int(id)).pos, target).goal < 0:
+					return {"accepted":false,"reason":"対象に隣接する陸地へ到達できません"}
 	issued_sequence+=1
 	var cmd: Dictionary={"tick":state.tick+1,"sequence":issued_sequence,"action":action,"actors":actor_ids.duplicate(),"actor_ids":actor_ids.duplicate(),"target":target,"extra":extra.duplicate(true),"accepted":true,"reason":"Order ready"}
 	return cmd
@@ -245,29 +267,38 @@ func _commands() -> void:
 		if c.action=="tax":state.factions[0].tax=clampi(int(c.extra.get("value",c.target)),0,rules.tax_max);continue
 		if c.action=="initial_order":
 			var order: String=c.extra.get("order","auto")
-			if order in ["auto","wait","defend"]:state.factions[0].initial_order=order
+			if order in ["auto","develop","wait","defend"]:state.factions[0].initial_order=order
 			continue
 		for id in c.actors:
 			var u: Dictionary=get_unit(int(id))
 			if not u.is_empty() and u.team==0:
-				u.order=c.action;u.target=u.pos if c.target<0 else c.target;u.manual=c.action!="auto"
+					u.order=c.action;u.target=u.pos if c.target<0 else c.target;u.manual=c.action not in ["auto", "develop"]
+					u["auto_mode"] = c.action if c.action in ["auto", "develop"] else ""
+					u.erase("ai_job")
 	pending=keep
 func _movement() -> void:
 	for group in [state.units,state.leaders]:
 		for u in group.duplicate():
-			if u.power<=0 or u.order in ["wait","auto"]:continue
-			if u.pos==u.target:continue
+			if u.power<=0 or u.order in ["wait","auto","develop"]:continue
+			if u.pos==u.target and u.order not in BANK_WORK:continue
 			var goal: int=u.target
-			if not _passable(goal):
+			var work_route: Dictionary = {}
+			if u.order in BANK_WORK:
+				work_route = _work_route(u.pos, goal)
+				goal = work_route.goal
+				if goal < 0 or goal == u.pos: continue
+			elif not _passable(goal):
 				var candidates: Array=neighbors(goal);var best: Array=[]
 				for p in candidates:
 					if not _passable(p):continue
 					var path: Array=path_to(u.pos,p)
 					if u.pos==p:best=[];goal=p;break
 					if not path.is_empty() and (best.is_empty() or path.size()<best.size()):best=path;goal=p
-			var route: Array=path_to(u.pos,goal)
+			var route: Array=work_route.route if not work_route.is_empty() else path_to(u.pos,goal)
 			if route.is_empty():continue
 			var next: int=route[0];var occupied:=false
+			if not u.manual and u.get("ai_job", "") == "attack" and not _advantage(u.power, _enemy_strength(next, u.team)):
+				continue
 			for enemy in _actors():
 				if enemy.team!=u.team and enemy.pos==next and enemy.power>0:occupied=true;break
 			if not occupied:
@@ -286,7 +317,7 @@ func _merge_priority(u: Dictionary) -> Array:
 	var reinforcement:=0
 	for other in state.units:
 		if other.team==u.team and other.order=="reinforce" and other.target==u.pos:reinforcement=1;break
-	return [1 if u.get("king",false) else 0,1 if u.manual else 0,reinforcement,u.power,-u.id]
+	return [1 if u.get("king",false) else 0,1 if u.manual else 0,1 if u.get("auto_mode", "") == "develop" else 0,reinforcement,u.power,-u.id]
 func _absorber(a: Dictionary,b: Dictionary) -> Dictionary:
 	# Explicit reinforcement recipient retains its order, except a king always absorbs.
 	if a.get("king",false):return a
@@ -342,6 +373,7 @@ func _work() -> void:
 		var pos: int=u.target
 		if pos<0 or pos>=state.cells.size():continue
 		if u.pos!=pos and u.pos not in neighbors(pos):continue
+		if u.order in BANK_WORK and (u.pos not in neighbors(pos) or not _land(u.pos)): continue
 		var c: Dictionary=state.cells[pos];var f: Dictionary=state.factions[u.team];var done:=false
 		match u.order:
 			"build_base","build_village":
@@ -376,7 +408,7 @@ func _work() -> void:
 				var b: Dictionary=get_base(pos)
 				if not b.is_empty():state.bases.erase(b);done=true
 			"reinforce","move":done=u.pos==pos
-		if done:u.order="wait" if u.manual else "auto"
+		if done:u.order="wait" if u.manual else ("develop" if u.get("auto_mode", "") == "develop" else "auto")
 func _population() -> void:
 	for b in state.bases.duplicate():
 		var cap: int=population_limit(b)
@@ -388,7 +420,8 @@ func _population() -> void:
 				if state.cells[p].terrain==0 and state.cells[p].owner==-1 and state.cells[p].fence==0:expansion=p;break
 			if expansion>=0:state.cells[expansion].owner=b.team
 			elif state.units.size()<rules.max_units:
-				state.units.append({"id":state.next_id,"team":b.team,"pos":b.pos,"power":b.pop-1,"order":state.factions[b.team].initial_order,"target":b.pos,"manual":false,"king":false});state.next_id+=1;b.pop=1
+				var initial: String = state.factions[b.team].initial_order
+				state.units.append({"id":state.next_id,"team":b.team,"pos":b.pos,"power":b.pop-1,"order":initial,"target":b.pos,"manual":false,"king":false,"auto_mode":initial if initial in ["auto", "develop"] else ""});state.next_id+=1;b.pop=1
 func _economy() -> void:
 	if state.tick%rules.tax_period==0:
 		for b in state.bases:
@@ -410,42 +443,172 @@ func _nearest(start: int, positions: Array) -> int:
 		var d: int=absi(start%state.w-int(p)%state.w)+absi(start/state.w-int(p)/state.w)
 		if d<best:best=d;target=int(p)
 	return target
+func _distance(a: int, b: int) -> int:
+	return absi(a % state.w - b % state.w) + absi(a / state.w - b / state.w)
+
+func _reachable(start: int) -> Dictionary:
+	var distances: Dictionary = {start: 0}
+	var queue: Array = [start]
+	var index: int = 0
+	while index < queue.size():
+		var pos: int = queue[index]
+		index += 1
+		for next in neighbors(pos):
+			if distances.has(next) or not _passable(next): continue
+			distances[next] = distances[pos] + 1
+			queue.append(next)
+	return distances
+
+func _nearest_reachable(positions: Array, distances: Dictionary) -> int:
+	var best: int = -1
+	var length: int = 2147483647
+	for pos in positions:
+		if distances.has(pos) and int(distances[pos]) < length:
+			best = pos
+			length = distances[pos]
+	return best
+
+func _enemy_strength(pos: int, team: int) -> int:
+	var strength: int = 0
+	for enemy in _actors():
+		if enemy.team != team and _distance(pos, enemy.pos) <= 3:
+			strength += enemy.power * _castle_factor(enemy)
+	var base: Dictionary = get_base(pos)
+	if not base.is_empty() and base.team != team: strength += base.pop / 2
+	return strength
+
+func _advantage(power: int, resistance: int) -> bool:
+	return power >= int(rules.get("ai_attack_min_power", 96)) and power * 100 >= resistance * int(rules.get("ai_attack_margin_percent", 150))
+
+func _threat_map(team: int) -> Dictionary:
+	var threats: Dictionary = {}
+	for enemy in _actors():
+		if enemy.team == team: continue
+		var ex: int = enemy.pos % state.w
+		var ey: int = enemy.pos / state.w
+		for dy in range(-3, 4):
+			for dx in range(-3, 4):
+				if absi(dx) + absi(dy) > 3: continue
+				var x: int = ex + dx
+				var y: int = ey + dy
+				if x < 0 or y < 0 or x >= state.w or y >= state.h: continue
+				var pos: int = y * state.w + x
+				threats[pos] = int(threats.get(pos, 0)) + enemy.power * _castle_factor(enemy)
+	for base in state.bases:
+		if base.team != team: threats[base.pos] = int(threats.get(base.pos, 0)) + base.pop / 2
+	return threats
+
+func _development_sites(team: int, threats: Dictionary) -> Dictionary:
+	var builds: Array = []
+	var rough: Array = []
+	var anchors: Array = [state.factions[team].home]
+	var blocked: Dictionary = {}
+	for faction in state.factions: blocked[faction.home] = true
+	for base in state.bases:
+		blocked[base.pos] = true
+		if base.team == team:
+			anchors.append(base.pos)
+			for neighbor in around(base.pos): blocked[neighbor] = true
+	for pos in range(state.cells.size()):
+		var cell: Dictionary = state.cells[pos]
+		if cell.owner not in [-1, team] or int(threats.get(pos, 0)) > 0: continue
+		# Expand outward from existing settlements, instead of crossing the map to develop enemy land.
+		if _distance(pos, _nearest(pos, anchors)) > 6: continue
+		if cell.terrain == 0 and cell.fence == 0 and not blocked.has(pos): builds.append(pos)
+		elif cell.terrain == 1 and cell.fence == 0: rough.append(pos)
+	return {"builds": builds, "rough": rough}
+
+func _site_reserved(pos: int, team: int, actor_id: int, reservations: Array) -> bool:
+	for entry in reservations:
+		if entry.team == team and entry.id != actor_id:
+			if entry.pos == pos or entry.pos in around(pos): return true
+	return false
+
+func _rally(u: Dictionary, distances: Dictionary) -> void:
+	var bases: Array = []
+	for base in state.bases:
+		if base.team == u.team: bases.append(base.pos)
+	var goal: int = _nearest_reachable(bases, distances)
+	if goal < 0: goal = state.factions[u.team].home
+	u.target = goal
+	u.order = "wait" if u.pos == goal else "move"
+	u["ai_job"] = "rally"
+
 func _ai() -> void:
+	var threats_by_team: Dictionary = {}
+	var sites_by_team: Dictionary = {}
+	var reservations: Array = []
+	var counts: Dictionary = {}
+	for faction in state.factions:
+		var team: int = faction.id
+		if not faction.alive: continue
+		threats_by_team[team] = _threat_map(team)
+		sites_by_team[team] = _development_sites(team, threats_by_team[team])
+		counts[team] = 0
+	for base in state.bases: counts[base.team] = int(counts.get(base.team, 0)) + 1
+	for unit in state.units:
+		if unit.order in ["build_base", "build_village"]:
+			reservations.append({"team": unit.team, "pos": unit.target, "id": unit.id})
 	for u in state.units:
-		if u.manual or u.order not in ["auto","wait"] or (u.order=="wait" and u.team==0):continue
-		var rough: Array=[];var builds: Array=[];var enemies: Array=[];var own_count:=0
-		for b in state.bases:
-			if b.team==u.team:own_count+=1
-		for p in range(state.cells.size()):
-			var c: Dictionary=state.cells[p]
-			if c.terrain==1 and (c.owner==u.team or c.owner==-1):rough.append(p)
-			if own_count<rules.ai_development_bases and c.owner==u.team and _can_build(p,u.team):builds.append(p)
-		for king in state.leaders:
-			if king.team!=u.team and king.alive:enemies.append(king.pos)
-		var target: int=_nearest(u.pos,rough)
-		if target>=0 and not path_to(u.pos,target).is_empty():u.target=target;u.order="reclaim";continue
-		target=_nearest(u.pos,builds)
-		if target>=0 and state.factions[u.team].funds>=rules.build_cost and u.power>rules.build_population:u.target=target;u.order="build_base";continue
-		# C strategic rally: CPU countries periodically feed troops to their leader.
-		# Original king absorption is A; choosing this strategy is explicitly C.
-		if u.team>0 and u.id%3==0 and state.leaders[u.team].alive:
-			u.target=state.leaders[u.team].pos;u.order="reinforce";continue
-		# Troops rally at the nearest enemy. Stronger neighboring enemies are avoided.
-		target=_nearest(u.pos,enemies)
-		var threat: Dictionary={}
+		if u.manual or not state.factions[u.team].alive: continue
+		var mode: String = u.get("auto_mode", "develop" if u.order == "develop" else ("auto" if u.team > 0 or u.order != "wait" else ""))
+		if mode not in ["auto", "develop"]: continue
+		u["auto_mode"] = mode
+		var threats: Dictionary = threats_by_team[u.team]
+		var distances: Dictionary = _reachable(u.pos)
+		if int(threats.get(u.pos, 0)) > 0 and not _advantage(u.power, threats[u.pos]):
+			_rally(u, distances)
+			continue
+		# Let valid construction finish; blocked jobs are reconsidered at the next decision.
+		if u.order in ["build_base", "build_village"] and _can_build(u.target, u.team) and get_base(u.target).is_empty() and distances.has(u.target) and int(threats.get(u.target, 0)) == 0 and state.factions[u.team].funds >= rules.build_cost and u.power > rules.build_population:
+			continue
+		if u.order == "reclaim" and state.cells[u.target].terrain == 1 and distances.has(u.target) and int(threats.get(u.target, 0)) == 0: continue
+		var sites: Dictionary = sites_by_team[u.team]
+		var available: Array = []
+		if mode == "develop" or counts[u.team] < rules.ai_development_bases:
+			for pos in sites.builds:
+				if not _site_reserved(pos, u.team, u.id, reservations): available.append(pos)
+		var target: int = _nearest_reachable(available, distances)
+		if target >= 0 and state.factions[u.team].funds >= rules.build_cost and u.power > rules.build_population:
+			u.target = target
+			u.order = "build_base"
+			u["ai_job"] = "develop"
+			reservations.append({"team": u.team, "pos": target, "id": u.id})
+			counts[u.team] += 1
+			continue
+		# Only reclaim nearby useful land when there is no ready settlement site.
+		if available.is_empty() and (mode == "develop" or counts[u.team] < rules.ai_development_bases):
+			target = _nearest_reachable(sites.rough, distances)
+			if target >= 0:
+				u.target = target
+				u.order = "reclaim"
+				u["ai_job"] = "develop"
+				continue
+		if mode == "develop":
+			_rally(u, distances)
+			continue
+		var targets: Array = []
+		for base in state.bases:
+			if base.team != u.team and _advantage(u.power, int(threats.get(base.pos, 0))): targets.append(base.pos)
 		for enemy in _actors():
-			if enemy.team!=u.team and enemy.pos in neighbors(u.pos) and enemy.power*_castle_factor(enemy)>u.power*2:threat=enemy;break
-		if not threat.is_empty():
-			u.target=state.factions[u.team].home;u.order="move"
-		elif target>=0:u.target=target;u.order="move"
+			if enemy.team != u.team and _advantage(u.power, int(threats.get(enemy.pos, 0))): targets.append(enemy.pos)
+		target = _nearest_reachable(targets, distances)
+		if target >= 0:
+			u.target = target
+			u.order = "move"
+			u["ai_job"] = "attack"
+		else:
+			_rally(u, distances)
 	for king in state.leaders:
-		if king.team==0 or not king.alive:continue
-		var targets: Array=[]
+		if king.team == 0 or not king.alive: continue
+		var goals: Array = []
 		for enemy in state.leaders:
-			if enemy.team!=king.team and enemy.alive and king.power>enemy.power*_castle_factor(enemy)*5/4:targets.append(enemy.pos)
-		var goal: int=_nearest(king.pos,targets)
-		king.target=state.factions[king.team].home if goal<0 else goal
-		king.order="wait" if king.pos==king.target else "move"
+			if enemy.team != king.team and enemy.alive and _advantage(king.power, _enemy_strength(enemy.pos, king.team)):
+				goals.append(enemy.pos)
+		var goal: int = _nearest_reachable(goals, _reachable(king.pos)) if not goals.is_empty() else -1
+		king.target = state.factions[king.team].home if goal < 0 else goal
+		king.order = "wait" if king.pos == king.target else "move"
+		king["ai_job"] = "rally" if goal < 0 else "attack"
 func _leaders() -> void:
 	for king in state.leaders:
 		if not king.alive:continue

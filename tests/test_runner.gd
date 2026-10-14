@@ -36,6 +36,9 @@ func run() -> void:
 	test_merging()
 	test_leaders_and_result()
 	test_external_phase_order()
+	test_development_ai()
+	test_attack_judgment()
+	test_bank_work()
 	test_golden()
 	print("TEST RESULT ", checks - failures.size(), "/", checks, " passed; ", failures.size(), " failed")
 	var report := {"checks": checks, "passed": checks - failures.size(), "failed": failures, "engine": Engine.get_version_info().string, "scope": "Godot headless integer kernel; not original differential or Android device tests"}
@@ -369,3 +372,136 @@ func test_external_phase_order() -> void:
 	sim.step([issued,issued])
 	equal(sim.command_log.size(),1,"duplicate sequence applied and logged only once")
 	equal(sim.get_unit(4).order,"wait","queued manual command reaches simulation")
+
+func test_development_ai() -> void:
+	var sim = sandbox()
+	var u: Dictionary = add_unit(sim, 91, 1, 40, 200, "auto", -1, false)
+	sim.state.cells[41].terrain = 1
+	sim._ai()
+	equal(u.order, "build_base", "AI builds available housing before reclaiming nearby rough land")
+	var first: int = u.target
+	sim._ai()
+	equal(u.target, first, "AI retains valid housing project while travelling")
+	u.pos = first
+	sim._work()
+	expect(not sim.get_base(first).is_empty(), "enemy housing project completes")
+	sim._ai()
+	equal(u.order, "build_base", "enemy continues developing after first house")
+	expect(u.target != first, "second housing location is different")
+	var second: Dictionary = add_unit(sim, 92, 1, 40, 200, "auto", -1, false)
+	sim._ai()
+	expect(second.target != u.target and second.target not in sim.around(u.target), "builders reserve separate nonadjacent sites")
+	# New explicit mode has no AI's seven-house cap and never issues an attack.
+	sim = sandbox()
+	sim.state.w = 16; sim.state.h = 16; sim.state.cells = []
+	for _i in range(256): sim.state.cells.append({"terrain": 0, "owner": -1, "bridge": 0, "fence": 0, "bridge_built": false})
+	for team in range(4):
+		var home: int = [0, 15, 240, 255][team]
+		sim.state.factions[team].home = home
+		sim.state.factions[team].funds = 5000
+		sim.state.leaders[team].pos = home
+		sim.state.leaders[team].target = home
+		sim.state.bases.append({"id": 80 + team, "team": team, "pos": home, "pop": 32})
+	sim.state.next_id = 100
+	u = add_unit(sim, 91, 0, 34, 1800, "wait")
+	var cmd: Dictionary = sim.issue("develop", [91])
+	expect(cmd.accepted, "housing auto is accepted without selecting destination")
+	sim.step([cmd])
+	equal(u.auto_mode, "develop", "housing mode recorded with command")
+	var attacked: bool = false
+	for _tick in range(480):
+		sim.step()
+		attacked = attacked or u.get("ai_job", "") == "attack"
+	var houses: int = 0
+	for base in sim.state.bases:
+		if base.team == 0: houses += 1
+	expect(houses > 7, "housing auto continues beyond regular AI development cap; houses=" + str(houses))
+	expect(not attacked, "housing auto never changes into an attack")
+	equal(u.auto_mode, "develop", "housing mode persists through repeated completed jobs")
+	var copy = fresh()
+	expect(copy.restore(sim.snapshot()), "housing mode survives save restore")
+	equal(copy.get_unit(91).auto_mode, "develop", "restored housing mode preserved")
+	sim.step([sim.issue("wait", [91])])
+	equal(u.auto_mode, "", "manual wait cancels continuous housing mode")
+	sim.step([sim.issue("initial_order", [], -1, {"order": "develop"})])
+	equal(sim.state.factions[0].initial_order, "develop", "new sorties can start in housing mode")
+	# Too weak/poor builders wait on their own supply village rather than becoming attackers.
+	sim = sandbox()
+	sim.state.bases = [{"id": 90, "team": 0, "pos": 40, "pop": 32}]
+	u = add_unit(sim, 91, 0, 41, 10, "develop", -1, false)
+	u["auto_mode"] = "develop"
+	sim.state.factions[0].funds = 0
+	sim._ai()
+	equal(u.target, 40, "resource-starved housing unit returns to own village")
+	equal(u.ai_job, "rally", "resource-starved builder gathers rather than attacks")
+
+func test_attack_judgment() -> void:
+	var sim = sandbox()
+	sim.rules.ai_development_bases = 1
+	sim.state.factions[0].home = 40
+	sim.state.leaders[0].pos = 40
+	sim.state.leaders[0].power = 100
+	sim.state.bases = [{"id": 90, "team": 1, "pos": 49, "pop": 32}]
+	var u: Dictionary = add_unit(sim, 91, 1, 49, 96, "auto", -1, false)
+	sim._ai()
+	equal(u.ai_job, "rally", "weak army gathers instead of charging defended castle")
+	equal(u.target, 49, "gathering happens at own village")
+	equal(sim.state.leaders[1].target, 8, "weak enemy king remains at home")
+	u.power = 700
+	sim._ai()
+	equal(u.ai_job, "attack", "army attacks after achieving effective strength advantage")
+	equal(u.target, 40, "strong army targets nearby enemy castle")
+	sim.state.leaders[0].power = 1000
+	sim._ai()
+	equal(u.ai_job, "rally", "attack is reconsidered when defenders grow stronger")
+	u.power = 500
+	u.target = 40; u.order = "move"; u["ai_job"] = "attack"
+	sim._movement()
+	equal(u.pos, 49, "automatic movement does not enter overwhelming defender zone between decisions")
+
+func test_bank_work() -> void:
+	var sim = sandbox()
+	sim.state.cells[40].terrain = 2
+	sim.state.cells[40].bridge = 8
+	sim.state.cells[40].bridge_built = true
+	var u: Dictionary = add_unit(sim, 91, 0, 40, 100, "destroy_bridge", 40)
+	sim._work()
+	equal(sim.state.cells[40].bridge, 8, "standing on a bridge cannot demolish it")
+	sim._movement()
+	expect(u.pos in sim.neighbors(40) and sim._land(u.pos), "unit steps from bridge onto adjacent land before demolition")
+	var bank: int = u.pos
+	sim._work()
+	equal(sim.state.cells[40].bridge, 4, "bridge damaged from bank")
+	sim._movement()
+	equal(u.pos, bank, "unit remains on bank while bridge exists")
+	sim._work()
+	equal(sim.state.cells[40].bridge, 0, "bridge fully demolished from land")
+	sim._movement()
+	equal(u.pos, bank, "unit stays safely on land after bridge disappears")
+	u.order = "build_bridge"; u.target = 40
+	sim._work()
+	equal(sim.state.cells[40].bridge, 1, "bridge repaired from bank")
+	u.order = "build_bridge"
+	sim._movement()
+	equal(u.pos, bank, "repairing an existing bridge does not move onto it")
+	u.pos = 39; u.target = 40; u.order = "destroy_bridge"
+	sim.state.cells[39].terrain = 2; sim.state.cells[39].bridge = 1
+	sim._work()
+	equal(sim.state.cells[40].bridge, 1, "adjacent water bridge is not a valid land worksite")
+	u.pos = 20; u.order = "build_fence"; u.target = 20
+	sim._movement()
+	expect(u.pos != 20 and u.pos in sim.neighbors(20), "fence construction moves off its target onto adjacent land")
+	sim._work()
+	equal(sim.state.cells[20].fence, 4, "fence built from adjacent land")
+	for pos in sim.neighbors(40):
+		sim.state.cells[pos].terrain = 2; sim.state.cells[pos].bridge = 0
+	u.pos = 10
+	var command: Dictionary = sim.issue("build_bridge", [91], 40)
+	expect(not command.accepted, "bridge work rejected when no reachable adjacent land exists")
+	# Preview uses the same bank destination as movement.
+	sim = sandbox()
+	sim.state.cells[40].terrain = 2; sim.state.cells[40].bridge = 4
+	u = add_unit(sim, 91, 0, 10, 100)
+	var preview: Array = sim.path_preview(91, 40, "destroy_bridge")
+	expect(not preview.is_empty(), "bank work path preview exists")
+	expect(preview.back() in sim.neighbors(40) and preview.back() != 40, "bank work preview ends on land, not bridge")

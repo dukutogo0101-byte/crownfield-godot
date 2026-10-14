@@ -1,3 +1,5 @@
+> **2026-10-15 ゲーム更新**: 住居建設AI・戦力比較・「住居オート」・岸からの橋／柵作業を修正しました。最新の変更・検証結果は [更新内容](docs/UPDATE_2026-10-15.md) を参照してください。ブラウザ版: https://crownfield-four-kingdoms.duketogo0101.chatgpt.site 。`distributions/` のZIPとAPKは復旧時の旧版で、今回の修正は含みません。
+
 > **2026-10-15 保存状況**: 添付ソースを展開して登録しました。元のソースZIPは `distributions/`、Android APKは `distributions/android/` に4分割で保存しています。`python3 distributions/restore_android.py` で元APKを復元できます。Windows/Linux版の元ZIPは未取得です。詳しい復旧内容と、以下の旧READMEが参照する未取得ファイルは [docs/RECOVERY_STATUS.md](docs/RECOVERY_STATUS.md) を参照してください。実機プレイの再検証は行っていません。
 
 # CROWNFIELD — 四国の境界

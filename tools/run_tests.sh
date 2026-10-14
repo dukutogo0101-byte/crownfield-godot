@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+set -euo pipefail
+CROWNFIELD_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+GODOT_BIN="${GODOT_BIN:-godot}"
+"$GODOT_BIN" --headless --editor --path "$CROWNFIELD_ROOT" --quit
+"$GODOT_BIN" --headless --path "$CROWNFIELD_ROOT" --script res://tests/test_runner.gd
+"$GODOT_BIN" --headless --path "$CROWNFIELD_ROOT" --script res://tests/ui_smoke.gd
+"$GODOT_BIN" --headless --path "$CROWNFIELD_ROOT" --script res://tests/sim_stats.gd

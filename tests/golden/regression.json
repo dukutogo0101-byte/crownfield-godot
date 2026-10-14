@@ -1,47 +1,47 @@
 {
 	"checkpoints": [
 		{
-			"hash": "1f60ae2aa5c28f6d722dbf7acc068941f6d0fbd6797987e5b1ba547ba7665239",
+			"hash": "96c5be376626c31f6ddee374bbc9af14ece26c4e0f1736d68d703ca5c00c256f",
 			"tick": 0
 		},
 		{
-			"hash": "534281cef6eb737d74e4277ef601220161fae66b97bbbfec9a0617d4c019f5d3",
+			"hash": "67370dc3b1ccf1169cc2a6fe9e4311a7e5fc058256ed0237eeae7b8bf5e2ce78",
 			"tick": 32
 		},
 		{
-			"hash": "dda1acd70a4643e8a0f5c6db092584e48f6fe1c161cad3f05f0c709a1b1d82e1",
+			"hash": "7388a92cf3d22d240cae4ab72e8c3e99f1b0bb982e955ddacb3527d302160cc2",
 			"tick": 64
 		},
 		{
-			"hash": "e8a5f9b5a0c916586e4d54184d9b5938bfd232d435a89b9cdab89969a1350550",
+			"hash": "297f398010a15dac5b03deb5bf5d90003105ac1e3e9b5da1204fc490a77fc01a",
 			"tick": 96
 		},
 		{
-			"hash": "57e3ac51e660cf5064de2d807db2ed337abf0cdc36c097c956644deb7f597b4c",
+			"hash": "0a8b47e636a485ad216f0a1bf5a1722eec7abe12b305c137a69e40a1e7ab609d",
 			"tick": 128
 		},
 		{
-			"hash": "38831de7f3c739a165da453f6e15e350e4aa305802db293617685a64ca98cb2e",
+			"hash": "077cb5651b187b0b0bb9d1b8996e7c3dd10dd123de847e34f3bb5a4cd2d88c22",
 			"tick": 160
 		},
 		{
-			"hash": "520ad03194af837e5be11f04b76044913b2997042be50b02a3f376a5aae5d27a",
+			"hash": "73d3f60ce5f1d4f47b8e550eeb220e854929ce267cfdd289cd4f1f5901391df0",
 			"tick": 192
 		},
 		{
-			"hash": "82fd5d430855dbd3d85899a1cd0286441c1a9970f7b33531110ef61d6715d83c",
+			"hash": "d4a9006520f2f4856416f7b451b145bbf6812baa1fccf11f1cd4ee67c9f6d6b9",
 			"tick": 224
 		},
 		{
-			"hash": "c993e4a5e06aa13a352a5ead3c867857473b75ca4cd5741a662121d87a4c500c",
+			"hash": "6a054de563308fbcb114de9af7c0a2e8aa0973230c388c4bfd1ea19347824aa8",
 			"tick": 256
 		},
 		{
-			"hash": "e830efd92ef9173cf825d3e1bbded7283e760226312ad38f38eb45b162bcb03e",
+			"hash": "d16c9fb2fea84a3cd6492286178bb123a948164def50194c06048735b7161769",
 			"tick": 288
 		},
 		{
-			"hash": "96aba50dd6cdd409147d72c64253a94a24ec9d675c5b0726e44a293c45a975ca",
+			"hash": "03699569e7dfded72f4a8d7da57870a7f2eb484e619f3ed3e414282d3ba88f9b",
 			"tick": 320
 		}
 	],
@@ -49,6 +49,12 @@
 	"description": "Frozen regression of this experimental kernel. Not measured original Windows behavior.",
 	"format": 1,
 	"replay": {
+		"checkpoints": [
+			{
+				"hash": "03699569e7dfded72f4a8d7da57870a7f2eb484e619f3ed3e414282d3ba88f9b",
+				"tick": 320
+			}
+		],
 		"commands": [
 			{
 				"accepted": true,
@@ -102,15 +108,17 @@
 				"tick": 81
 			}
 		],
-		"final_hash": "96aba50dd6cdd409147d72c64253a94a24ec9d675c5b0726e44a293c45a975ca",
+		"final_hash": "03699569e7dfded72f4a8d7da57870a7f2eb484e619f3ed3e414282d3ba88f9b",
 		"final_tick": 320,
 		"format": 1,
 		"initial_state": {
-			"checksum": "8f1aaa43c5aed713c3b2e832238d55cf1c6112f6993a9fc55ba79063eab29d37",
+			"checksum": "5384497670bbd8a68988b675fdcb6dc9d7bd70bf90a5664a7c877f824c3a342a",
 			"command_log": [],
 			"issued_sequence": 0,
 			"pending": [],
 			"rules": {
+				"ai_attack_margin_percent": 150,
+				"ai_attack_min_power": 96,
 				"ai_development_bases": 7,
 				"ai_period": 24,
 				"base_initial_population": 32,
@@ -156,6 +164,8 @@
 				],
 				"playable": true,
 				"provenance": {
+					"ai_attack_margin_percent": "C user-requested tactical safety margin; not original measured behavior",
+					"ai_attack_min_power": "C user-requested troop assembly threshold",
 					"all_other_numerical_values": "C; unmeasured; not original claims",
 					"bridge_new_cost": "A",
 					"bridge_repair_cost": "A",
@@ -7617,6 +7627,7 @@
 				"tick": 0,
 				"units": [
 					{
+						"auto_mode": "auto",
 						"id": 4,
 						"king": false,
 						"manual": false,
@@ -7627,6 +7638,7 @@
 						"team": 0
 					},
 					{
+						"auto_mode": "auto",
 						"id": 5,
 						"king": false,
 						"manual": false,
@@ -7637,6 +7649,7 @@
 						"team": 0
 					},
 					{
+						"auto_mode": "auto",
 						"id": 9,
 						"king": false,
 						"manual": false,
@@ -7647,6 +7660,7 @@
 						"team": 1
 					},
 					{
+						"auto_mode": "auto",
 						"id": 10,
 						"king": false,
 						"manual": false,
@@ -7657,6 +7671,7 @@
 						"team": 1
 					},
 					{
+						"auto_mode": "auto",
 						"id": 14,
 						"king": false,
 						"manual": false,
@@ -7667,6 +7682,7 @@
 						"team": 2
 					},
 					{
+						"auto_mode": "auto",
 						"id": 15,
 						"king": false,
 						"manual": false,
@@ -7677,6 +7693,7 @@
 						"team": 2
 					},
 					{
+						"auto_mode": "auto",
 						"id": 19,
 						"king": false,
 						"manual": false,
@@ -7687,6 +7704,7 @@
 						"team": 3
 					},
 					{
+						"auto_mode": "auto",
 						"id": 20,
 						"king": false,
 						"manual": false,
@@ -7702,7 +7720,7 @@
 				"winner": -1
 			}
 		},
-		"initial_state_hash": "1f60ae2aa5c28f6d722dbf7acc068941f6d0fbd6797987e5b1ba547ba7665239",
+		"initial_state_hash": "96c5be376626c31f6ddee374bbc9af14ece26c4e0f1736d68d703ca5c00c256f",
 		"rng_state": "unused",
 		"ruleset_id": "PLAYABLE_EXPERIMENTAL_V1"
 	}

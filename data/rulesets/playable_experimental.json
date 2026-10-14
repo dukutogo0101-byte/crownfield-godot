@@ -60,7 +60,11 @@
     "all_other_numerical_values": "C; unmeasured; not original claims",
     "castle_factors": "C exact approximations of A approximate statement",
     "upkeep_on_own_base_only": "B candidate; enabled in C playable profile",
-    "king_split_ratio": "C trigger; A fraction one quarter"
+    "king_split_ratio": "C trigger; A fraction one quarter",
+    "ai_attack_margin_percent": "C user-requested tactical safety margin; not original measured behavior",
+    "ai_attack_min_power": "C user-requested troop assembly threshold"
   },
-  "king_split_ratio": 2
+  "king_split_ratio": 2,
+  "ai_attack_margin_percent": 150,
+  "ai_attack_min_power": 96
 }
