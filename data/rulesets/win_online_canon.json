@@ -1,0 +1,18 @@
+{
+  "id": "WIN_ONLINE_CANON",
+  "version": 1,
+  "playable": false,
+  "classification": "A/B reference only",
+  "build_cost": 100,
+  "upkeep_threshold": 2048,
+  "bridge_new_cost": 30,
+  "bridge_repair_cost": 2,
+  "fence_durability": 4,
+  "population_limit_multiplier": 16,
+  "combat_divisor": null,
+  "day_ticks": null,
+  "growth_base": null,
+  "tax_period": null,
+  "decay_divisor": null,
+  "note": "Unknown numeric values stay null. Use PLAYABLE_EXPERIMENTAL_V1 until original measured."
+}
