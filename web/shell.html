@@ -14,6 +14,23 @@ canvas{display:block;width:100%;height:100%;touch-action:none;outline:none}
 .card{text-align:center;max-width:440px;width:100%}.crown{font-size:50px;color:#f0d399}h1{letter-spacing:.13em;font-size:30px;margin:12px 0 6px}p{line-height:1.8;color:#b6c7c8;font-size:14px}progress{width:100%;height:8px;margin:20px 0;accent-color:#f0d399}#status{white-space:pre-wrap;overflow-wrap:anywhere}button{border:1px solid #ead291;background:#344b58;color:#fff4c9;border-radius:8px;padding:12px 22px;font-size:16px;cursor:pointer}#retry{display:none}
 </style>
 <script>
+window.crownfieldFullscreen = async function(toggle) {
+  try {
+    if (toggle && document.fullscreenElement) {
+      await document.exitFullscreen();
+      if (screen.orientation && screen.orientation.unlock) screen.orientation.unlock();
+      return;
+    }
+    if (!document.fullscreenElement && document.documentElement.requestFullscreen) {
+      await document.documentElement.requestFullscreen({navigationUI:'hide'});
+    }
+    if (screen.orientation && screen.orientation.lock) {
+      try { await screen.orientation.lock('landscape'); } catch (_) {}
+    }
+  } catch (_) {
+    // Browsers may require installation or a user gesture. The canvas still fills the page.
+  }
+};
 window.crownfieldPickJSON = function(callback) {
   const input=document.createElement('input');input.type='file';input.accept='.json,application/json';
   input.addEventListener('change', async()=>{if(input.files[0])callback(await input.files[0].text());});input.click();
@@ -22,7 +39,7 @@ window.crownfieldPickJSON = function(callback) {
 </head>
 <body>
 <canvas id="canvas" tabindex="0">WebGL 2に対応したブラウザで開いてください。</canvas>
-<div id="loading"><div class="card"><div class="crown">♛</div><h1>CROWNFIELD</h1><p>四国の境界</p><progress id="progress"></progress><p id="status">ゲームを準備しています…</p><p>住居を増やし、兵を集め、敵の王を倒そう。<br>初回はデータの読み込みに少し時間がかかります。</p><button id="retry" onclick="location.reload()">もう一度読み込む</button></div></div>
+<div id="loading"><div class="card"><div class="crown">♛</div><h1>CROWNFIELD</h1><p>四国の境界</p><progress id="progress"></progress><p id="status">ゲームを準備しています…</p><p>住居を増やし、兵を集め、敵の王を倒そう。<br>初回はデータの読み込みに少し時間がかかります。</p><button id="retry" onclick="location.reload()">もう一度読み込む</button><button id="launch" style="display:none">横画面・全画面で開始</button></div></div>
 <script src="$GODOT_URL"></script>
 <script>
 const GODOT_CONFIG=$GODOT_CONFIG;
@@ -31,7 +48,9 @@ const loading=document.getElementById('loading'), status=document.getElementById
 const missing=Engine.getMissingFeatures({threads:false});
 function fail(error){status.textContent='読み込みに失敗しました。Chrome等の対応ブラウザで開き直してください。\n'+String(error);document.getElementById('retry').style.display='inline-block';progress.hidden=true;}
 if(missing.length){fail('未対応の機能：'+missing.join(', '));}
-else engine.startGame({onProgress(current,total){if(total>0){progress.value=current;progress.max=total;status.textContent='読み込み中… '+Math.min(100,Math.round(current/total*100))+'%';}}}).then(()=>{loading.remove();document.getElementById('canvas').focus();}).catch(fail);
+else engine.startGame({onProgress(current,total){if(total>0){progress.value=current;progress.max=total;status.textContent='読み込み中… '+Math.min(100,Math.round(current/total*100))+'%';}}}).then(()=>{progress.hidden=true;status.textContent='準備ができました。スマホは横向きで遊べます。';
+const launch=document.getElementById('launch');launch.style.display='inline-block';
+launch.onclick=()=>{window.crownfieldFullscreen(false);loading.remove();document.getElementById('canvas').focus();};}).catch(fail);
 </script>
 </body>
 </html>

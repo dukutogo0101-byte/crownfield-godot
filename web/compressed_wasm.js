@@ -3,8 +3,13 @@
   const originalFetch = window.fetch.bind(window);
   window.fetch = async function(input, init) {
     const url = new URL(typeof input === 'string' ? input : (input.url || String(input)), document.baseURI);
+    if (url.pathname.endsWith('/index.pck') && window.CROWNFIELD_BUILD_VERSION) {
+      url.searchParams.set('v', window.CROWNFIELD_BUILD_VERSION);
+      return originalFetch(url.toString(), init);
+    }
     if (!url.pathname.endsWith('/index.wasm')) return originalFetch(input, init);
     url.pathname += '.gz';
+    if (window.CROWNFIELD_BUILD_VERSION) url.searchParams.set('v', window.CROWNFIELD_BUILD_VERSION);
     const response = await originalFetch(url.toString(), init);
     if (!response.ok) return response;
     const bytes = new Uint8Array(await response.arrayBuffer());

@@ -35,6 +35,7 @@ var _last_two_center: Vector2
 var _last_two_distance: float = 0.0
 var _minimap: Rect2 = Rect2()
 var _fitted: bool = false
+var view_padding: Vector4 = Vector4(8, 68, 8, 72)
 
 func _ready() -> void:
 	mouse_filter = Control.MOUSE_FILTER_STOP
@@ -65,7 +66,8 @@ func _resize_board() -> void:
 func fit_map() -> void:
 	if state.is_empty():
 		return
-	pixels_per_cell = minf((size.x - 28.0) / int(state.w), (size.y - 28.0) / int(state.h))
+	var usable: Vector2 = size - Vector2(view_padding.x + view_padding.z, view_padding.y + view_padding.w)
+	pixels_per_cell = minf(usable.x / int(state.w), usable.y / int(state.h))
 	pixels_per_cell = maxf(3.0, pixels_per_cell)
 	zoom = 1.0
 	pan = Vector2.ZERO
@@ -73,7 +75,8 @@ func fit_map() -> void:
 	queue_redraw()
 
 func map_origin() -> Vector2:
-	return (size - Vector2(int(state.get("w", 1)), int(state.get("h", 1))) * cell_size()) * 0.5 + pan
+	var usable: Vector2 = size - Vector2(view_padding.x + view_padding.z, view_padding.y + view_padding.w)
+	return Vector2(view_padding.x, view_padding.y) + (usable - Vector2(int(state.get("w", 1)), int(state.get("h", 1))) * cell_size()) * 0.5 + pan
 
 func cell_size() -> float:
 	return pixels_per_cell * zoom
@@ -350,9 +353,9 @@ func _text(value: String, position: Vector2, font_size: int, color: Color) -> vo
 	draw_string(font, position - offset, value, HORIZONTAL_ALIGNMENT_LEFT, -1, font_size, color)
 
 func _draw_minimap() -> void:
-	var width: float = minf(150, size.x * 0.24)
+	var width: float = minf(108, size.x * 0.18)
 	var height: float = width * float(state.h) / float(state.w)
-	_minimap = Rect2(Vector2(size.x - width - 12, size.y - height - 12), Vector2(width, height))
+	_minimap = Rect2(Vector2(size.x - width - 12, size.y - height - view_padding.w - 8), Vector2(width, height))
 	draw_rect(_minimap.grow(4), Color("101b25"))
 	var mini_cell: Vector2 = _minimap.size / Vector2(int(state.w), int(state.h))
 	for cell in state.cells.size():

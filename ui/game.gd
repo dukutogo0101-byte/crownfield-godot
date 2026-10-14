@@ -37,26 +37,28 @@ var playback_data: Dictionary = {}
 var playback_index: int = 0
 var end_shown: bool = false
 var modal: Control
-var root_column: VBoxContainer
-var header_grid: GridContainer
 var faction_grid: GridContainer
-var commands_grid: GridContainer
 var bottom: PanelContainer
 var status_label: Label
 var selection_label: Label
-var hint_label: Label
 var clock_label: Label
 var faction_labels: Array = []
 var order_buttons: Dictionary = {}
 var pause_button: Button
-var speed_button: Button
-var range_button: Button
-var tax_button: Button
-var initial_button: Button
 var audio_player: AudioStreamPlayer
 var _last_status_ms: int = 0
 var _manual_status: String = ""
 var _layout_busy: bool = false
+var top_bar: PanelContainer
+var menu_button: MenuButton
+var command_menu: MenuButton
+var command_cluster: HBoxContainer
+var order_menu_actions: Dictionary = {}
+var clear_button: Button
+var tax_slider: HSlider
+var tax_label: Label
+var resource_label: Label
+var _tax_syncing: bool = false
 var web_file_callback
 
 func _ready() -> void:
@@ -77,7 +79,7 @@ func _setup_theme() -> void:
 	var ui_theme: Theme = Theme.new()
 	if ResourceLoader.exists("res://assets/fonts/ja.ttf"):
 		ui_theme.default_font = load("res://assets/fonts/ja.ttf")
-	ui_theme.default_font_size = 16
+	ui_theme.default_font_size = 14
 	ui_theme.set_color("font_color", "Label", Color("e7ecea"))
 	ui_theme.set_color("font_color", "Button", Color("e7ecea"))
 	ui_theme.set_color("font_hover_color", "Button", Color("fff4c9"))
@@ -117,117 +119,202 @@ func _label(value: String, font_size: int = 16) -> Label:
 	return label
 
 func _setup_ui() -> void:
-	var backdrop: ColorRect = ColorRect.new()
-	backdrop.color = Color("0c1722")
-	backdrop.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	backdrop.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	add_child(backdrop)
-	var margin: MarginContainer = MarginContainer.new()
-	margin.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	for side in ["left", "right", "top", "bottom"]:
-		margin.add_theme_constant_override("margin_" + side, 10)
-	add_child(margin)
-	root_column = VBoxContainer.new()
-	root_column.add_theme_constant_override("separation", 7)
-	margin.add_child(root_column)
-	var title_row: HBoxContainer = HBoxContainer.new()
-	root_column.add_child(title_row)
-	var brand: Label = _label("CROWNFIELD", 23)
-	brand.add_theme_color_override("font_color", Color("f0d399"))
-	brand.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	title_row.add_child(brand)
-	clock_label = _label("四国の境界", 16)
-	title_row.add_child(clock_label)
-	header_grid = GridContainer.new()
-	header_grid.columns = 8
-	header_grid.add_theme_constant_override("h_separation", 6)
-	root_column.add_child(header_grid)
-	pause_button = _button("▶ 開始", _toggle_pause, "Space：一時停止／再開")
-	header_grid.add_child(pause_button)
-	speed_button = _button("速度 1×", _cycle_speed)
-	header_grid.add_child(speed_button)
-	header_grid.add_child(_button("全景", _fit_map, "F：全景を表示。ホイール／ピンチで拡縮。"))
-	range_button = _button("範囲選択", _toggle_range, "スマホ：このモードで1本指ドラッグ。移動は2本指。")
-	header_grid.add_child(range_button)
-	header_grid.add_child(_button("保存", _save_game))
-	header_grid.add_child(_button("読込", _load_game))
-	header_grid.add_child(_button("記録", _show_files))
-	header_grid.add_child(_button("説明", _show_help))
-	faction_grid = GridContainer.new()
-	faction_grid.columns = 4
-	faction_grid.add_theme_constant_override("h_separation", 6)
-	root_column.add_child(faction_grid)
-	for i in 4:
-		var card: PanelContainer = PanelContainer.new()
-		card.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		card.add_theme_stylebox_override("panel", _style(Color("182935"), COLORS[i].darkened(0.3), 8))
-		faction_grid.add_child(card)
-		var label: Label = _label("", 14)
-		label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-		card.add_child(label)
-		faction_labels.append(label)
-	status_label = _label("", 14)
-	status_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	status_label.custom_minimum_size.y = 38
-	root_column.add_child(status_label)
 	board = Board.new()
-	board.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	board.custom_minimum_size = Vector2(0, 80)
+	board.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	board.cell_tapped.connect(_on_cell_tapped)
 	board.range_selected.connect(_on_range_selected)
 	board.cancel_requested.connect(_cancel_order)
 	board.inspect_requested.connect(_inspect_cell)
 	board.path_provider = Callable(self, "_preview_order_path")
-	root_column.add_child(board)
+	add_child(board)
+	# The board owns the full viewport. Only the actual HUD rectangles intercept touches.
+	top_bar = PanelContainer.new()
+	top_bar.set_anchors_and_offsets_preset(Control.PRESET_TOP_WIDE)
+	top_bar.offset_left = 8; top_bar.offset_right = -8; top_bar.offset_top = 8
+	top_bar.add_theme_stylebox_override("panel", _hud_style())
+	add_child(top_bar)
+	var row: HBoxContainer = HBoxContainer.new()
+	row.add_theme_constant_override("separation", 8)
+	top_bar.add_child(row)
+	menu_button = MenuButton.new()
+	menu_button.text = "☰"
+	menu_button.custom_minimum_size = Vector2(44, 42)
+	menu_button.tooltip_text = "ゲームメニュー"
+	row.add_child(menu_button)
+	var menu: PopupMenu = menu_button.get_popup()
+	menu.add_item("速度 1×", 0)
+	menu.add_item("地図を全景表示", 1)
+	menu.add_check_item("範囲選択", 2)
+	menu.add_item("全画面表示／解除", 3)
+	menu.add_separator()
+	menu.add_item("各国の状況", 4)
+	menu.add_item("出兵時の行動", 5)
+	menu.add_separator()
+	menu.add_item("保存", 6)
+	menu.add_item("読込", 7)
+	menu.add_item("記録・JSON", 8)
+	menu.add_item("操作と説明", 9)
+	menu.id_pressed.connect(_on_game_menu)
+	pause_button = _compact_button("▶", _toggle_pause, "再開／一時停止：ワンタッチ")
+	pause_button.custom_minimum_size.x = 48
+	row.add_child(pause_button)
+	resource_label = _label("", 14)
+	resource_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	resource_label.clip_text = true
+	resource_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	row.add_child(resource_label)
+	clock_label = _label("", 14)
+	row.add_child(clock_label)
+	var tax_row: HBoxContainer = HBoxContainer.new()
+	tax_row.add_theme_constant_override("separation", 6)
+	row.add_child(tax_row)
+	tax_label = _label("税10%", 14)
+	tax_label.custom_minimum_size.x = 52
+	tax_row.add_child(tax_label)
+	tax_slider = HSlider.new()
+	tax_slider.min_value = 0; tax_slider.max_value = 30; tax_slider.step = 1
+	tax_slider.custom_minimum_size = Vector2(120, 42)
+	tax_slider.tooltip_text = "税率：左で人口重視、右で資金重視"
+	tax_slider.value_changed.connect(_on_tax_changed)
+	tax_row.add_child(tax_slider)
+	# Detailed country cards are available only inside the menu modal.
+	faction_grid = GridContainer.new()
+	faction_grid.hide()
+	add_child(faction_grid)
+	for i in 4:
+		var label: Label = _label("", 15)
+		label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		faction_grid.add_child(label)
+		faction_labels.append(label)
+	status_label = _label("", 14)
+	status_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	status_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	status_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	status_label.hide()
+	add_child(status_label)
 	bottom = PanelContainer.new()
-	root_column.add_child(bottom)
-	var bottom_column: VBoxContainer = VBoxContainer.new()
-	bottom_column.add_theme_constant_override("separation", 6)
-	bottom.add_child(bottom_column)
-	var selection_row: HBoxContainer = HBoxContainer.new()
-	bottom_column.add_child(selection_row)
-	selection_label = _label("部隊を選択してください", 16)
-	selection_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	selection_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	selection_row.add_child(selection_label)
-	selection_row.add_child(_button("全部隊", _select_all, "青国の王を除く全部隊を選択。"))
-	selection_row.add_child(_button("解除", _clear_selection))
-	var economy_row: HBoxContainer = HBoxContainer.new()
-	bottom_column.add_child(economy_row)
-	tax_button = _button("税率 10%", _show_tax, "王が城中央にいて、自国村への通路が接続していると徴税できます。")
-	economy_row.add_child(tax_button)
-	initial_button = _button("出兵時：オート", _show_initial_order)
-	economy_row.add_child(initial_button)
-	economy_row.add_child(_button("命令取消", _cancel_order))
-	commands_grid = GridContainer.new()
-	commands_grid.columns = 7
-	commands_grid.add_theme_constant_override("h_separation", 5)
-	commands_grid.add_theme_constant_override("v_separation", 5)
-	bottom_column.add_child(commands_grid)
-	for entry in ORDERS:
-		var action: String = entry[0]
-		var button: Button = _button(entry[1], func(): _choose_order(action), entry[2])
-		commands_grid.add_child(button)
+	bottom.add_theme_stylebox_override("panel", _hud_style())
+	add_child(bottom)
+	var actions: HBoxContainer = HBoxContainer.new()
+	actions.add_theme_constant_override("separation", 6)
+	bottom.add_child(actions)
+	selection_label = _label("部隊をタップ → 地点で移動", 14)
+	selection_label.custom_minimum_size.x = 130
+	selection_label.clip_text = true
+	selection_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	actions.add_child(selection_label)
+	actions.add_child(_compact_button("全軍", _select_all, "青国の全部隊を選択。王は個別に選択します。"))
+	command_cluster = HBoxContainer.new()
+	command_cluster.add_theme_constant_override("separation", 6)
+	actions.add_child(command_cluster)
+	for action in ["wait", "auto", "develop"]:
+		var label: String = "住居オート" if action == "develop" else _order_name(action)
+		var button: Button = _compact_button(label, func(): _choose_order(action))
+		command_cluster.add_child(button)
 		order_buttons[action] = button
-	hint_label = _label("部隊 → 命令 → 目的地。王の遠征中は税収が止まります。", 13)
-	hint_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	bottom_column.add_child(hint_label)
+	command_menu = MenuButton.new()
+	command_menu.text = "建設・命令 ▾"
+	command_menu.custom_minimum_size = Vector2(116, 42)
+	command_cluster.add_child(command_menu)
+	var orders_popup: PopupMenu = command_menu.get_popup()
+	for entry in ORDERS:
+		if entry[0] in ["move", "wait", "auto", "develop"]: continue
+		if entry[0] == "defend": orders_popup.add_separator("部隊")
+		if entry[0] == "build_base": orders_popup.add_separator("住居・地形")
+		if entry[0] == "build_bridge": orders_popup.add_separator("橋・柵")
+		var id: int = order_menu_actions.size()
+		order_menu_actions[id] = entry[0]
+		orders_popup.add_item(entry[1], id)
+	orders_popup.add_separator()
+	orders_popup.add_item("移動に戻す／命令取消", 99)
+	orders_popup.id_pressed.connect(_on_order_menu)
+	clear_button = _compact_button("✕", _clear_selection, "選択と目的地指定を解除")
+	actions.add_child(clear_button)
+	bottom.resized.connect(_position_hud)
+
+func _hud_style() -> StyleBoxFlat:
+	var style: StyleBoxFlat = _style(Color(0.05, 0.09, 0.13, 0.94), Color("3c5662"), 10)
+	style.content_margin_left = 8; style.content_margin_right = 8
+	style.content_margin_top = 5; style.content_margin_bottom = 5
+	return style
+
+func _compact_button(value: String, callback: Callable, tip: String = "") -> Button:
+	var button: Button = _button(value, callback, tip)
+	button.custom_minimum_size = Vector2(42, 42)
+	button.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	return button
 
 func _adaptive_layout() -> void:
-	if _layout_busy:
-		return
+	if _layout_busy: return
 	_layout_busy = true
 	var viewport: Window = get_window()
 	var real_size: Vector2i = viewport.size
 	portrait = real_size.y > real_size.x
-	var logical_width: int = 600 if portrait else clampi(real_size.x, 960, 1280)
-	var logical_height: int = int(float(logical_width) * float(real_size.y) / maxf(1, real_size.x))
-	viewport.content_scale_size = Vector2i(logical_width, logical_height)
-	header_grid.columns = 3 if portrait else 8
-	faction_grid.columns = 2 if portrait else 4
-	commands_grid.columns = 3 if portrait else 7
-	bottom.custom_minimum_size.y = 350 if portrait else 228
+	var width: int = clampi(real_size.x, 640, 1600)
+	viewport.content_scale_size = Vector2i(width, int(float(width) * real_size.y / maxi(1, real_size.x)))
+	menu_button.get_popup().max_size = Vector2i(0, maxi(160, int(viewport.content_scale_size.y) - 24))
+	command_menu.get_popup().max_size = menu_button.get_popup().max_size
+	tax_slider.custom_minimum_size.x = 100 if width < 850 else 120
 	_layout_busy = false
+	call_deferred("_position_hud")
+
+func _position_hud() -> void:
+	if not is_instance_valid(bottom): return
+	var minimum: Vector2 = bottom.get_combined_minimum_size()
+	bottom.size = minimum
+	bottom.position = Vector2(maxf(8, (size.x - minimum.x) * 0.5), maxf(68, size.y - minimum.y - 8))
+	status_label.position = Vector2(16, bottom.position.y - 28)
+	status_label.size = Vector2(maxf(0, size.x - 32), 24)
+	board.view_padding = Vector4(8, 68, 8, minimum.y + 20)
+
+func _on_game_menu(id: int) -> void:
+	match id:
+		0: _cycle_speed()
+		1: _fit_map()
+		2: _toggle_range()
+		3: _toggle_fullscreen()
+		4: _show_nations()
+		5: _show_initial_order()
+		6: _save_game()
+		7: _load_game()
+		8: _show_files()
+		9: _show_help()
+
+func _on_order_menu(id: int) -> void:
+	if id == 99: _cancel_order()
+	elif order_menu_actions.has(id): _choose_order(order_menu_actions[id])
+
+func _on_tax_changed(value: float) -> void:
+	tax_label.text = "税" + str(int(value)) + "%"
+	if _tax_syncing or sim.state.is_empty() or replay_playback: return
+	# A drag reserves its latest rate, instead of filling the command log with every pixel.
+	for i in range(pending.size() - 1, -1, -1):
+		if pending[i].action == "tax": pending.remove_at(i)
+	_submit("tax", [], -1, {"value": int(value)})
+
+func _show_nations() -> void:
+	var column: VBoxContainer = _open_modal("各国の状況")
+	for i in 4:
+		var card: PanelContainer = PanelContainer.new()
+		card.add_theme_stylebox_override("panel", _style(Color("182935"), COLORS[i].darkened(0.3), 8))
+		column.add_child(card)
+		var label: Label = _label(faction_labels[i].text, 16)
+		label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		card.add_child(label)
+	column.add_child(_button("閉じる", _close_modal))
+
+func _enter_fullscreen() -> void:
+	if OS.has_feature("web"):
+		JavaScriptBridge.get_interface("window").crownfieldFullscreen(false)
+	else:
+		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_FULLSCREEN)
+
+func _toggle_fullscreen() -> void:
+	if OS.has_feature("web"):
+		JavaScriptBridge.get_interface("window").crownfieldFullscreen(true)
+	else:
+		var mode: int = DisplayServer.window_get_mode()
+		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED if mode == DisplayServer.WINDOW_MODE_FULLSCREEN else DisplayServer.WINDOW_MODE_FULLSCREEN)
 
 func _process(delta: float) -> void:
 	if sim.state.is_empty() or paused or is_instance_valid(modal):
@@ -294,11 +381,14 @@ func _refresh() -> void:
 		return
 	board.selected = selected
 	board.set_state(sim.state)
-	pause_button.text = "▶ 再開" if paused else "Ⅱ 停止"
-	speed_button.text = "速度 " + str(speed) + "×"
+	pause_button.text = "▶" if paused else "Ⅱ"
+	pause_button.tooltip_text = "再開" if paused else "一時停止"
+	menu_button.get_popup().set_item_text(0, "速度 " + str(speed) + "×")
+	menu_button.get_popup().set_item_checked(2, board.range_mode)
 	var day_ticks: int = int(sim.rules.get("day_ticks", 2))
 	var remaining: int = int(sim.state.get("remaining_days", int(sim.rules.get("limit_days", 3000)) - int(sim.state.tick) / maxi(1, day_ticks)))
-	clock_label.text = "残り " + str(remaining) + "日  ·  " + str(sim.state.tick) + " tick"
+	clock_label.text = str(remaining) + "日"
+	resource_label.text = "資金 " + str(sim.state.factions[0].funds) + "  ·  人口 " + str(sim.population(0))
 	for i in 4:
 		var faction: Dictionary = sim.state.factions[i]
 		var population: int = 0
@@ -311,8 +401,14 @@ func _refresh() -> void:
 				population += int(unit.power)
 				units += 1
 		faction_labels[i].text = ("● " if bool(faction.alive) else "× ") + str(faction.name) + ("  [あなた]" if i == 0 else "") + "\n資金 " + str(faction.funds) + "  ·  人口 " + str(population) + "  ·  部隊 " + str(units)
-	tax_button.text = "税率 " + str(sim.state.factions[0].tax) + "%"
-	initial_button.text = "出兵時：" + _order_name(str(sim.state.factions[0].get("initial_order", "auto")))
+	var display_rate: int = sim.state.factions[0].tax
+	for command in pending:
+		if command.action == "tax": display_rate = int(command.extra.value)
+	_tax_syncing = true
+	tax_slider.set_value_no_signal(display_rate)
+	tax_label.text = "税" + str(display_rate) + "%"
+	_tax_syncing = false
+	tax_slider.editable = not replay_playback and sim.state.result == "playing"
 	var valid_ids: Array = []
 	var power: int = 0
 	var king_selected: bool = false
@@ -325,14 +421,21 @@ func _refresh() -> void:
 			king_selected = king_selected or entity.get("is_leader", false)
 			if entity.get("auto_mode", "") == "develop": developers += 1
 	selected = valid_ids
-	selection_label.text = "部隊を選択してください" if selected.is_empty() else str(selected.size()) + "隊選択  ·  強さ " + str(power) + ("  王を含む" if king_selected else "")
-	if developers > 0: selection_label.text += "  ·  住居オート " + str(developers) + "隊"
+	selection_label.text = "部隊をタップ → 地点で移動" if selected.is_empty() else str(selected.size()) + "隊 · " + str(power) + (" 王" if king_selected else "")
+	if developers > 0: selection_label.text += " · 住居"
+	command_cluster.visible = not selected.is_empty()
+	clear_button.visible = not selected.is_empty()
+	command_menu.text = (_order_name(active_order) + " ▾") if not active_order.is_empty() else "建設・命令 ▾"
 	for action in order_buttons:
-		order_buttons[action].disabled = replay_playback or selected.is_empty() or (king_selected and action != "move")
-		order_buttons[action].add_theme_stylebox_override("normal", _style(Color("65745a") if active_order == action else Color("253543"), Color("ead291") if active_order == action else Color("4b6068"), 8))
-	if Time.get_ticks_msec() - _last_status_ms > 7000 or _manual_status.is_empty():
-		status_label.text = "実験用プロファイル C  ·  数値／AIは原作未同定  ·  " + ("リプレイ再生中" if replay_playback else "4国の王を倒し、領地を制圧")
-		status_label.add_theme_color_override("font_color", Color("c0c6af"))
+		order_buttons[action].disabled = replay_playback or selected.is_empty() or (king_selected and action != "wait")
+		var highlighted: bool = active_order == action or (action == "develop" and developers == selected.size() and developers > 0)
+		order_buttons[action].add_theme_stylebox_override("normal", _style(Color("65745a") if highlighted else Color("253543"), Color("ead291") if highlighted else Color("4b6068"), 8))
+	command_menu.disabled = replay_playback or selected.is_empty() or king_selected
+	status_label.visible = not _manual_status.is_empty() and Time.get_ticks_msec() - _last_status_ms < 5000
+	if portrait:
+		status_label.text = "スマホを横向きにすると、盤面を広く使えます"
+		status_label.show()
+	call_deferred("_position_hud")
 
 func _actor(id: int) -> Dictionary:
 	for unit in sim.state.units:
@@ -362,6 +465,10 @@ func _on_cell_tapped(cell: int, additive: bool) -> void:
 	for unit in sim.state.units:
 		if int(unit.team) == 0 and int(unit.pos) == cell:
 			hits.append(int(unit.id))
+	if hits.is_empty() and not selected.is_empty() and not additive and not board.range_mode:
+		_submit("move", selected, cell)
+		_refresh()
+		return
 	if not additive:
 		selected.clear()
 	for id in hits:
@@ -401,7 +508,7 @@ func _submit(action: String, actors: Array, target: int = -1, extra: Dictionary 
 	var result: Dictionary = sim.issue(action, actors, target, extra)
 	if bool(result.get("accepted", false)):
 		pending.append(result)
-		_set_status(_order_name(action) + "を予約。" + ("再開すると適用します。" if paused else "次のtickで適用します。"))
+		_set_status(_order_name(action) + "を予約。" + ("再開すると適用します。" if paused else "すぐに適用します。"))
 		_play_cue("command")
 	else:
 		_set_status("命令できません：" + str(result.get("reason", "不明な理由")), true)
@@ -414,9 +521,12 @@ func _set_status(value: String, error: bool = false) -> void:
 	_last_status_ms = Time.get_ticks_msec()
 	if is_instance_valid(status_label):
 		status_label.text = value
+		status_label.show()
 		status_label.add_theme_color_override("font_color", Color("ffb3a2") if error else Color("f4dea3"))
 
 func _order_name(action: String) -> String:
+	if action == "tax": return "税率変更"
+	if action == "initial_order": return "出兵時の行動"
 	for order in ORDERS:
 		if str(order[0]) == action:
 			return str(order[1])
@@ -436,7 +546,7 @@ func _fit_map() -> void:
 
 func _toggle_range() -> void:
 	board.range_mode = not board.range_mode
-	range_button.text = "範囲：ON" if board.range_mode else "範囲選択"
+	menu_button.get_popup().set_item_checked(2, board.range_mode)
 	_cancel_order()
 	_set_status("範囲選択：1本指で囲む。2本指でパン／ピンチ。" if board.range_mode else "通常タップに戻りました。")
 
@@ -671,10 +781,10 @@ func _open_modal(title: String) -> VBoxContainer:
 	center.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	overlay.add_child(center)
 	var panel: PanelContainer = PanelContainer.new()
-	panel.custom_minimum_size = Vector2(550 if portrait else 690, 0)
+	panel.custom_minimum_size = Vector2(minf(size.x - 32, 640), 0)
 	center.add_child(panel)
 	var scroll: ScrollContainer = ScrollContainer.new()
-	scroll.custom_minimum_size = Vector2(0, minf(size.y - 60, 650))
+	scroll.custom_minimum_size = Vector2(0, maxf(120, minf(size.y - 32, 650)))
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	panel.add_child(scroll)
 	var column: VBoxContainer = VBoxContainer.new()
@@ -708,10 +818,11 @@ func _show_title() -> void:
 		illustration.texture = load("res://assets/title_landscape.svg")
 		illustration.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 		illustration.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-		illustration.custom_minimum_size.y = 170
+		illustration.custom_minimum_size.y = 100
 		column.add_child(illustration)
-	_add_modal_text(column, "小さな村を育て、部隊を集め、四国の境界を越える。青国を指揮し、敵の3人の王を倒してください。\n\nWindows Onlineを研究基準とするクリーンルーム実装です。公式確定Aと独自補完Cを分離し、戦闘・人口・税収・AIの未同定部分には明示的な暫定数値を使用しています。原作完全一致を示すものではありません。")
+	_add_modal_text(column, "村を育て、兵を集め、敵3国の王を倒そう。\nスマホは横持ち。部隊を選んで地点をタップすれば移動できます。\n原作を参考にした独自ルールの試作版です。")
 	column.add_child(_button("実験用ルールでプレイ", func():
+		_enter_fullscreen()
 		_close_modal()
 		paused = false
 		_refresh()
@@ -720,7 +831,7 @@ func _show_title() -> void:
 
 func _show_help() -> void:
 	var column: VBoxContainer = _open_modal("操作と勝ち方")
-	_add_modal_text(column, "目標：制限日数内に他の3国の王を倒す。青国の王が倒れると敗北。\n\n①村と部隊を観察。村人口の限界は（周囲の領地数＋1）×16。領地を広げ、拡張不能になると部隊が出ます。\n②部隊を選択 → 下部の命令 → 目的地。『オート』で開墾・村建設・進軍を任せられます。援軍で兵力を集め、前線の村で消耗を抑えてください。\n③資金100で村を建設。橋や柵に資金を使い、交通と税路を作ります。低税率は人口、高税率は資金を重視します。\n④王は城で防御が強く、遠征中は税収が止まります。王が敵王を倒すと敵国の残存資産を接収。王へは移動だけ命令できます。\n\nPC：左クリック選択。左ドラッグ範囲選択。Shiftで追加。右ドラッグでパン、右クリックで命令取消。ホイールでズーム。Spaceで停止、Fで全景。\n\nスマホ：タップで選択・目的地。長押しで詳細。2本指パン／ピンチは命令指定を取り消します。『範囲選択』ONで1本指ドラッグ選択。ジェスチャ後の離指では命令しません。\n\n一時停止中にも命令を予約でき、再開後に適用します。保存・読込・JSONリプレイを利用できます。\n\n研究上の注意：時間周期、戦闘式、成長・徴税・維持費の量、AI判断値は暫定C。原作の画像・音楽・マップは同梱していません。Android端末での操作確認は納品レポートを参照してください。")
+	_add_modal_text(column, "目標：600日以内に敵3国の王を倒す。自国の王が倒れると敗北です。\n\n移動：部隊をタップ → 地点をタップ。移動ボタンは不要。別の味方をタップすると選び直せます。\n\n下部：待機／オート／住居オート。建設・破壊・援軍・防衛は『建設・命令』から選び、その後に目的地をタップします。住居オートは村を増やし続け、攻撃には切り替わりません。\n\n上部：▶／Ⅱで再開と停止。税率はスライダーで変更。低税率は人口、高税率は資金を重視します。☰に速度、全景、範囲選択、各国の状況、出兵時行動、保存／読込、記録をまとめています。\n\nスマホ：横持ち・全画面でプレイ。2本指でパン／ピンチ、長押しで詳細。範囲選択をONにすると1本指ドラッグで複数選択。ジェスチャの離指では移動しません。\n\nPC：左クリック選択、左ドラッグ範囲選択、Shift追加。右ドラッグでパン、ホイールでズーム。Space停止、F全景、Ctrl+A全軍、Ctrl+S保存。\n\n攻略：村で人口を増やして出兵し、援軍で兵を合流させる。自国の村で待機すると消耗を抑えられます。村は資金100で建設。王は城の防御が強く、遠征中は税収が止まります。王が敵王を倒すと残存資産を引き継ぎます。\n\n停止中にも命令を予約できます。記録→JSONファイルで保存データを端末へバックアップできます。ブラウザとAPKは自動同期しません。\n\n原作の画像・音楽・マップは使用していません。戦闘・人口・経済・AIの数値は一部独自調整を含みます。")
 	column.add_child(_button("閉じる", _close_modal))
 
 func _show_outcome() -> void:
