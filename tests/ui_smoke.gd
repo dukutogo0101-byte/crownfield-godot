@@ -55,6 +55,17 @@ func run() -> void:
 		check(scene.bottom.size.y <= 64, "selected command bar stays a single compact row " + str(dimensions))
 		check(scene.bottom.position.x >= 0 and scene.bottom.position.x + scene.bottom.size.x <= scene.size.x, "command bar fits within landscape width " + str(dimensions))
 		scene.selected.clear()
+	# Rotate the same running game, including a phone's DPR=3 backing store.
+	for dimensions in [Vector2i(412, 915), Vector2i(915, 412), Vector2i(2745, 1236), Vector2i(1236, 2745), Vector2i(2745, 1236), Vector2i(1536, 709), Vector2i(740, 360)]:
+		root.size = dimensions
+		for _frame in range(8): await process_frame
+		var transform: Transform2D = root.get_final_transform()
+		var physical_rect: Rect2 = transform * Rect2(Vector2.ZERO, scene.size)
+		check(root.content_scale_size == Vector2i(720, 320), "rotation never mutates reference size " + str(dimensions))
+		check(absf(transform.x.length() / transform.y.length() - 1.0) < 0.005, "rotation keeps map cells square " + str(dimensions))
+		check(physical_rect.position.length() <= 2 and physical_rect.size.distance_to(Vector2(dimensions)) <= 2, "rotation fills physical viewport without black bars " + str(dimensions))
+		var position: Vector2 = scene.board.cell_point(84)
+		check((transform.affine_inverse() * (transform * position)).distance_to(position) < 0.01, "rotated screen coordinate maps back to tapped cell " + str(dimensions))
 	scene.pending.clear()
 	scene._refresh()
 	var unit: Dictionary = scene.sim.get_unit(4)
@@ -96,6 +107,8 @@ func run() -> void:
 	print("UI SMOKE ", checks - failures.size(), "/", checks)
 	scene.audio_player.stop()
 	scene.audio_player.stream = null
+	# Allow the audio server to release its final playback before fixture teardown.
+	await create_timer(0.1).timeout
 	first_touch = null
 	second_touch = null
 	scene.queue_free()

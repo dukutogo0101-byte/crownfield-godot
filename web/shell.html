@@ -9,7 +9,7 @@
 $GODOT_HEAD_INCLUDE
 <style>
 html,body{margin:0;width:100%;height:100%;height:100dvh;overflow:hidden;background:#0c1722;color:#e7ecea;font-family:system-ui,sans-serif;overscroll-behavior:none}
-canvas{display:block;width:100%;height:100%;touch-action:none;outline:none}
+canvas{position:fixed;left:0;top:0;display:block;touch-action:none;outline:none}
 #loading{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:radial-gradient(ellipse at center,#253c45,#0c1722 70%);z-index:5;padding:24px;box-sizing:border-box}
 .card{text-align:center;max-width:440px;width:100%}.crown{font-size:50px;color:#f0d399}h1{letter-spacing:.13em;font-size:30px;margin:12px 0 6px}p{line-height:1.8;color:#b6c7c8;font-size:14px}progress{width:100%;height:8px;margin:20px 0;accent-color:#f0d399}#status{white-space:pre-wrap;overflow-wrap:anywhere}button{border:1px solid #ead291;background:#344b58;color:#fff4c9;border-radius:8px;padding:12px 22px;font-size:16px;cursor:pointer}#retry{display:none}
 </style>
@@ -29,6 +29,8 @@ window.crownfieldFullscreen = async function(toggle) {
     }
   } catch (_) {
     // Browsers may require installation or a user gesture. The canvas still fills the page.
+  } finally {
+    if (window.crownfieldSyncViewport) window.crownfieldSyncViewport();
   }
 };
 window.crownfieldPickJSON = function(callback) {
@@ -40,9 +42,12 @@ window.crownfieldPickJSON = function(callback) {
 <body>
 <canvas id="canvas" tabindex="0">WebGL 2に対応したブラウザで開いてください。</canvas>
 <div id="loading"><div class="card"><div class="crown">♛</div><h1>CROWNFIELD</h1><p>四国の境界</p><progress id="progress"></progress><p id="status">ゲームを準備しています…</p><p>住居を増やし、兵を集め、敵の王を倒そう。<br>初回はデータの読み込みに少し時間がかかります。</p><button id="retry" onclick="location.reload()">もう一度読み込む</button><button id="launch" style="display:none">横画面・全画面で開始</button></div></div>
+<script src="viewport.js"></script>
 <script src="$GODOT_URL"></script>
 <script>
 const GODOT_CONFIG=$GODOT_CONFIG;
+// viewport.js owns both CSS and backing-store dimensions. Godot observes them.
+GODOT_CONFIG.canvasResizePolicy=0;
 const engine=new Engine(GODOT_CONFIG);
 const loading=document.getElementById('loading'), status=document.getElementById('status'), progress=document.getElementById('progress');
 const missing=Engine.getMissingFeatures({threads:false});

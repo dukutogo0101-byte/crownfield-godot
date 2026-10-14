@@ -1,6 +1,6 @@
 {
-	"checks": 34,
+	"checks": 62,
 	"failed": [],
-	"passed": 34,
+	"passed": 62,
 	"scope": "Godot headless UI interactions; browser and phone not tested"
 }

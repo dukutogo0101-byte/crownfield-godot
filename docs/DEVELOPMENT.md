@@ -28,6 +28,7 @@
 | tests/sim_stats.gd | 実マップ1200 tick × 3回の決定論・規模確認 |
 | tests/record_golden.gd | 開発者が明示的に実行するgolden更新。通常テストでは実行しない |
 | web/shell.html | 全画面起動、横向きロック、ブラウザのファイル選択、HTMLローダー |
+| web/viewport.js | CSSとWebGLの寸法を同時更新。回転、全画面、DPR、ブラウザのサイズ変更に追従 |
 | web/compressed_wasm.js | `.wasm`要求を`.wasm.gz`へ送り、gzipを復元してエンジンに渡す |
 | web/prepare_web.py | Web出力の圧縮、PWAキャッシュ・横向きマニフェスト・版識別クエリの調整、サイズ・SHA-256確認 |
 | tools/run_tests.sh / tools/build_web.sh | 再現可能な検証とブラウザ版の書き出し |
@@ -121,7 +122,11 @@ GODOT_BIN=/path/to/godot ./tools/build_web.sh /absolute/path/to/dist
 
 ブラウザ用はCompatibility描画、スレッド/GDExtensionなし。HTML・JS・PCK・gzipエンジン・アイコン・PWAサービスワーカーを**まとめてHTTPS配信**する。HTMLだけコピーしても動かない。配信用ファイルは各25MiB未満にする。`build.json`に成果物のサイズ・SHA-256を記録する。
 
-PCKのSHA-256から版識別を作り、JS/PCK/圧縮WASMへの要求とPWAキャッシュを一致させる。旧版のサービスワーカーから古いゲームデータが返ることを避ける。保存領域は同じoriginで維持する。
+PCKとHTMLシェル・補助JSのSHA-256から版識別を作り、JS/PCK/圧縮WASMへの要求とPWAキャッシュを一致させる。旧版のサービスワーカーから古いゲームデータが返ることを避ける。保存領域は同じoriginで維持する。
+
+表示の基準サイズは720×320、stretchはcanvas_items/expandに固定する。回転時にcontent_scale_sizeを書き換えない。ブラウザのcanvasResizePolicyは0とし、web/viewport.jsだけがCSS寸法とDPRを掛けたWebGL寸法を更新する。Godotはこの実寸を読み、縦横を同じ倍率で拡大して余白なく表示する。サイズ設定をGodotとJSの両方で管理すると回転時に競合する。
+
+UI回帰テストは `godot --headless --path . --script res://tests/ui_smoke.gd`。同一ゲームを縦→横→縦→横と切り替え、DPR=3相当も含め、実画面を埋めるか、セルが潰れないか、画面座標を戻せるかを確認する。Webビルド後は `node tests/web_viewport.mjs /absolute/path/to/dist` で配信用JSとGodotの実際の表示サイズ関数を検証する。これらは実ブラウザ・実機の全画面権限やタッチ確認の代わりにはならない。
 
 公開先Sitesの配信用ソースにはコンパイル済みWeb出力があり、ゲームのGDScript正本はGitHubにある。GDScriptを変更したらWebを書き出し直して配信先も更新する。旧APKを自動更新した扱いにしない。
 

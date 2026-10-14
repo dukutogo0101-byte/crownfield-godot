@@ -21,7 +21,8 @@ raw = wasm.read_bytes() if wasm.exists() else gzip.decompress((destination / 'in
 (destination / 'index.wasm.gz').write_bytes(gzip.compress(raw, compresslevel=9, mtime=0))
 wasm.unlink(missing_ok=True)
 shutil.copy2(root / 'web/compressed_wasm.js', destination / 'compressed_wasm.js')
-build_version = hashlib.sha256((destination / 'index.pck').read_bytes()).hexdigest()[:16]
+shutil.copy2(root / 'web/viewport.js', destination / 'viewport.js')
+build_version = hashlib.sha256((destination / 'index.pck').read_bytes() + (root / 'web/shell.html').read_bytes() + (root / 'web/viewport.js').read_bytes() + (root / 'web/compressed_wasm.js').read_bytes()).hexdigest()[:16]
 html = destination / 'index.html'
 s = html.read_text()
 s = re.sub(r'<script>window.CROWNFIELD_BUILD_VERSION=.*?</script>\n?', '', s)
@@ -29,6 +30,7 @@ s = re.sub(r'src="index.js[^"\s]*"', f'src="index.js?v={build_version}"', s)
 if 'src="compressed_wasm.js' not in s:
     s = s.replace('<script src="index.js', '<script src="compressed_wasm.js"></script>\n<script src="index.js')
 s = re.sub(r'src="compressed_wasm.js[^"\s]*"', f'src="compressed_wasm.js?v={build_version}"', s)
+s = re.sub(r'src="viewport.js[^"\s]*"', f'src="viewport.js?v={build_version}"', s)
 s = s.replace('<script src="compressed_wasm.js', f'<script>window.CROWNFIELD_BUILD_VERSION="{build_version}";</script>\n<script src="compressed_wasm.js')
 html.write_text(s)
 worker = destination / 'index.service.worker.js'
@@ -37,8 +39,10 @@ for array in ['CACHED_FILES', 'CACHEABLE_FILES']:
     pattern = r'const ' + array + r' = (\[.*?\]);'
     match = re.search(pattern, s)
     names = [name.split('?')[0] for name in json.loads(match.group(1))]
-    if array == 'CACHED_FILES' and 'compressed_wasm.js' not in names: names.append('compressed_wasm.js')
-    names = [name + '?v=' + build_version if name in ['index.js', 'compressed_wasm.js', 'index.pck', 'index.wasm.gz'] else name for name in names]
+    if array == 'CACHED_FILES':
+        for extra in ['compressed_wasm.js', 'viewport.js']:
+            if extra not in names: names.append(extra)
+    names = [name + '?v=' + build_version if name in ['index.js', 'compressed_wasm.js', 'viewport.js', 'index.pck', 'index.wasm.gz'] else name for name in names]
     s = re.sub(pattern, 'const ' + array + ' = ' + json.dumps(names) + ';', s)
 worker.write_text(s)
 manifest_path = destination / 'index.manifest.json'

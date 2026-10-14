@@ -48,7 +48,6 @@ var pause_button: Button
 var audio_player: AudioStreamPlayer
 var _last_status_ms: int = 0
 var _manual_status: String = ""
-var _layout_busy: bool = false
 var top_bar: PanelContainer
 var menu_button: MenuButton
 var command_menu: MenuButton
@@ -245,17 +244,13 @@ func _compact_button(value: String, callback: Callable, tip: String = "") -> But
 	return button
 
 func _adaptive_layout() -> void:
-	if _layout_busy: return
-	_layout_busy = true
-	var viewport: Window = get_window()
-	var real_size: Vector2i = viewport.size
-	portrait = real_size.y > real_size.x
-	var width: int = clampi(real_size.x, 640, 1600)
-	viewport.content_scale_size = Vector2i(width, int(float(width) * real_size.y / maxi(1, real_size.x)))
-	menu_button.get_popup().max_size = Vector2i(0, maxi(160, int(viewport.content_scale_size.y) - 24))
+	# Keep the project reference size fixed. EXPAND handles rotation with uniform
+	# scaling; changing content_scale_size in size_changed can race a Web resize.
+	var logical_size: Vector2 = get_viewport_rect().size
+	portrait = logical_size.y > logical_size.x
+	menu_button.get_popup().max_size = Vector2i(0, maxi(160, int(logical_size.y) - 24))
 	command_menu.get_popup().max_size = menu_button.get_popup().max_size
-	tax_slider.custom_minimum_size.x = 100 if width < 850 else 120
-	_layout_busy = false
+	tax_slider.custom_minimum_size.x = 100 if logical_size.x < 850 else 120
 	call_deferred("_position_hud")
 
 func _position_hud() -> void:
