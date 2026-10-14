@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64"><defs>
+<linearGradient id="stone" x2=".1" y2="1"><stop stop-color="#fff2cd"/><stop offset="1" stop-color="#bfb88c"/></linearGradient>
+<linearGradient id="roof" x2=".5" y2="1"><stop stop-color="#db8060"/><stop offset="1" stop-color="#863f3b"/></linearGradient>
+<linearGradient id="metal" x2=".8" y2="1"><stop stop-color="#f0f8ee"/><stop offset=".45" stop-color="#8ea9a7"/><stop offset="1" stop-color="#425b67"/></linearGradient>
+<linearGradient id="wood" x2=".2" y2="1"><stop stop-color="#d6a66b"/><stop offset="1" stop-color="#74503b"/></linearGradient>
+<linearGradient id="gold" x2=".5" y2="1"><stop stop-color="#fff1ac"/><stop offset=".55" stop-color="#d8a548"/><stop offset="1" stop-color="#987339"/></linearGradient>
+<linearGradient id="grass" x2=".3" y2="1"><stop stop-color="#53876d"/><stop offset="1" stop-color="#356250"/></linearGradient>
+<linearGradient id="sea" x2=".2" y2="1"><stop stop-color="#3c7180"/><stop offset="1" stop-color="#254556"/></linearGradient>
+</defs><rect x="0" y="0" width="64" height="64" rx="0" fill="url(#grass)"/><path d="M5 52L9 32 20 16 36 10 52 24 60 52z" fill="#61706a" stroke="#42594d" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/><path d="M7 50L21 30 20 16 11 31z" fill="#8b9981"/><path d="M24 18L34 13 49 25 41 32z" fill="#9ba38c"/><path d="M36 20L43 28 35 40 27 31z" fill="#75857a"/><path d="M19 54V43Q19 27 32 27T45 43V54z" fill="#203238" stroke="#31484b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M24 53V42Q24 32 33 33Q41 34 41 43V53z" fill="#111f28"/><path d="M7 54l16 -4h20l14 4z" fill="#aeaa81"/></svg>

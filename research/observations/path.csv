@@ -1,0 +1,1 @@
+scenario_id,run_id,reference_version,exe_sha256,video_id,frame_or_timestamp,display_day,event_index,entity_id,x,y,action,tax_rate,territory_count,population_before,population_after,power_before,power_after,funds_before,funds_after,durability_before,durability_after,location_condition,notes,measured_by,measured_at

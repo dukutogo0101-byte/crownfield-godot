@@ -1,3 +1,5 @@
+> **2026-10-15 保存状況**: 添付ソースを展開して登録しました。元のソースZIPは `distributions/`、Android APKは `distributions/android/` に4分割で保存しています。`python3 distributions/restore_android.py` で元APKを復元できます。Windows/Linux版の元ZIPは未取得です。詳しい復旧内容と、以下の旧READMEが参照する未取得ファイルは [docs/RECOVERY_STATUS.md](docs/RECOVERY_STATUS.md) を参照してください。実機プレイの再検証は行っていません。
+
 # CROWNFIELD — 四国の境界
 Godot 4.5.2製、Windows Onlineのゲームルールを研究基準としたクリーンルームRTS。4国が争う独自マップ1面を、タイトルから勝敗まで遊べます。**原作完全一致版ではなく、未同定数値を明示した実験用版**です。
 
@@ -32,3 +34,4 @@ PC: 左ドラッグで範囲選択、Shift追加、右ドラッグでパン、�
 ## 権利と残作業
 画像・マップ・効果音は新規制作。GodotおよびNotoフォントのライセンス通知を同梱。日本ファルコムの原作画像、音楽、地図、商標ロゴ、原作EXEは含みません。非公式の研究実装です。
 原作実機との数値照合、Android実機、Windows実機、PC/Android相互リプレイ、音声出力は未検証。魔物出現・同盟・複数面／次面繰越・Advanced王退路遮断AIは未実装。次の優先順は「実機数値同定→端末試験と難易度改善→未実装ルール→複数面」。詳細は `docs/VALIDATION.md`、`docs/OPEN_QUESTIONS.md`、`docs/ORIGINAL_TEST_PLAN.md`。
+

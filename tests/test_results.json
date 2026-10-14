@@ -1,0 +1,15 @@
+{
+	"checks": 149,
+	"engine": "4.4.1-stable (official)",
+	"failed": [
+		"frozen golden checkpoint 128 expected=57e3ac51e660cf5064de2d807db2ed337abf0cdc36c097c956644deb7f597b4c got=69456620092018bb0ed4e0c01e19af36ff3bc5ff1fa0d5409c74f4fe5ded17ac",
+		"frozen golden checkpoint 160 expected=38831de7f3c739a165da453f6e15e350e4aa305802db293617685a64ca98cb2e got=b1ddb248a3e2e4a0ce7c0429282108c76cbfe3766c0c527e8646323c1e75faa9",
+		"frozen golden checkpoint 192 expected=520ad03194af837e5be11f04b76044913b2997042be50b02a3f376a5aae5d27a got=758bba9510ccd495cc0cc39b0c98cccf479c3c055874416d217172564637d74c",
+		"frozen golden checkpoint 224 expected=82fd5d430855dbd3d85899a1cd0286441c1a9970f7b33531110ef61d6715d83c got=c04fbadb118747e68ea8c31d12176ae28226c6682b18f1b6dad6839a7ac7f388",
+		"frozen golden checkpoint 256 expected=c993e4a5e06aa13a352a5ead3c867857473b75ca4cd5741a662121d87a4c500c got=77910d8489519417d51736f287c940220f23b49f15a7fe4e5de621b66e5b8673",
+		"frozen golden checkpoint 288 expected=e830efd92ef9173cf825d3e1bbded7283e760226312ad38f38eb45b162bcb03e got=92c9b1bd18505cabc8e154a4e66cbefbe1c4fbe9366ca3677f9cb132e102ff61",
+		"frozen golden checkpoint 320 expected=96aba50dd6cdd409147d72c64253a94a24ec9d675c5b0726e44a293c45a975ca got=72c6b75d38fb26f0e55d1031bf98753c8b1b74a18ebbde762a91fd51bf9f93d6"
+	],
+	"passed": 142,
+	"scope": "Godot headless integer kernel; not original differential or Android device tests"
+}

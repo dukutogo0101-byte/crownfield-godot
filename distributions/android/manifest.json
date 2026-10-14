@@ -1,0 +1,27 @@
+{
+  "output_file": "Crownfield-debug.apk",
+  "size_bytes": 42957789,
+  "sha256": "82dffb77a4a38524971ee1b9d080b1dca556f2faf873799c196c85e4237fa145",
+  "parts": [
+    {
+      "file": "Crownfield-debug.apk.part01",
+      "size_bytes": 12582912,
+      "sha256": "dd419aad7868aff314c8a1c427552dd2e579bbe48e7e78893844b7f86dfbec33"
+    },
+    {
+      "file": "Crownfield-debug.apk.part02",
+      "size_bytes": 12582912,
+      "sha256": "10fa0e05c027cd6639214667e4ef8d8a03436b00ec2d4ce21720452843adcc57"
+    },
+    {
+      "file": "Crownfield-debug.apk.part03",
+      "size_bytes": 12582912,
+      "sha256": "d87feb0d43449487398fbf373b70f25641622d6b83614773fece7de22af93a0e"
+    },
+    {
+      "file": "Crownfield-debug.apk.part04",
+      "size_bytes": 5209053,
+      "sha256": "3502ac5516eea9435e406cc607cf26243dec6f2c5ba85ef7987f0f43732e4b6c"
+    }
+  ]
+}

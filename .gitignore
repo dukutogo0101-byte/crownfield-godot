@@ -1,0 +1,9 @@
+.godot/
+builds/
+verification/
+__pycache__/
+*.pyc
+*.keystore
+*.jks
+.godot/export_credentials.cfg
+distributions/Crownfield-debug.apk
