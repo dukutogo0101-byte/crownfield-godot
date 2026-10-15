@@ -7,6 +7,7 @@
 - ソース正本: https://github.com/dukutogo0101-byte/crownfield-godot の最新ブランチ。
 - ゲームの現行仕様: [GAME_SYSTEM.md](GAME_SYSTEM.md)。
 - Grokのマップ担当・JSON契約・依頼文: [MAP_DEVELOPMENT_GROK.md](MAP_DEVELOPMENT_GROK.md)。
+- 公開版のマップ選択・登録方法: [MAPS.md](MAPS.md)。
 - ブラウザ版: https://crownfield-four-kingdoms.duketogo0101.chatgpt.site （所有者用公開）。
 - `distributions/` の元ZIP・分割APKは旧版保存用。これを最新ソースへ上書きしない。
 - `SPEC_CANONICAL_JA.md` は原作調査の基準であり、現行実装の保証ではない。原作確定A、仮説B、独自補完Cを混同しない。
@@ -26,6 +27,8 @@
 | data/rulesets/win_online_canon.json | 原作研究用の未確定値をnullで保持。プレイ用ではない |
 | tests/test_runner.gd | コアの単体・統合・golden回帰 |
 | tests/ui_smoke.gd | 画面操作からコアへの命令、保存、税率、リプレイ、横持ちHUDの回帰 |
+| tests/map_selection_ui.gd | 全4面の選択→開始→命令→保存→読込→同一面再挑戦と横持ちでの開始ボタン位置 |
+| tests/map_grok_three.gd | Grok制作3面の到達性、税路、保存互換と1200 tickの発展 |
 | tests/sim_stats.gd | 実マップ1200 tick × 3回の決定論・規模確認 |
 | tests/record_golden.gd | 開発者が明示的に実行するgolden更新。通常テストでは実行しない |
 | web/shell.html | 全画面起動、横向きロック、ブラウザのファイル選択、HTMLローダー |

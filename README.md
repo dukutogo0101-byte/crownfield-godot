@@ -5,7 +5,9 @@
 > **2026-10-15 保存状況**: 添付ソースを展開して登録しました。元のソースZIPは `distributions/`、Android APKは `distributions/android/` に4分割で保存しています。`python3 distributions/restore_android.py` で元APKを復元できます。Windows/Linux版の元ZIPは未取得です。詳しい復旧内容と、以下の旧READMEが参照する未取得ファイルは [docs/RECOVERY_STATUS.md](docs/RECOVERY_STATUS.md) を参照してください。実機プレイの再検証は行っていません。
 
 # CROWNFIELD — 四国の境界
-Godot 4.5.2製、Windows Onlineのゲームルールを研究基準としたクリーンルームRTS。4国が争う独自マップ1面を、タイトルから勝敗まで遊べます。**原作完全一致版ではなく、未同定数値を明示した実験用版**です。
+
+**マップ追加**: 開始画面、またはゲームメニューの「マップ選択・新しいゲーム」から、従来の「四つの川」とGrok制作の「開けた野」「二つの渡し」「境界の半島」を選べます。選択後に「このマップで開始」。途中のゲームを残す場合は先に保存してください。詳細は[マップ一覧](docs/MAPS.md)。
+Godot 4.5.2製、Windows Onlineのゲームルールを研究基準としたクリーンルームRTS。4国が争う独自マップ4面を、タイトルから勝敗まで遊べます。**原作完全一致版ではなく、未同定数値を明示した実験用版**です。
 
 ## 起動
 - Windows ZIPを展開し `Crownfield.exe` を起動。

@@ -1,0 +1,1123 @@
+{
+	"checks": 174,
+	"engine": "4.5.2-stable (official)",
+	"failed": [],
+	"maps": [
+		{
+			"elapsed_ms": 14046,
+			"end": {
+				"alive": [
+					true,
+					true,
+					true,
+					true
+				],
+				"bases": [
+					5,
+					5,
+					7,
+					5
+				],
+				"day": 200,
+				"funds": [
+					134,
+					127,
+					132,
+					146
+				],
+				"population": [
+					2739,
+					2776,
+					1229,
+					2828
+				],
+				"result": "playing",
+				"tick": 1200
+			},
+			"final_hash": "4385e6534e382d25c7e7eda20d9b6325ec3201e9a64dc2114f4dadd528075d72",
+			"id": "open_plains",
+			"name": "開けた野",
+			"outcome": "playing",
+			"peak_bases": [
+				15,
+				16,
+				15,
+				15
+			],
+			"samples": [
+				{
+					"alive": [
+						true,
+						true,
+						true,
+						true
+					],
+					"bases": [
+						2,
+						2,
+						2,
+						2
+					],
+					"day": 0,
+					"funds": [
+						800,
+						800,
+						800,
+						800
+					],
+					"population": [
+						448,
+						448,
+						448,
+						448
+					],
+					"result": "playing",
+					"tick": 0
+				},
+				{
+					"alive": [
+						true,
+						true,
+						true,
+						true
+					],
+					"bases": [
+						10,
+						10,
+						11,
+						11
+					],
+					"day": 20,
+					"funds": [
+						195,
+						195,
+						211,
+						211
+					],
+					"population": [
+						1261,
+						1261,
+						1379,
+						1379
+					],
+					"result": "playing",
+					"tick": 120
+				},
+				{
+					"alive": [
+						true,
+						true,
+						true,
+						true
+					],
+					"bases": [
+						11,
+						11,
+						12,
+						12
+					],
+					"day": 40,
+					"funds": [
+						158,
+						164,
+						170,
+						168
+					],
+					"population": [
+						2024,
+						2049,
+						2277,
+						2265
+					],
+					"result": "playing",
+					"tick": 240
+				},
+				{
+					"alive": [
+						true,
+						true,
+						true,
+						true
+					],
+					"bases": [
+						13,
+						15,
+						11,
+						9
+					],
+					"day": 60,
+					"funds": [
+						154,
+						117,
+						87,
+						68
+					],
+					"population": [
+						2891,
+						2205,
+						2452,
+						2607
+					],
+					"result": "playing",
+					"tick": 360
+				},
+				{
+					"alive": [
+						true,
+						true,
+						true,
+						true
+					],
+					"bases": [
+						10,
+						14,
+						7,
+						3
+					],
+					"day": 80,
+					"funds": [
+						143,
+						147,
+						173,
+						122
+					],
+					"population": [
+						3374,
+						2532,
+						2619,
+						2002
+					],
+					"result": "playing",
+					"tick": 480
+				},
+				{
+					"alive": [
+						true,
+						true,
+						true,
+						true
+					],
+					"bases": [
+						9,
+						11,
+						5,
+						4
+					],
+					"day": 100,
+					"funds": [
+						148,
+						145,
+						146,
+						119
+					],
+					"population": [
+						3501,
+						2590,
+						2388,
+						2156
+					],
+					"result": "playing",
+					"tick": 600
+				},
+				{
+					"alive": [
+						true,
+						true,
+						true,
+						true
+					],
+					"bases": [
+						7,
+						9,
+						3,
+						4
+					],
+					"day": 120,
+					"funds": [
+						182,
+						142,
+						45,
+						68
+					],
+					"population": [
+						2699,
+						2723,
+						1402,
+						2307
+					],
+					"result": "playing",
+					"tick": 720
+				},
+				{
+					"alive": [
+						true,
+						true,
+						true,
+						true
+					],
+					"bases": [
+						5,
+						6,
+						4,
+						5
+					],
+					"day": 140,
+					"funds": [
+						75,
+						60,
+						71,
+						122
+					],
+					"population": [
+						2628,
+						2144,
+						1064,
+						2500
+					],
+					"result": "playing",
+					"tick": 840
+				},
+				{
+					"alive": [
+						true,
+						true,
+						true,
+						true
+					],
+					"bases": [
+						5,
+						5,
+						4,
+						8
+					],
+					"day": 160,
+					"funds": [
+						43,
+						26,
+						122,
+						89
+					],
+					"population": [
+						2593,
+						2943,
+						1601,
+						3119
+					],
+					"result": "playing",
+					"tick": 960
+				},
+				{
+					"alive": [
+						true,
+						true,
+						true,
+						true
+					],
+					"bases": [
+						4,
+						4,
+						6,
+						11
+					],
+					"day": 180,
+					"funds": [
+						82,
+						171,
+						115,
+						126
+					],
+					"population": [
+						2473,
+						2753,
+						1289,
+						3697
+					],
+					"result": "playing",
+					"tick": 1080
+				},
+				{
+					"alive": [
+						true,
+						true,
+						true,
+						true
+					],
+					"bases": [
+						5,
+						5,
+						7,
+						5
+					],
+					"day": 200,
+					"funds": [
+						134,
+						127,
+						132,
+						146
+					],
+					"population": [
+						2739,
+						2776,
+						1229,
+						2828
+					],
+					"result": "playing",
+					"tick": 1200
+				}
+			],
+			"stalled_units": [],
+			"start_bases": [
+				2,
+				2,
+				2,
+				2
+			],
+			"winner": -1
+		},
+		{
+			"elapsed_ms": 12186,
+			"end": {
+				"alive": [
+					true,
+					true,
+					true,
+					true
+				],
+				"bases": [
+					5,
+					6,
+					14,
+					3
+				],
+				"day": 200,
+				"funds": [
+					127,
+					86,
+					193,
+					116
+				],
+				"population": [
+					1862,
+					951,
+					4443,
+					1827
+				],
+				"result": "playing",
+				"tick": 1200
+			},
+			"final_hash": "2e3442b41a701cc431f7198c4e718c4304378b963b54bd95f3d036174288fed8",
+			"id": "twin_crossings",
+			"name": "二つの渡し",
+			"outcome": "playing",
+			"peak_bases": [
+				14,
+				14,
+				17,
+				15
+			],
+			"samples": [
+				{
+					"alive": [
+						true,
+						true,
+						true,
+						true
+					],
+					"bases": [
+						2,
+						2,
+						2,
+						2
+					],
+					"day": 0,
+					"funds": [
+						800,
+						800,
+						800,
+						800
+					],
+					"population": [
+						448,
+						448,
+						448,
+						448
+					],
+					"result": "playing",
+					"tick": 0
+				},
+				{
+					"alive": [
+						true,
+						true,
+						true,
+						true
+					],
+					"bases": [
+						10,
+						10,
+						11,
+						11
+					],
+					"day": 20,
+					"funds": [
+						195,
+						195,
+						211,
+						211
+					],
+					"population": [
+						1261,
+						1261,
+						1379,
+						1379
+					],
+					"result": "playing",
+					"tick": 120
+				},
+				{
+					"alive": [
+						true,
+						true,
+						true,
+						true
+					],
+					"bases": [
+						13,
+						13,
+						12,
+						12
+					],
+					"day": 40,
+					"funds": [
+						87,
+						93,
+						172,
+						172
+					],
+					"population": [
+						1992,
+						2016,
+						1955,
+						1955
+					],
+					"result": "playing",
+					"tick": 240
+				},
+				{
+					"alive": [
+						true,
+						true,
+						true,
+						true
+					],
+					"bases": [
+						6,
+						7,
+						16,
+						11
+					],
+					"day": 60,
+					"funds": [
+						78,
+						94,
+						141,
+						109
+					],
+					"population": [
+						1681,
+						1727,
+						2891,
+						2506
+					],
+					"result": "playing",
+					"tick": 360
+				},
+				{
+					"alive": [
+						true,
+						true,
+						true,
+						true
+					],
+					"bases": [
+						5,
+						3,
+						13,
+						4
+					],
+					"day": 80,
+					"funds": [
+						63,
+						141,
+						176,
+						182
+					],
+					"population": [
+						1636,
+						1505,
+						3410,
+						2046
+					],
+					"result": "playing",
+					"tick": 480
+				},
+				{
+					"alive": [
+						true,
+						true,
+						true,
+						true
+					],
+					"bases": [
+						4,
+						5,
+						11,
+						4
+					],
+					"day": 100,
+					"funds": [
+						85,
+						48,
+						179,
+						72
+					],
+					"population": [
+						1931,
+						2286,
+						3614,
+						1890
+					],
+					"result": "playing",
+					"tick": 600
+				},
+				{
+					"alive": [
+						true,
+						true,
+						true,
+						true
+					],
+					"bases": [
+						4,
+						4,
+						11,
+						3
+					],
+					"day": 120,
+					"funds": [
+						132,
+						76,
+						132,
+						64
+					],
+					"population": [
+						2069,
+						1137,
+						3680,
+						1633
+					],
+					"result": "playing",
+					"tick": 720
+				},
+				{
+					"alive": [
+						true,
+						true,
+						true,
+						true
+					],
+					"bases": [
+						5,
+						6,
+						15,
+						4
+					],
+					"day": 140,
+					"funds": [
+						93,
+						54,
+						114,
+						77
+					],
+					"population": [
+						2258,
+						1136,
+						4157,
+						1650
+					],
+					"result": "playing",
+					"tick": 840
+				},
+				{
+					"alive": [
+						true,
+						true,
+						true,
+						true
+					],
+					"bases": [
+						4,
+						4,
+						13,
+						3
+					],
+					"day": 160,
+					"funds": [
+						143,
+						127,
+						129,
+						112
+					],
+					"population": [
+						1828,
+						1105,
+						4471,
+						1706
+					],
+					"result": "playing",
+					"tick": 960
+				},
+				{
+					"alive": [
+						true,
+						true,
+						true,
+						true
+					],
+					"bases": [
+						5,
+						6,
+						11,
+						3
+					],
+					"day": 180,
+					"funds": [
+						92,
+						111,
+						198,
+						131
+					],
+					"population": [
+						1838,
+						1330,
+						3622,
+						1775
+					],
+					"result": "playing",
+					"tick": 1080
+				},
+				{
+					"alive": [
+						true,
+						true,
+						true,
+						true
+					],
+					"bases": [
+						5,
+						6,
+						14,
+						3
+					],
+					"day": 200,
+					"funds": [
+						127,
+						86,
+						193,
+						116
+					],
+					"population": [
+						1862,
+						951,
+						4443,
+						1827
+					],
+					"result": "playing",
+					"tick": 1200
+				}
+			],
+			"stalled_units": [],
+			"start_bases": [
+				2,
+				2,
+				2,
+				2
+			],
+			"winner": -1
+		},
+		{
+			"elapsed_ms": 9802,
+			"end": {
+				"alive": [
+					true,
+					true,
+					true,
+					true
+				],
+				"bases": [
+					8,
+					8,
+					7,
+					4
+				],
+				"day": 200,
+				"funds": [
+					125,
+					129,
+					100,
+					114
+				],
+				"population": [
+					2634,
+					3761,
+					2037,
+					3255
+				],
+				"result": "playing",
+				"tick": 1200
+			},
+			"final_hash": "8ae8a290b8bc6c3876f6c3e1933f03986e5b02bcb413e4a848fd0b2cde10be2b",
+			"id": "borderlands",
+			"name": "境界の半島",
+			"outcome": "playing",
+			"peak_bases": [
+				16,
+				20,
+				18,
+				16
+			],
+			"samples": [
+				{
+					"alive": [
+						true,
+						true,
+						true,
+						true
+					],
+					"bases": [
+						2,
+						2,
+						2,
+						2
+					],
+					"day": 0,
+					"funds": [
+						800,
+						800,
+						800,
+						800
+					],
+					"population": [
+						448,
+						448,
+						448,
+						448
+					],
+					"result": "playing",
+					"tick": 0
+				},
+				{
+					"alive": [
+						true,
+						true,
+						true,
+						true
+					],
+					"bases": [
+						10,
+						9,
+						11,
+						11
+					],
+					"day": 20,
+					"funds": [
+						195,
+						172,
+						195,
+						200
+					],
+					"population": [
+						1264,
+						1112,
+						1308,
+						1328
+					],
+					"result": "playing",
+					"tick": 120
+				},
+				{
+					"alive": [
+						true,
+						true,
+						true,
+						true
+					],
+					"bases": [
+						11,
+						10,
+						15,
+						15
+					],
+					"day": 40,
+					"funds": [
+						139,
+						78,
+						234,
+						149
+					],
+					"population": [
+						1940,
+						1615,
+						2521,
+						2461
+					],
+					"result": "playing",
+					"tick": 240
+				},
+				{
+					"alive": [
+						true,
+						true,
+						true,
+						true
+					],
+					"bases": [
+						15,
+						14,
+						17,
+						13
+					],
+					"day": 60,
+					"funds": [
+						79,
+						78,
+						142,
+						153
+					],
+					"population": [
+						2891,
+						2759,
+						3385,
+						2796
+					],
+					"result": "playing",
+					"tick": 360
+				},
+				{
+					"alive": [
+						true,
+						true,
+						true,
+						true
+					],
+					"bases": [
+						12,
+						13,
+						15,
+						13
+					],
+					"day": 80,
+					"funds": [
+						121,
+						126,
+						201,
+						178
+					],
+					"population": [
+						2476,
+						2901,
+						3200,
+						2908
+					],
+					"result": "playing",
+					"tick": 480
+				},
+				{
+					"alive": [
+						true,
+						true,
+						true,
+						true
+					],
+					"bases": [
+						7,
+						13,
+						9,
+						12
+					],
+					"day": 100,
+					"funds": [
+						67,
+						116,
+						153,
+						75
+					],
+					"population": [
+						3073,
+						2786,
+						2701,
+						3068
+					],
+					"result": "playing",
+					"tick": 600
+				},
+				{
+					"alive": [
+						true,
+						true,
+						true,
+						true
+					],
+					"bases": [
+						5,
+						16,
+						6,
+						8
+					],
+					"day": 120,
+					"funds": [
+						36,
+						131,
+						45,
+						185
+					],
+					"population": [
+						2424,
+						3366,
+						2662,
+						2407
+					],
+					"result": "playing",
+					"tick": 720
+				},
+				{
+					"alive": [
+						true,
+						true,
+						true,
+						true
+					],
+					"bases": [
+						5,
+						19,
+						6,
+						7
+					],
+					"day": 140,
+					"funds": [
+						95,
+						223,
+						121,
+						136
+					],
+					"population": [
+						2138,
+						3927,
+						2731,
+						2319
+					],
+					"result": "playing",
+					"tick": 840
+				},
+				{
+					"alive": [
+						true,
+						true,
+						true,
+						true
+					],
+					"bases": [
+						4,
+						19,
+						7,
+						8
+					],
+					"day": 160,
+					"funds": [
+						165,
+						179,
+						136,
+						96
+					],
+					"population": [
+						2183,
+						3783,
+						1810,
+						3260
+					],
+					"result": "playing",
+					"tick": 960
+				},
+				{
+					"alive": [
+						true,
+						true,
+						true,
+						true
+					],
+					"bases": [
+						6,
+						11,
+						5,
+						7
+					],
+					"day": 180,
+					"funds": [
+						111,
+						166,
+						122,
+						145
+					],
+					"population": [
+						2431,
+						4746,
+						1633,
+						3724
+					],
+					"result": "playing",
+					"tick": 1080
+				},
+				{
+					"alive": [
+						true,
+						true,
+						true,
+						true
+					],
+					"bases": [
+						8,
+						8,
+						7,
+						4
+					],
+					"day": 200,
+					"funds": [
+						125,
+						129,
+						100,
+						114
+					],
+					"population": [
+						2634,
+						3761,
+						2037,
+						3255
+					],
+					"result": "playing",
+					"tick": 1200
+				}
+			],
+			"stalled_units": [],
+			"start_bases": [
+				2,
+				2,
+				2,
+				2
+			],
+			"winner": -1
+		}
+	],
+	"passed": 174,
+	"scope": "Headless new-map load, tax roads, castle reachability and 1200-tick development. Not selection UI, web export, or a human playtest.",
+	"ticks": 1200
+}

@@ -3,6 +3,12 @@ extends Control
 const Simulation = preload("res://core/simulation.gd")
 const Board = preload("res://ui/board.gd")
 const COLORS = [Color("54b9f3"), Color("ee7771"), Color("e9b959"), Color("8bcfa6")]
+const MAPS = [
+	{"id": "four_rivers", "path": "res://data/maps/four_rivers.json", "name": "四つの川", "description": "従来のマップ。四方の川と橋を巡って争う標準面。"},
+	{"id": "open_plains", "path": "res://data/maps/open_plains.json", "name": "開けた野", "description": "入門向け。広い平地で村を増やし、兵を集める基本を学ぶ。"},
+	{"id": "twin_crossings", "path": "res://data/maps/twin_crossings.json", "name": "二つの渡し", "description": "橋の防衛と迂回を楽しむ面。各方面の複数の渡しを使おう。"},
+	{"id": "borderlands", "path": "res://data/maps/borderlands.json", "name": "境界の半島", "description": "標準向け。半島の内政地を育て、中央の争奪地へ進もう。"}
+]
 const ORDERS = [
 	["move", "移動", "選択した部隊を目的地へ移動。王に出せる行動命令は移動だけです。"],
 	["wait", "待機", "現在地で停止。自国の村に待機すると自然減少を抑えられます。"],
@@ -59,6 +65,10 @@ var tax_label: Label
 var resource_label: Label
 var _tax_syncing: bool = false
 var web_file_callback
+var selected_map_index: int = 0
+var map_selector: OptionButton
+var map_description: Label
+var map_start_button: Button
 
 func _ready() -> void:
 	_setup_theme()
@@ -153,6 +163,8 @@ func _setup_ui() -> void:
 	menu.add_item("読込", 7)
 	menu.add_item("記録・JSON", 8)
 	menu.add_item("操作と説明", 9)
+	menu.add_separator()
+	menu.add_item("マップ選択・新しいゲーム", 10)
 	menu.id_pressed.connect(_on_game_menu)
 	pause_button = _compact_button("▶", _toggle_pause, "再開／一時停止：ワンタッチ")
 	pause_button.custom_minimum_size.x = 48
@@ -274,6 +286,7 @@ func _on_game_menu(id: int) -> void:
 		7: _load_game()
 		8: _show_files()
 		9: _show_help()
+		10: _show_title()
 
 func _on_order_menu(id: int) -> void:
 	if id == 99: _cancel_order()
@@ -299,6 +312,7 @@ func _show_nations() -> void:
 	column.add_child(_button("閉じる", _close_modal))
 
 func _enter_fullscreen() -> void:
+	if DisplayServer.get_name() == "headless": return
 	if OS.has_feature("web"):
 		JavaScriptBridge.get_interface("window").crownfieldFullscreen(false)
 	else:
@@ -598,14 +612,14 @@ func _save_game() -> void:
 	file.store_string(JSON.stringify({"format": 1, "snapshot": sim.snapshot(), "pending": pending, "replay_initial": replay_initial, "commands": command_log, "checkpoints": checkpoints}, "\t"))
 	_set_status("ゲームを保存しました。読込でこの状態へ戻れます。")
 
-func _load_game() -> void:
+func _load_game() -> bool:
 	if not FileAccess.file_exists("user://crownfield_save.json"):
 		_set_status("保存データがありません。", true)
-		return
+		return false
 	var data = JSON.parse_string(FileAccess.get_file_as_string("user://crownfield_save.json"))
 	if not data is Dictionary or not sim.restore(data.get("snapshot", {})):
 		_set_status("保存データが壊れているか、互換性がありません。", true)
-		return
+		return false
 	paused = true
 	accumulator = 0.0
 	selected.clear()
@@ -618,6 +632,7 @@ func _load_game() -> void:
 	active_order = ""
 	_set_status("保存状態を読み込みました。再開で時間が進みます。")
 	_refresh()
+	return true
 
 func _show_files() -> void:
 	var column: VBoxContainer = _open_modal("保存・リプレイ")
@@ -625,7 +640,7 @@ func _show_files() -> void:
 	column.add_child(_button("リプレイを書き出す", _export_replay))
 	column.add_child(_button("保存したリプレイを再生・検証", _play_saved_replay))
 	column.add_child(_button("JSONファイルを保存／取込（PC）", _show_file_dialog_choices))
-	column.add_child(_button("新しいゲーム", _restart))
+	column.add_child(_button("マップ選択・新しいゲーム", _show_title))
 	column.add_child(_button("閉じる", _close_modal))
 
 func _replay_document() -> Dictionary:
@@ -807,22 +822,55 @@ func _close_modal() -> void:
 	accumulator = 0.0
 
 func _show_title() -> void:
+	paused = true
+	_refresh()
 	var column: VBoxContainer = _open_modal("CROWNFIELD  /  四国の境界")
-	if ResourceLoader.exists("res://assets/title_landscape.svg"):
+	column.add_theme_constant_override("separation", 8)
+	if size.y >= 480 and ResourceLoader.exists("res://assets/title_landscape.svg"):
 		var illustration: TextureRect = TextureRect.new()
 		illustration.texture = load("res://assets/title_landscape.svg")
 		illustration.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 		illustration.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 		illustration.custom_minimum_size.y = 100
 		column.add_child(illustration)
-	_add_modal_text(column, "村を育て、兵を集め、敵3国の王を倒そう。\nスマホは横持ち。部隊を選んで地点をタップすれば移動できます。\n原作を参考にした独自ルールの試作版です。")
-	column.add_child(_button("実験用ルールでプレイ", func():
-		_enter_fullscreen()
-		_close_modal()
-		paused = false
-		_refresh()
-	))
+	_add_modal_text(column, "村を育て、兵を集め、敵3国の王を倒そう。")
+	selected_map_index = _map_index_from_state()
+	map_selector = OptionButton.new()
+	map_selector.custom_minimum_size.y = 48
+	map_selector.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	for entry in MAPS: map_selector.add_item(entry.name)
+	map_selector.select(selected_map_index)
+	map_selector.item_selected.connect(_on_map_selected)
+	column.add_child(map_selector)
+	map_description = _label(MAPS[selected_map_index].description, 16)
+	map_description.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	column.add_child(map_description)
+	map_start_button = _button("このマップで開始", _start_selected_map)
+	column.add_child(map_start_button)
+	if FileAccess.file_exists("user://crownfield_save.json"):
+		column.add_child(_button("保存したゲームを読込", func():
+			if _load_game(): _close_modal()
+		))
+	if sim.state.tick > 0:
+		_add_modal_text(column, "開始すると新しいゲームになります。現在の進行を残すには、盤面に戻って保存してください。")
+		column.add_child(_button("今の盤面へ戻る", _close_modal))
 	column.add_child(_button("操作・勝ち方を見る", _show_help))
+
+func _map_index_from_state() -> int:
+	for index in range(MAPS.size()):
+		if MAPS[index].id == sim.state.get("id", ""): return index
+	return 0
+
+func _on_map_selected(index: int) -> void:
+	if index < 0 or index >= MAPS.size(): return
+	selected_map_index = index
+	map_description.text = MAPS[index].description
+
+func _start_selected_map() -> void:
+	if not _reset_game(MAPS[selected_map_index].path): return
+	_enter_fullscreen()
+	paused = false
+	_refresh()
 
 func _show_help() -> void:
 	var column: VBoxContainer = _open_modal("操作と勝ち方")
@@ -838,17 +886,24 @@ func _show_outcome() -> void:
 	column.add_child(_button("盤面を見る", _close_modal))
 	_play_cue("victory" if won else "defeat")
 
-func _restart() -> void:
+func _reset_game(map_path: String) -> bool:
+	if not sim.new_game(map_path):
+		_set_status("マップを読み込めませんでした。", true)
+		return false
 	_close_modal()
-	sim.new_game()
 	selected.clear()
 	pending.clear()
 	active_order = ""
 	accumulator = 0.0
 	paused = true
 	_new_recording()
+	board.set_state(sim.state)
 	board.fit_map()
 	_refresh()
+	return true
+
+func _restart() -> void:
+	if not _reset_game(MAPS[_map_index_from_state()].path): return
 	_show_title()
 
 func _play_cue(name_value: String) -> void:
