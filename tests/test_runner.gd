@@ -518,8 +518,8 @@ func test_attack_judgment() -> void:
 	sim.state.bases = [{"id": 90, "team": 1, "pos": 49, "pop": 32}]
 	var u: Dictionary = add_unit(sim, 91, 1, 49, 96, "auto", -1, false)
 	sim._ai()
-	equal(u.ai_job, "rally", "weak army gathers instead of charging defended castle")
-	equal(u.target, 49, "gathering happens at own village")
+	equal(u.ai_job, "retreat", "weak army withdraws from defended castle threat bubble")
+	expect(sim._distance(u.target, 40) > sim._distance(u.pos, 40), "withdrawal destination increases distance from superior castle")
 	equal(sim.state.leaders[1].target, 8, "weak enemy king remains at home")
 	u.power = 700
 	sim._ai()
@@ -527,7 +527,7 @@ func test_attack_judgment() -> void:
 	equal(u.target, 40, "strong army targets nearby enemy castle")
 	sim.state.leaders[0].power = 1000
 	sim._ai()
-	equal(u.ai_job, "rally", "attack is reconsidered when defenders grow stronger")
+	equal(u.ai_job, "retreat", "attack is reconsidered when defenders grow stronger")
 	u.power = 500
 	u.target = 40; u.order = "move"; u["ai_job"] = "attack"
 	sim._movement()

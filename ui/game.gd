@@ -61,7 +61,7 @@ var command_cluster: HBoxContainer
 var order_menu_actions: Dictionary = {}
 var clear_button: Button
 var tax_slider: HSlider
-var tax_label: Label
+var tax_label: Button
 var resource_label: Label
 var _tax_syncing: bool = false
 var web_file_callback
@@ -179,7 +179,8 @@ func _setup_ui() -> void:
 	var tax_row: HBoxContainer = HBoxContainer.new()
 	tax_row.add_theme_constant_override("separation", 6)
 	row.add_child(tax_row)
-	tax_label = _label("税10%", 14)
+	tax_label = _compact_button("税10%", _show_tax, "税収・人口増加と徴税経路を確認")
+	tax_label.add_theme_font_size_override("font_size", 14)
 	tax_label.custom_minimum_size.x = 52
 	tax_row.add_child(tax_label)
 	tax_slider = HSlider.new()
@@ -299,6 +300,8 @@ func _on_tax_changed(value: float) -> void:
 	for i in range(pending.size() - 1, -1, -1):
 		if pending[i].action == "tax": pending.remove_at(i)
 	_submit("tax", [], -1, {"value": int(value)})
+	var forecast: Dictionary = sim.economy_forecast(0, int(value))
+	_set_status(_tax_summary(forecast) + ("。再開後に適用。" if paused else "。次の更新で適用。"))
 
 func _show_nations() -> void:
 	var column: VBoxContainer = _open_modal("各国の状況")
@@ -308,6 +311,9 @@ func _show_nations() -> void:
 		column.add_child(card)
 		var label: Label = _label(faction_labels[i].text, 16)
 		label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		var plan = sim.state.factions[i].get("ai_plan", {})
+		if i > 0 and plan is Dictionary and not plan.is_empty():
+			label.text += "\n方針：" + {"develop": "内政・拡張", "assemble": "戦力集結", "defend": "防衛", "engineer": "経路の整備", "attack": "攻勢"}.get(plan.get("phase", ""), "状況を判断中")
 		card.add_child(label)
 	column.add_child(_button("閉じる", _close_modal))
 
@@ -416,6 +422,7 @@ func _refresh() -> void:
 	_tax_syncing = true
 	tax_slider.set_value_no_signal(display_rate)
 	tax_label.text = "税" + str(display_rate) + "%"
+	tax_slider.tooltip_text = _tax_summary(sim.economy_forecast(0, display_rate)) + "（税率ボタンで詳細）"
 	_tax_syncing = false
 	tax_slider.editable = not replay_playback and sim.state.result == "playing"
 	var valid_ids: Array = []
@@ -757,12 +764,19 @@ func _web_import_json(arguments: Array) -> void:
 	else:
 		_set_status("互換性のあるJSONではありません。", true)
 
+func _tax_summary(forecast: Dictionary) -> String:
+	return "税" + str(forecast.rate) + "%：税収 約+" + str(forecast.income) + "/" + str(int(forecast.tax_days)) + "日・村人口 +" + str(forecast.growth) + "/" + str(int(forecast.growth_days)) + "日"
+
 func _show_tax() -> void:
-	var column: VBoxContainer = _open_modal("税率を変更")
-	_add_modal_text(column, "低税率では人口増加を優先。高税率では資金を確保。王が城中央を離れたり、税路が途切れると収入が止まります。税率の範囲・収入額は実験用Cです。")
-	for rate in [0, 5, 10, 15, 20, 25, 30]:
-		column.add_child(_button(str(rate) + "%", func():
-			_submit("tax", [], -1, {"team": 0, "value": rate})
+	var column: VBoxContainer = _open_modal("税率・徴税の状況")
+	var rate: int = int(tax_slider.value)
+	var forecast: Dictionary = sim.economy_forecast(0, rate)
+	_add_modal_text(column, _tax_summary(forecast) + "\n徴税路がつながる村：" + str(forecast.connected) + "/" + str(forecast.villages) + "\n次回徴税の目安：+" + str(forecast.next_income) + "（" + str(ceili(float(forecast.collection_ticks) / sim.rules.day_ticks)) + "日後）")
+	if forecast.reason != "": _add_modal_text(column, forecast.reason)
+	_add_modal_text(column, "税収は村の居住人口・税率・徴税できた時間から積算します。低税率は人口、高税率は資金を優先。王の外出や税路の断絶で新たな積算が止まります。表示は現在の人口・経路が続く場合の概算で、出兵・建設・軍の維持費は含みません。村人口は上限を超えると出兵します。0%にしても、それ以前に積算した税は徴収されます。")
+	for value in [0, 5, 10, 15, 20, 25, 30]:
+		column.add_child(_button(str(value) + "%", func():
+			tax_slider.value = value
 			_close_modal()
 		))
 	column.add_child(_button("閉じる", _close_modal))

@@ -1,47 +1,47 @@
 {
 	"checkpoints": [
 		{
-			"hash": "f47554dd3b8a01bba05fac51fe7033d3aa275d4c75175ad4be4f921cb233f1bf",
+			"hash": "f35df50a508774784dc448e52c3ca142f5ad26dcf7fe521aa0491899e4c6abfa",
 			"tick": 0
 		},
 		{
-			"hash": "8af8a200466294f89f1b9f6456c1134a86b1907813a2b5132e8d89dfced038ac",
+			"hash": "b0eca7e2aee3286eec1928d68dc2af680f85268e44bfb7ea8c0ca19b576a819f",
 			"tick": 32
 		},
 		{
-			"hash": "0f3f2db01a091e70dc2c8dcf69c73f7297a9253e65eeda54430f83c230b840a6",
+			"hash": "fd8df1c3d4816eb0d59d2f9029bf90907668e409cf0b6ea231280985647ca088",
 			"tick": 64
 		},
 		{
-			"hash": "45c4fc661fbdc4459e696560e89543530eeb3153d2109348f1f2fbd01c8156d0",
+			"hash": "7a77ff58b5b13b161aea10d51db48efabe8b1005256f08b027b0842e13a235e4",
 			"tick": 96
 		},
 		{
-			"hash": "9b2497250592bcacff65ac7f37f11525fe08f0141c4a6cd50b077d13eb21318a",
+			"hash": "51cb47b664099e2457800e5868bd713370cb087909a6a40dfe8cac0c10201cd9",
 			"tick": 128
 		},
 		{
-			"hash": "54d461c759c94b4615b511bc6e535a35269fb3966f512fbe4830f90c9867a616",
+			"hash": "f33962a580b9daa823f4a709e76f3c379ff79087cc2b3c5a9cd8a6ab1cdd1fec",
 			"tick": 160
 		},
 		{
-			"hash": "77ff972283f63d0f3e064a1ae3b8b9daa259641660aac526501bce2cf09e1412",
+			"hash": "16f355faad59fb663cf2f56213af2eb6d3ddc8aea8a3b4a32aa56b904fafda8e",
 			"tick": 192
 		},
 		{
-			"hash": "371aaf07d6ec44eb216f2fd96071f2f9c92ad7f62edb5bf8185b174e8f7346c6",
+			"hash": "b9011ebaacec152ca043f7bc9544515d56b2efc0be087e60f07ab27dc43e79e3",
 			"tick": 224
 		},
 		{
-			"hash": "8bb1ed3a472b31c31da681229121a741d63686b037c5db5fbcf180e90b2161c2",
+			"hash": "bf2500ffae21e9a89766c36cdc8d92eab25188920b6af07b31e7b3232da153b9",
 			"tick": 256
 		},
 		{
-			"hash": "07df1f3646844049fcca2e3e6db173a18ae3bf99e2b73c6f8a32738301aa688d",
+			"hash": "a262eec49e8dd2d4b9f5936c6e1046728ad4f25a423f035df6e4259eb19dd3e2",
 			"tick": 288
 		},
 		{
-			"hash": "c634c884fd147e57a74d7ddec29a75dca48a0ce4adda5dbea9af85a29668616d",
+			"hash": "b0bbb0466169db6fca3aa620c1551c87cda81061661d743397d57c2a4db36e07",
 			"tick": 320
 		}
 	],
@@ -51,7 +51,7 @@
 	"replay": {
 		"checkpoints": [
 			{
-				"hash": "c634c884fd147e57a74d7ddec29a75dca48a0ce4adda5dbea9af85a29668616d",
+				"hash": "b0bbb0466169db6fca3aa620c1551c87cda81061661d743397d57c2a4db36e07",
 				"tick": 320
 			}
 		],
@@ -108,21 +108,23 @@
 				"tick": 81
 			}
 		],
-		"final_hash": "c634c884fd147e57a74d7ddec29a75dca48a0ce4adda5dbea9af85a29668616d",
+		"final_hash": "b0bbb0466169db6fca3aa620c1551c87cda81061661d743397d57c2a4db36e07",
 		"final_tick": 320,
 		"format": 1,
 		"initial_state": {
-			"checksum": "6daf01859d17f4dc9ad3219fea9694e566d3dffea2f5d42247ed462e2782a195",
+			"checksum": "b940d97e821bd2df1d610dacf733d79e5cdba5c6ac1abc457cbbd118c7504638",
 			"command_log": [],
 			"issued_sequence": 0,
 			"pending": [],
 			"rules": {
 				"ai_attack_margin_percent": 150,
 				"ai_attack_min_power": 96,
+				"ai_bridge_durability": 4,
 				"ai_builder_divisor": 4,
 				"ai_builder_max": 3,
 				"ai_development_bases": 7,
 				"ai_period": 24,
+				"ai_tax_cooldown": 120,
 				"base_initial_population": 32,
 				"base_period": 12,
 				"bridge_new_cost": 30,
@@ -168,9 +170,11 @@
 				"provenance": {
 					"ai_attack_margin_percent": "C user-requested tactical safety margin; not original measured behavior",
 					"ai_attack_min_power": "C user-requested troop assembly threshold",
+					"ai_bridge_durability": "C planned durability target; all four points use the shared paid work",
 					"ai_builder_divisor": "C reserve one builder per four eligible auto units",
 					"ai_builder_max": "C development role budget, not an original measured value",
 					"ai_development_bases": "C initial development target; no longer an expansion cap",
+					"ai_tax_cooldown": "C economic policy cooldown; applies to CPU countries only",
 					"all_other_numerical_values": "C; unmeasured; not original claims",
 					"bridge_new_cost": "A",
 					"bridge_repair_cost": "A",
@@ -7725,7 +7729,7 @@
 				"winner": -1
 			}
 		},
-		"initial_state_hash": "f47554dd3b8a01bba05fac51fe7033d3aa275d4c75175ad4be4f921cb233f1bf",
+		"initial_state_hash": "f35df50a508774784dc448e52c3ca142f5ad26dcf7fe521aa0491899e4c6abfa",
 		"rng_state": "unused",
 		"ruleset_id": "PLAYABLE_EXPERIMENTAL_V1"
 	}

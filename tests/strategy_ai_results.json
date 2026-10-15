@@ -1,0 +1,32 @@
+{
+	"checks": 64,
+	"experiments": [
+		{
+			"tax_480_ticks": [
+				{
+					"funds": 800,
+					"population": 1560,
+					"tax": 0
+				},
+				{
+					"funds": 1098,
+					"population": 1296,
+					"tax": 10
+				},
+				{
+					"funds": 1410,
+					"population": 1016,
+					"tax": 20
+				},
+				{
+					"funds": 1732,
+					"population": 720,
+					"tax": 30
+				}
+			]
+		}
+	],
+	"failed": [],
+	"passed": 64,
+	"scope": "Deterministic Godot simulation and economic experiments; no human difficulty rating or phone browser test"
+}

@@ -18,7 +18,8 @@
 |---|---|
 | project.godot / main.tscn | Godot設定、UIの起動 |
 | core/simulation.gd | 整数状態・全ルール。`new_game`、`issue`、`step`、`snapshot`、`restore`、`export_replay` |
-| core/pathfinder.gd | 4方向BFS。乱数なし、同距離では既定の上/左/右/下順 |
+| core/strategic_ai.gd | 国ごとの役割・攻防・工兵・税率を計画。共通can_orderで許可された命令のみ発行 |
+| core/pathfinder.gd | 4方向BFSと安定ヒープDijkstra。乱数なし、同距離では既定の上/左/右/下順 |
 | core/combat_resolver.gd | 純粋関数による戦闘損害 |
 | ui/game.gd | 入力、選択、命令予約、HUD、モーダル、実時間速度、保存、UI形式のリプレイ |
 | ui/board.gd | 地図描画、座標変換、選択・長押し・パン・ピンチ・ミニマップ。状態のルール変更を行わない |
@@ -26,6 +27,8 @@
 | data/rulesets/playable_experimental.json | 実行する周期・費用・閾値と確度・出典区分 |
 | data/rulesets/win_online_canon.json | 原作研究用の未確定値をnullで保持。プレイ用ではない |
 | tests/test_runner.gd | コアの単体・統合・golden回帰 |
+| tests/strategy_ai.gd | 税の積算・端数・出兵、工兵と岸・費用・防衛遮断・退避・保存の独立シナリオ |
+| tests/strategy_soak.gd | 4面の攻撃・戦闘・発展・経済・後半保存。標準面3600 tick、他面1200 tick |
 | tests/ui_smoke.gd | 画面操作からコアへの命令、保存、税率、リプレイ、横持ちHUDの回帰 |
 | tests/map_selection_ui.gd | 全4面の選択→開始→命令→保存→読込→同一面再挑戦と横持ちでの開始ボタン位置 |
 | tests/map_grok_three.gd | Grok制作3面の到達性、税路、保存互換と1200 tickの発展 |
@@ -45,14 +48,14 @@
 |---|---|
 | state | w, h, tick, day, next_id, limit_days, result, winner |
 | cells | terrain, owner, bridge, bridge_built, fence |
-| factions | id, name, funds, tax, home, alive, initial_order |
-| bases | id, team, pos, pop |
-| units | id, team, pos, power, order, target, manual, king=false, auto_mode, ai_job |
+| factions | id, name, funds, tax, home, alive, initial_order, ai_plan, ai_tax_tick, ai_cut |
+| bases | id, team, pos, pop, tax_credit |
+| units | id, team, pos, power, order, target, manual, king=false, auto_mode, ai_job, ai_task |
 | leaders | id, team, pos, power, order, target, manual, king=true, alive |
 | events | tick, message（最大30件） |
 | losses / combat_losses | 国別の総損害／戦闘損害 |
 
-`manual` は手動命令かどうか。`auto_mode` は自動化の意図（空文字、auto、develop）。`order` は現在の作業であり、建設途中にbuild_baseでもauto_mode=developを失わない。`ai_job` は集結・開発・攻撃判断の補助情報。王兵力を通常人口に加えない。
+`manual` は手動命令かどうか。`auto_mode` は自動化の意図（空文字、auto、develop）。`order` は現在の作業であり、建設途中にbuild_baseでもauto_mode=developを失わない。`ai_job` は集結・開発・攻撃・防衛・護衛・工兵・退避の補助情報。`ai_task` はaction/target/durability/purposeを持つ工兵の継続作業。`ai_plan` はphase/target/kind/rally/since、`ai_cut` はpos/until。`tax_credit` は人口×税率×tickを単位にした整数の未徴収額。新フィールドは任意で、旧保存の不足分はゼロ・未計画として扱う。王兵力を通常人口に加えない。
 
 ## 命令契約
 
@@ -84,7 +87,7 @@ pending.clear()
 ```
 
 - `tick` は入力時の次tick。`sequence` は増加し、同一sequenceの二重適用を防ぐ。
-- UIから入力可能な部隊はteam 0。CPUは内部 `_ai` で計画する。
+- UIから入力可能な部隊はteam 0。CPUは内部 `_ai` → `Strategy.think` で計画する。`can_order(team,action,ids,target)` で所有・王・岸の制約を共有し、実際の費用・作業も共通関数に任せる。CPU専用の資源加算や作業結果の直接変更を入れない。
 - 王はmove/waitだけ。王を含む複数選択で建設・オートを与えない。
 - wait/auto/developには目的地不要。税率は `extra.value`、出兵時行動は `extra.order`。
 - メニュー・パン・ズーム・一時停止・選択・ファイルUIから直接stateを変更しない。
@@ -154,3 +157,9 @@ AI停滞修正では7村の開発上限を撤去し、内政担当・共同集�
 `tests/ai_progression.gd`は旧公開版を480日進めて保存した停滞状態と新規ゲームを実際に進め、国別の村数・人口・役割を`tests/ai_progression_results.json`へ出力する。`tests/fixtures/pre_ai_fix_stalemate.json`は個人データを含まない自動生成セーブ。旧AIでは480日後も敵が各7村だったケースを固定する。
 
 原作との差分・未確定値、複数面、魔物、同盟、難易度、実機でのタッチ・速度・保存・PWA検証。古いOPEN_QUESTIONSには現行コードと違う記述がある（AI優先順位、王分裂の未実装記述など）。判断時は現在の実装とGAME_SYSTEMを優先して照合する。
+
+## 戦略AI・税率更新の検証
+
+[AI_ECONOMY_UPDATE.md](AI_ECONOMY_UPDATE.md) に変更理由と結果を記録する。`tests/strategy_ai.gd` は既存goldenに依存せず、費用・岸・侵攻・遮断・税収の意味を検査する。既存goldenは旧AIの結果と一致しなくなるため、独立検査の成功後に `record_golden.gd` を明示的に実行し、別の `test_runner.gd` 実行で比較する。旧セーブは読めるが、旧版で記録したリプレイの最終ハッシュは一致しない。
+
+長期検証は `godot --headless --path . --script res://tests/strategy_soak.gd`。CPU同士の実戦・脱落を正常な結果として記録する。実機の操作感や難易度は人間のプレイで別途確認する。

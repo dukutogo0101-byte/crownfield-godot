@@ -1,0 +1,1119 @@
+{
+	"cases": [
+		{
+			"elapsed_ms": 130543,
+			"hash": "35753474a9d7ba0e136cfd8caf6d0fdc3f671de89de4dc84aaf607aa4298a3d7",
+			"job_observations": {
+				"attack": 382,
+				"defend": 786,
+				"develop": 1035,
+				"engineer": 50,
+				"escort": 1,
+				"none": 5,
+				"rally": 4981,
+				"retreat": 712
+			},
+			"map": "four_rivers",
+			"peak_bases": [
+				15,
+				42,
+				70,
+				119
+			],
+			"phase_observations": {
+				"assemble": 5,
+				"attack": 382,
+				"defend": 55,
+				"develop": 4,
+				"engineer": 4
+			},
+			"result": "defeat",
+			"samples": [
+				{
+					"alive": [
+						true,
+						true,
+						true,
+						true
+					],
+					"bases": [
+						12,
+						11,
+						16,
+						15
+					],
+					"combat_losses": [
+						0,
+						0,
+						0,
+						0
+					],
+					"funds": [
+						130,
+						139,
+						191,
+						191
+					],
+					"population": [
+						1800,
+						1696,
+						2392,
+						2120
+					],
+					"tick": 240
+				},
+				{
+					"alive": [
+						true,
+						true,
+						true,
+						true
+					],
+					"bases": [
+						9,
+						19,
+						27,
+						40
+					],
+					"combat_losses": [
+						151,
+						18,
+						144,
+						26
+					],
+					"funds": [
+						171,
+						225,
+						645,
+						269
+					],
+					"population": [
+						2522,
+						3104,
+						5526,
+						4515
+					],
+					"tick": 480
+				},
+				{
+					"alive": [
+						true,
+						true,
+						true,
+						true
+					],
+					"bases": [
+						8,
+						25,
+						43,
+						61
+					],
+					"combat_losses": [
+						337,
+						579,
+						877,
+						48
+					],
+					"funds": [
+						62,
+						169,
+						1235,
+						1848
+					],
+					"population": [
+						2587,
+						3720,
+						7797,
+						10642
+					],
+					"tick": 720
+				},
+				{
+					"alive": [
+						true,
+						true,
+						true,
+						true
+					],
+					"bases": [
+						9,
+						30,
+						60,
+						67
+					],
+					"combat_losses": [
+						500,
+						2503,
+						1621,
+						147
+					],
+					"funds": [
+						125,
+						991,
+						1786,
+						3086
+					],
+					"population": [
+						2969,
+						4179,
+						13340,
+						21354
+					],
+					"tick": 960
+				},
+				{
+					"alive": [
+						true,
+						true,
+						true,
+						true
+					],
+					"bases": [
+						11,
+						34,
+						65,
+						78
+					],
+					"combat_losses": [
+						568,
+						2966,
+						2299,
+						186
+					],
+					"funds": [
+						75,
+						619,
+						2454,
+						3871
+					],
+					"population": [
+						3422,
+						5591,
+						18533,
+						33661
+					],
+					"tick": 1200
+				},
+				{
+					"alive": [
+						true,
+						true,
+						true,
+						true
+					],
+					"bases": [
+						8,
+						38,
+						65,
+						83
+					],
+					"combat_losses": [
+						654,
+						3451,
+						2769,
+						392
+					],
+					"funds": [
+						341,
+						857,
+						2676,
+						4857
+					],
+					"population": [
+						3484,
+						8544,
+						17397,
+						30412
+					],
+					"tick": 1440
+				},
+				{
+					"alive": [
+						true,
+						true,
+						true,
+						true
+					],
+					"bases": [
+						9,
+						32,
+						67,
+						86
+					],
+					"combat_losses": [
+						960,
+						8444,
+						5345,
+						2328
+					],
+					"funds": [
+						357,
+						769,
+						2829,
+						5437
+					],
+					"population": [
+						3555,
+						7495,
+						19311,
+						33878
+					],
+					"tick": 1680
+				},
+				{
+					"alive": [
+						true,
+						true,
+						true,
+						true
+					],
+					"bases": [
+						12,
+						35,
+						68,
+						85
+					],
+					"combat_losses": [
+						1462,
+						8686,
+						8591,
+						3119
+					],
+					"funds": [
+						57,
+						607,
+						3383,
+						6398
+					],
+					"population": [
+						3808,
+						11754,
+						29067,
+						47604
+					],
+					"tick": 1920
+				},
+				{
+					"alive": [
+						true,
+						true,
+						true,
+						true
+					],
+					"bases": [
+						13,
+						39,
+						62,
+						83
+					],
+					"combat_losses": [
+						1708,
+						9306,
+						9158,
+						4626
+					],
+					"funds": [
+						595,
+						933,
+						4971,
+						7706
+					],
+					"population": [
+						4514,
+						14548,
+						33723,
+						48986
+					],
+					"tick": 2160
+				},
+				{
+					"alive": [
+						true,
+						true,
+						true,
+						true
+					],
+					"bases": [
+						13,
+						33,
+						54,
+						94
+					],
+					"combat_losses": [
+						1780,
+						9584,
+						20488,
+						8554
+					],
+					"funds": [
+						1127,
+						1287,
+						5554,
+						8826
+					],
+					"population": [
+						5349,
+						17189,
+						33398,
+						50558
+					],
+					"tick": 2400
+				},
+				{
+					"alive": [
+						true,
+						true,
+						true,
+						true
+					],
+					"bases": [
+						6,
+						34,
+						60,
+						101
+					],
+					"combat_losses": [
+						1840,
+						14242,
+						21449,
+						18153
+					],
+					"funds": [
+						1169,
+						1865,
+						4884,
+						10893
+					],
+					"population": [
+						5296,
+						16324,
+						34907,
+						50414
+					],
+					"tick": 2640
+				},
+				{
+					"alive": [
+						true,
+						true,
+						true,
+						true
+					],
+					"bases": [
+						7,
+						32,
+						56,
+						106
+					],
+					"combat_losses": [
+						1994,
+						15435,
+						29431,
+						21843
+					],
+					"funds": [
+						1284,
+						1164,
+						4844,
+						12827
+					],
+					"population": [
+						5107,
+						15609,
+						38732,
+						55890
+					],
+					"tick": 2880
+				},
+				{
+					"alive": [
+						true,
+						true,
+						true,
+						true
+					],
+					"bases": [
+						7,
+						35,
+						57,
+						110
+					],
+					"combat_losses": [
+						2153,
+						15953,
+						29860,
+						22187
+					],
+					"funds": [
+						1667,
+						261,
+						4531,
+						15382
+					],
+					"population": [
+						5389,
+						18732,
+						32617,
+						72365
+					],
+					"tick": 3120
+				},
+				{
+					"alive": [
+						true,
+						true,
+						true,
+						true
+					],
+					"bases": [
+						7,
+						26,
+						49,
+						117
+					],
+					"combat_losses": [
+						2217,
+						16311,
+						35757,
+						22987
+					],
+					"funds": [
+						1955,
+						793,
+						3378,
+						18141
+					],
+					"population": [
+						5382,
+						16539,
+						38859,
+						65051
+					],
+					"tick": 3360
+				},
+				{
+					"alive": [
+						true,
+						true,
+						true,
+						true
+					],
+					"bases": [
+						5,
+						17,
+						55,
+						109
+					],
+					"combat_losses": [
+						2313,
+						16980,
+						36694,
+						24057
+					],
+					"funds": [
+						2233,
+						175,
+						2518,
+						20329
+					],
+					"population": [
+						7389,
+						20389,
+						39800,
+						105032
+					],
+					"tick": 3600
+				}
+			],
+			"tick": 3600
+		},
+		{
+			"elapsed_ms": 37070,
+			"hash": "2235fdda57fd2b770cd34946687103d41beb6eb8c263bf128ec1849e202310ad",
+			"job_observations": {
+				"attack": 119,
+				"defend": 101,
+				"develop": 267,
+				"rally": 1121,
+				"retreat": 104
+			},
+			"map": "open_plains",
+			"peak_bases": [
+				12,
+				22,
+				103,
+				91
+			],
+			"phase_observations": {
+				"assemble": 4,
+				"attack": 119,
+				"defend": 23,
+				"develop": 4
+			},
+			"result": "playing",
+			"samples": [
+				{
+					"alive": [
+						true,
+						true,
+						true,
+						true
+					],
+					"bases": [
+						10,
+						11,
+						15,
+						16
+					],
+					"combat_losses": [
+						0,
+						100,
+						14,
+						0
+					],
+					"funds": [
+						54,
+						173,
+						289,
+						192
+					],
+					"population": [
+						1787,
+						1232,
+						2373,
+						2401
+					],
+					"tick": 240
+				},
+				{
+					"alive": [
+						true,
+						true,
+						true,
+						true
+					],
+					"bases": [
+						6,
+						17,
+						34,
+						36
+					],
+					"combat_losses": [
+						0,
+						855,
+						223,
+						0
+					],
+					"funds": [
+						295,
+						200,
+						912,
+						844
+					],
+					"population": [
+						2433,
+						1323,
+						6268,
+						6583
+					],
+					"tick": 480
+				},
+				{
+					"alive": [
+						true,
+						true,
+						true,
+						true
+					],
+					"bases": [
+						8,
+						16,
+						66,
+						71
+					],
+					"combat_losses": [
+						191,
+						1162,
+						248,
+						35
+					],
+					"funds": [
+						49,
+						170,
+						2340,
+						2498
+					],
+					"population": [
+						2553,
+						2271,
+						11763,
+						14368
+					],
+					"tick": 720
+				},
+				{
+					"alive": [
+						true,
+						true,
+						true,
+						true
+					],
+					"bases": [
+						8,
+						21,
+						92,
+						83
+					],
+					"combat_losses": [
+						226,
+						1288,
+						5776,
+						1886
+					],
+					"funds": [
+						261,
+						878,
+						2819,
+						4054
+					],
+					"population": [
+						2900,
+						3262,
+						17998,
+						28835
+					],
+					"tick": 960
+				},
+				{
+					"alive": [
+						true,
+						true,
+						true,
+						true
+					],
+					"bases": [
+						6,
+						22,
+						93,
+						90
+					],
+					"combat_losses": [
+						370,
+						1977,
+						6473,
+						2123
+					],
+					"funds": [
+						227,
+						122,
+						4509,
+						5279
+					],
+					"population": [
+						2783,
+						3497,
+						31551,
+						29070
+					],
+					"tick": 1200
+				}
+			],
+			"tick": 1224
+		},
+		{
+			"elapsed_ms": 32194,
+			"hash": "5fa87f4ca4484df6fa7863f7390bd0e509fbdbe840f177a2de2ddb3a4b97012c",
+			"job_observations": {
+				"attack": 116,
+				"defend": 163,
+				"develop": 265,
+				"engineer": 22,
+				"rally": 875,
+				"retreat": 107
+			},
+			"map": "twin_crossings",
+			"peak_bases": [
+				15,
+				39,
+				55,
+				90
+			],
+			"phase_observations": {
+				"assemble": 5,
+				"attack": 116,
+				"defend": 23,
+				"develop": 5,
+				"engineer": 1
+			},
+			"result": "playing",
+			"samples": [
+				{
+					"alive": [
+						true,
+						true,
+						true,
+						true
+					],
+					"bases": [
+						10,
+						13,
+						16,
+						16
+					],
+					"combat_losses": [
+						0,
+						0,
+						0,
+						0
+					],
+					"funds": [
+						175,
+						178,
+						192,
+						190
+					],
+					"population": [
+						1679,
+						1600,
+						2403,
+						2383
+					],
+					"tick": 240
+				},
+				{
+					"alive": [
+						true,
+						true,
+						true,
+						true
+					],
+					"bases": [
+						6,
+						21,
+						24,
+						37
+					],
+					"combat_losses": [
+						99,
+						795,
+						790,
+						13
+					],
+					"funds": [
+						34,
+						200,
+						711,
+						196
+					],
+					"population": [
+						2019,
+						3230,
+						4263,
+						5101
+					],
+					"tick": 480
+				},
+				{
+					"alive": [
+						true,
+						true,
+						true,
+						true
+					],
+					"bases": [
+						8,
+						29,
+						38,
+						66
+					],
+					"combat_losses": [
+						99,
+						1507,
+						1174,
+						199
+					],
+					"funds": [
+						92,
+						378,
+						1717,
+						854
+					],
+					"population": [
+						2467,
+						4312,
+						6006,
+						13953
+					],
+					"tick": 720
+				},
+				{
+					"alive": [
+						true,
+						true,
+						true,
+						true
+					],
+					"bases": [
+						12,
+						38,
+						50,
+						84
+					],
+					"combat_losses": [
+						217,
+						1637,
+						1686,
+						498
+					],
+					"funds": [
+						157,
+						1160,
+						674,
+						1891
+					],
+					"population": [
+						3355,
+						5366,
+						13575,
+						17269
+					],
+					"tick": 960
+				},
+				{
+					"alive": [
+						true,
+						true,
+						true,
+						true
+					],
+					"bases": [
+						15,
+						35,
+						55,
+						90
+					],
+					"combat_losses": [
+						536,
+						2357,
+						2284,
+						709
+					],
+					"funds": [
+						208,
+						1282,
+						896,
+						4608
+					],
+					"population": [
+						4150,
+						7262,
+						15924,
+						25433
+					],
+					"tick": 1200
+				}
+			],
+			"tick": 1224
+		},
+		{
+			"elapsed_ms": 25476,
+			"hash": "0ad3fdbc9c4a7086b7c905610f2746ae78a6c5f5d5c0cd8375321d5c742df159",
+			"job_observations": {
+				"attack": 117,
+				"defend": 140,
+				"develop": 262,
+				"engineer": 5,
+				"escort": 3,
+				"rally": 628,
+				"retreat": 107
+			},
+			"map": "borderlands",
+			"peak_bases": [
+				22,
+				29,
+				40,
+				49
+			],
+			"phase_observations": {
+				"assemble": 4,
+				"attack": 117,
+				"defend": 22,
+				"develop": 4,
+				"engineer": 3
+			},
+			"result": "playing",
+			"samples": [
+				{
+					"alive": [
+						true,
+						true,
+						true,
+						true
+					],
+					"bases": [
+						10,
+						11,
+						13,
+						15
+					],
+					"combat_losses": [
+						0,
+						18,
+						113,
+						0
+					],
+					"funds": [
+						209,
+						180,
+						200,
+						211
+					],
+					"population": [
+						1727,
+						1511,
+						1611,
+						2224
+					],
+					"tick": 240
+				},
+				{
+					"alive": [
+						true,
+						true,
+						true,
+						true
+					],
+					"bases": [
+						16,
+						17,
+						31,
+						32
+					],
+					"combat_losses": [
+						181,
+						347,
+						212,
+						43
+					],
+					"funds": [
+						111,
+						159,
+						167,
+						631
+					],
+					"population": [
+						2886,
+						2206,
+						3796,
+						5995
+					],
+					"tick": 480
+				},
+				{
+					"alive": [
+						true,
+						true,
+						true,
+						true
+					],
+					"bases": [
+						20,
+						16,
+						35,
+						44
+					],
+					"combat_losses": [
+						697,
+						957,
+						791,
+						882
+					],
+					"funds": [
+						313,
+						484,
+						1425,
+						2270
+					],
+					"population": [
+						3537,
+						2387,
+						7046,
+						10956
+					],
+					"tick": 720
+				},
+				{
+					"alive": [
+						true,
+						true,
+						true,
+						true
+					],
+					"bases": [
+						20,
+						27,
+						34,
+						42
+					],
+					"combat_losses": [
+						768,
+						1735,
+						1194,
+						1264
+					],
+					"funds": [
+						244,
+						1240,
+						1143,
+						2053
+					],
+					"population": [
+						5094,
+						3550,
+						9144,
+						12448
+					],
+					"tick": 960
+				},
+				{
+					"alive": [
+						true,
+						true,
+						true,
+						true
+					],
+					"bases": [
+						22,
+						22,
+						35,
+						45
+					],
+					"combat_losses": [
+						1494,
+						3236,
+						5967,
+						3016
+					],
+					"funds": [
+						843,
+						1854,
+						806,
+						2138
+					],
+					"population": [
+						6198,
+						4512,
+						9715,
+						13857
+					],
+					"tick": 1200
+				}
+			],
+			"tick": 1224
+		}
+	],
+	"checks": 36,
+	"failed": [],
+	"passed": 36,
+	"scope": "AI-only Godot headless games, up to 3600 ticks on default map and 1200 on each additional map; not human difficulty or real-device performance"
+}

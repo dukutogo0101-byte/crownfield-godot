@@ -1,5 +1,60 @@
 extends RefCounted
 
+# Dijkstra with a stable insertion tie-break. A negative entering cost is a wall.
+static func cost_tree(start: int, width: int, height: int, cost: Callable, order: Array = ["up", "left", "right", "down"]) -> Dictionary:
+	var distances: Dictionary = {start: 0}
+	var previous: Dictionary = {start: -1}
+	var heap: Array = [[0, 0, start]]
+	var sequence: int = 0
+	while not heap.is_empty():
+		var item: Array = _heap_pop(heap)
+		var current: int = item[2]
+		if item[0] != distances[current]: continue
+		for next in neighbors(current, width, height, order):
+			var weight: int = int(cost.call(next))
+			if weight < 0: continue
+			var distance: int = int(item[0]) + maxi(1, weight)
+			if distances.has(next) and int(distances[next]) <= distance: continue
+			distances[next] = distance; previous[next] = current
+			sequence += 1
+			_heap_push(heap, [distance, sequence, next])
+	return {"distance": distances, "previous": previous, "start": start}
+
+static func route(tree: Dictionary, target: int) -> Array:
+	if not tree.previous.has(target) or target == tree.start: return []
+	var result: Array = []
+	var cursor: int = target
+	while cursor != tree.start:
+		result.push_front(cursor)
+		cursor = tree.previous[cursor]
+	return result
+
+static func _heap_less(a: Array, b: Array) -> bool:
+	return a[0] < b[0] or (a[0] == b[0] and a[1] < b[1])
+
+static func _heap_push(heap: Array, item: Array) -> void:
+	heap.append(item)
+	var index: int = heap.size() - 1
+	while index > 0:
+		var parent: int = (index - 1) / 2
+		if not _heap_less(heap[index], heap[parent]): break
+		var swap: Array = heap[parent]; heap[parent] = heap[index]; heap[index] = swap
+		index = parent
+
+static func _heap_pop(heap: Array) -> Array:
+	var result: Array = heap[0]
+	var last: Array = heap.pop_back()
+	if heap.is_empty(): return result
+	heap[0] = last
+	var index: int = 0
+	while index * 2 + 1 < heap.size():
+		var child: int = index * 2 + 1
+		if child + 1 < heap.size() and _heap_less(heap[child + 1], heap[child]): child += 1
+		if not _heap_less(heap[child], heap[index]): break
+		var swap: Array = heap[index]; heap[index] = heap[child]; heap[child] = swap
+		index = child
+	return result
+
 static func neighbors(pos: int, width: int, height: int, order: Array = ["up", "left", "right", "down"]) -> Array:
 	var result: Array = []
 	var x: int = pos % width
