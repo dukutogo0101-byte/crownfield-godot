@@ -1,0 +1,676 @@
+{
+	"checks": 72,
+	"engine": "4.5.2-stable (official)",
+	"failed": [],
+	"maps": [
+		{
+			"end": {
+				"alive": [
+					true,
+					true,
+					true,
+					true
+				],
+				"bases": [
+					42,
+					7,
+					11,
+					28
+				],
+				"day": 200,
+				"funds": [
+					316,
+					136,
+					125,
+					4672
+				],
+				"population": [
+					8491,
+					2188,
+					1754,
+					20399
+				],
+				"result": "playing",
+				"tick": 1200
+			},
+			"id": "succession_isthmus",
+			"name": "継承の地峡",
+			"outcome": "playing",
+			"peak_bases": [
+				42,
+				13,
+				15,
+				28
+			],
+			"samples": [
+				{
+					"alive": [
+						true,
+						true,
+						true,
+						true
+					],
+					"bases": [
+						2,
+						2,
+						2,
+						2
+					],
+					"day": 0,
+					"funds": [
+						800,
+						800,
+						800,
+						800
+					],
+					"population": [
+						448,
+						448,
+						448,
+						448
+					],
+					"result": "playing",
+					"tick": 0
+				},
+				{
+					"alive": [
+						true,
+						true,
+						true,
+						true
+					],
+					"bases": [
+						16,
+						13,
+						14,
+						15
+					],
+					"day": 40,
+					"funds": [
+						118,
+						147,
+						175,
+						113
+					],
+					"population": [
+						1917,
+						2037,
+						1661,
+						2332
+					],
+					"result": "playing",
+					"tick": 240
+				},
+				{
+					"alive": [
+						true,
+						true,
+						true,
+						true
+					],
+					"bases": [
+						19,
+						8,
+						8,
+						25
+					],
+					"day": 80,
+					"funds": [
+						195,
+						297,
+						121,
+						207
+					],
+					"population": [
+						3615,
+						2809,
+						2360,
+						5364
+					],
+					"result": "playing",
+					"tick": 480
+				},
+				{
+					"alive": [
+						true,
+						true,
+						true,
+						true
+					],
+					"bases": [
+						19,
+						6,
+						7,
+						28
+					],
+					"day": 120,
+					"funds": [
+						205,
+						119,
+						70,
+						1528
+					],
+					"population": [
+						4124,
+						2805,
+						2562,
+						10256
+					],
+					"result": "playing",
+					"tick": 720
+				},
+				{
+					"alive": [
+						true,
+						true,
+						true,
+						true
+					],
+					"bases": [
+						26,
+						7,
+						7,
+						28
+					],
+					"day": 160,
+					"funds": [
+						198,
+						140,
+						99,
+						3162
+					],
+					"population": [
+						6921,
+						3191,
+						2338,
+						15199
+					],
+					"result": "playing",
+					"tick": 960
+				},
+				{
+					"alive": [
+						true,
+						true,
+						true,
+						true
+					],
+					"bases": [
+						42,
+						7,
+						11,
+						28
+					],
+					"day": 200,
+					"funds": [
+						316,
+						136,
+						125,
+						4672
+					],
+					"population": [
+						8491,
+						2188,
+						1754,
+						20399
+					],
+					"result": "playing",
+					"tick": 1200
+				}
+			],
+			"start_bases": [
+				2,
+				2,
+				2,
+				2
+			]
+		},
+		{
+			"end": {
+				"alive": [
+					true,
+					true,
+					true,
+					true
+				],
+				"bases": [
+					7,
+					6,
+					39,
+					22
+				],
+				"day": 200,
+				"funds": [
+					54,
+					94,
+					278,
+					140
+				],
+				"population": [
+					1258,
+					1362,
+					11493,
+					7254
+				],
+				"result": "playing",
+				"tick": 1200
+			},
+			"id": "half_sea",
+			"name": "片海",
+			"outcome": "playing",
+			"peak_bases": [
+				11,
+				11,
+				39,
+				22
+			],
+			"samples": [
+				{
+					"alive": [
+						true,
+						true,
+						true,
+						true
+					],
+					"bases": [
+						2,
+						2,
+						2,
+						2
+					],
+					"day": 0,
+					"funds": [
+						800,
+						800,
+						800,
+						800
+					],
+					"population": [
+						448,
+						448,
+						448,
+						448
+					],
+					"result": "playing",
+					"tick": 0
+				},
+				{
+					"alive": [
+						true,
+						true,
+						true,
+						true
+					],
+					"bases": [
+						9,
+						9,
+						15,
+						15
+					],
+					"day": 40,
+					"funds": [
+						83,
+						83,
+						134,
+						134
+					],
+					"population": [
+						1284,
+						1284,
+						2473,
+						2473
+					],
+					"result": "playing",
+					"tick": 240
+				},
+				{
+					"alive": [
+						true,
+						true,
+						true,
+						true
+					],
+					"bases": [
+						3,
+						3,
+						13,
+						13
+					],
+					"day": 80,
+					"funds": [
+						108,
+						108,
+						109,
+						109
+					],
+					"population": [
+						1490,
+						1490,
+						3780,
+						3780
+					],
+					"result": "playing",
+					"tick": 480
+				},
+				{
+					"alive": [
+						true,
+						true,
+						true,
+						true
+					],
+					"bases": [
+						6,
+						5,
+						16,
+						10
+					],
+					"day": 120,
+					"funds": [
+						138,
+						128,
+						119,
+						159
+					],
+					"population": [
+						1196,
+						1019,
+						4481,
+						3920
+					],
+					"result": "playing",
+					"tick": 720
+				},
+				{
+					"alive": [
+						true,
+						true,
+						true,
+						true
+					],
+					"bases": [
+						7,
+						6,
+						24,
+						13
+					],
+					"day": 160,
+					"funds": [
+						65,
+						109,
+						199,
+						140
+					],
+					"population": [
+						1325,
+						1143,
+						6650,
+						4708
+					],
+					"result": "playing",
+					"tick": 960
+				},
+				{
+					"alive": [
+						true,
+						true,
+						true,
+						true
+					],
+					"bases": [
+						7,
+						6,
+						39,
+						22
+					],
+					"day": 200,
+					"funds": [
+						54,
+						94,
+						278,
+						140
+					],
+					"population": [
+						1258,
+						1362,
+						11493,
+						7254
+					],
+					"result": "playing",
+					"tick": 1200
+				}
+			],
+			"start_bases": [
+				2,
+				2,
+				2,
+				2
+			]
+		},
+		{
+			"end": {
+				"alive": [
+					true,
+					true,
+					true,
+					true
+				],
+				"bases": [
+					23,
+					38,
+					47,
+					45
+				],
+				"day": 200,
+				"funds": [
+					4608,
+					4726,
+					6449,
+					5417
+				],
+				"population": [
+					19153,
+					24705,
+					32570,
+					27242
+				],
+				"result": "playing",
+				"tick": 1200
+			},
+			"id": "spiral_channel",
+			"name": "渦の水路",
+			"outcome": "playing",
+			"peak_bases": [
+				23,
+				38,
+				47,
+				45
+			],
+			"samples": [
+				{
+					"alive": [
+						true,
+						true,
+						true,
+						true
+					],
+					"bases": [
+						2,
+						2,
+						2,
+						2
+					],
+					"day": 0,
+					"funds": [
+						800,
+						800,
+						800,
+						800
+					],
+					"population": [
+						448,
+						448,
+						448,
+						448
+					],
+					"result": "playing",
+					"tick": 0
+				},
+				{
+					"alive": [
+						true,
+						true,
+						true,
+						true
+					],
+					"bases": [
+						16,
+						15,
+						16,
+						15
+					],
+					"day": 40,
+					"funds": [
+						118,
+						172,
+						157,
+						159
+					],
+					"population": [
+						2600,
+						2342,
+						2629,
+						2470
+					],
+					"result": "playing",
+					"tick": 240
+				},
+				{
+					"alive": [
+						true,
+						true,
+						true,
+						true
+					],
+					"bases": [
+						23,
+						25,
+						30,
+						26
+					],
+					"day": 80,
+					"funds": [
+						593,
+						263,
+						234,
+						209
+					],
+					"population": [
+						6194,
+						5763,
+						6944,
+						5987
+					],
+					"result": "playing",
+					"tick": 480
+				},
+				{
+					"alive": [
+						true,
+						true,
+						true,
+						true
+					],
+					"bases": [
+						23,
+						36,
+						46,
+						40
+					],
+					"day": 120,
+					"funds": [
+						1911,
+						523,
+						689,
+						578
+					],
+					"population": [
+						10475,
+						10638,
+						13775,
+						11363
+					],
+					"result": "playing",
+					"tick": 720
+				},
+				{
+					"alive": [
+						true,
+						true,
+						true,
+						true
+					],
+					"bases": [
+						23,
+						38,
+						47,
+						45
+					],
+					"day": 160,
+					"funds": [
+						3259,
+						2559,
+						3597,
+						2620
+					],
+					"population": [
+						14847,
+						17616,
+						23214,
+						18994
+					],
+					"result": "playing",
+					"tick": 960
+				},
+				{
+					"alive": [
+						true,
+						true,
+						true,
+						true
+					],
+					"bases": [
+						23,
+						38,
+						47,
+						45
+					],
+					"day": 200,
+					"funds": [
+						4608,
+						4726,
+						6449,
+						5417
+					],
+					"population": [
+						19153,
+						24705,
+						32570,
+						27242
+					],
+					"result": "playing",
+					"tick": 1200
+				}
+			],
+			"start_bases": [
+				2,
+				2,
+				2,
+				2
+			]
+		}
+	],
+	"passed": 72,
+	"scope": "Headless original-grammar maps. Not a copy of a Falcom stage, not a human 600-day play, not UI registration.",
+	"ticks": 1200
+}

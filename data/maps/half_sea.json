@@ -1,0 +1,7502 @@
+{
+  "id": "half_sea",
+  "name": "片海",
+  "version": 1,
+  "cells": [
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 2,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 2,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 2,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 1,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 1,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 1,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 1,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 1,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 1,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 1,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 1,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 1,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 1,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 1,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 2,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 2,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 2,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 1,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 1,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 1,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 1,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 1,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 1,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 1,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 1,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 1,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 1,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 1,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 1,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 1,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 2,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 2,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 2,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 1,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 1,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 1,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 1,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 2,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 2,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 2,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 1,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 1,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 1,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 1,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 2,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 2,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 2,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 1,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 1,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 1,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": 0,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": 0,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": 0,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": 0,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": 0,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": 0,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 1,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 2,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 2,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 2,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 1,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": 1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": 1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": 1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": 1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": 1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": 1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 1,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 1,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": 0,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": 0,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": 0,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": 0,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": 0,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": 0,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": 0,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 1,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 2,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 2,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 2,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 1,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": 1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": 1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": 1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": 1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": 1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": 1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": 1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 1,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 1,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": 0,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": 0,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": 0,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": 0,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": 0,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": 0,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 1,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 2,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 2,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 2,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 1,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": 1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": 1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": 1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": 1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": 1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": 1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 1,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 1,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 1,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 2,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 2,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 2,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 1,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 1,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 1,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": 0,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": 0,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 1,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 2,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 2,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 2,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 1,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": 1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": 1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 1,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 1,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 1,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 2,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 2,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 2,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 1,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 1,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 1,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 1,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 1,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 1,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 1,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 1,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 1,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 1,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 1,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 1,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 1,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 2,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 2,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 2,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 1,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 1,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 1,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 1,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 1,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 1,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 1,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 1,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 1,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 1,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 1,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 2,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 2,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 2,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 2,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 2,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 2,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 2,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 2,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 2,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 2,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 2,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 2,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 2,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 2,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 2,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 2,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 2,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 2,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 2,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 2,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 2,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 2,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 2,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 2,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 2,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 2,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 2,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 2,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 2,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 2,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 2,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 2,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 2,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 2,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 2,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 2,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 2,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 2,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 2,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 2,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 2,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 2,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 2,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 2,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 2,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 2,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 2,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 2,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 2,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 2,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 2,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 2,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 2,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 2,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 2,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 2,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 2,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 2,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 2,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 2,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 2,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 2,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 2,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 2,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 2,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 2,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 2,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 2,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 2,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 2,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 2,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 2,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 2,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 2,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 2,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 1,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 1,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 1,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 1,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 1,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 1,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 1,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 1,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 1,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 1,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 1,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 2,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 2,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 2,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 1,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 1,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 1,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 1,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 1,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 1,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 1,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 1,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 1,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 1,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 1,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 1,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 1,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 2,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 2,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 2,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 1,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 1,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 1,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": 3,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": 3,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 1,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 2,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 2,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 2,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 1,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": 2,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": 2,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 1,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 1,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 1,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 2,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 2,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 2,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 1,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 1,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 1,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": 3,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": 3,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": 3,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": 3,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": 3,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": 3,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 1,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 2,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 2,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 2,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 1,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": 2,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": 2,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": 2,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": 2,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": 2,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": 2,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 1,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 1,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": 3,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": 3,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": 3,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": 3,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": 3,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": 3,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": 3,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 1,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 2,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 2,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 2,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 1,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": 2,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": 2,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": 2,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": 2,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": 2,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": 2,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": 2,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 1,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 1,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": 3,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": 3,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": 3,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": 3,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": 3,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": 3,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 1,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 2,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 2,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 2,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 1,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": 2,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": 2,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": 2,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": 2,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": 2,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": 2,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 1,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 1,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 1,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 2,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 2,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 2,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 1,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 1,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 1,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 1,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 2,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 2,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 2,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 1,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 1,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 1,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 1,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 2,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 2,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 2,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 1,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 1,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 1,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 1,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 1,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 1,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 1,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 1,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 1,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 1,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 1,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 1,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 1,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 2,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 2,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 2,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 1,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 1,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 1,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 1,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 1,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 1,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 1,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 1,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 1,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 1,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 1,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    },
+    {
+      "terrain": 0,
+      "owner": -1,
+      "bridge": 0,
+      "fence": 0,
+      "bridge_built": false
+    }
+  ],
+  "factions": [
+    {
+      "id": 0,
+      "name": "Azure",
+      "funds": 800,
+      "tax": 10,
+      "home": 248,
+      "alive": true,
+      "initial_order": "auto"
+    },
+    {
+      "id": 1,
+      "name": "Crimson",
+      "funds": 800,
+      "tax": 10,
+      "home": 271,
+      "alive": true,
+      "initial_order": "auto"
+    },
+    {
+      "id": 2,
+      "name": "Jade",
+      "funds": 800,
+      "tax": 10,
+      "home": 831,
+      "alive": true,
+      "initial_order": "auto"
+    },
+    {
+      "id": 3,
+      "name": "Amber",
+      "funds": 800,
+      "tax": 10,
+      "home": 808,
+      "alive": true,
+      "initial_order": "auto"
+    }
+  ],
+  "bases": [
+    {
+      "id": 2,
+      "pos": 250,
+      "team": 0,
+      "pop": 128
+    },
+    {
+      "id": 3,
+      "pos": 246,
+      "team": 0,
+      "pop": 128
+    },
+    {
+      "id": 7,
+      "pos": 273,
+      "team": 1,
+      "pop": 128
+    },
+    {
+      "id": 8,
+      "pos": 269,
+      "team": 1,
+      "pop": 128
+    },
+    {
+      "id": 12,
+      "pos": 829,
+      "team": 2,
+      "pop": 128
+    },
+    {
+      "id": 13,
+      "pos": 833,
+      "team": 2,
+      "pop": 128
+    },
+    {
+      "id": 17,
+      "pos": 806,
+      "team": 3,
+      "pop": 128
+    },
+    {
+      "id": 18,
+      "pos": 810,
+      "team": 3,
+      "pop": 128
+    }
+  ],
+  "units": [
+    {
+      "id": 4,
+      "pos": 369,
+      "order": "auto",
+      "target": 369,
+      "manual": false,
+      "king": false,
+      "team": 0,
+      "power": 96
+    },
+    {
+      "id": 5,
+      "pos": 367,
+      "order": "auto",
+      "target": 367,
+      "manual": false,
+      "king": false,
+      "team": 0,
+      "power": 96
+    },
+    {
+      "id": 9,
+      "pos": 392,
+      "order": "auto",
+      "target": 392,
+      "manual": false,
+      "king": false,
+      "team": 1,
+      "power": 96
+    },
+    {
+      "id": 10,
+      "pos": 390,
+      "order": "auto",
+      "target": 390,
+      "manual": false,
+      "king": false,
+      "team": 1,
+      "power": 96
+    },
+    {
+      "id": 14,
+      "pos": 710,
+      "order": "auto",
+      "target": 710,
+      "manual": false,
+      "king": false,
+      "team": 2,
+      "power": 96
+    },
+    {
+      "id": 15,
+      "pos": 712,
+      "order": "auto",
+      "target": 712,
+      "manual": false,
+      "king": false,
+      "team": 2,
+      "power": 96
+    },
+    {
+      "id": 19,
+      "pos": 687,
+      "order": "auto",
+      "target": 687,
+      "manual": false,
+      "king": false,
+      "team": 3,
+      "power": 96
+    },
+    {
+      "id": 20,
+      "pos": 689,
+      "order": "auto",
+      "target": 689,
+      "manual": false,
+      "king": false,
+      "team": 3,
+      "power": 96
+    }
+  ],
+  "leaders": [
+    {
+      "id": 1,
+      "pos": 248,
+      "order": "wait",
+      "target": 248,
+      "manual": false,
+      "king": true,
+      "team": 0,
+      "power": 448
+    },
+    {
+      "id": 6,
+      "pos": 271,
+      "order": "wait",
+      "target": 271,
+      "manual": false,
+      "king": true,
+      "team": 1,
+      "power": 448
+    },
+    {
+      "id": 11,
+      "pos": 831,
+      "order": "wait",
+      "target": 831,
+      "manual": false,
+      "king": true,
+      "team": 2,
+      "power": 448
+    },
+    {
+      "id": 16,
+      "pos": 808,
+      "order": "wait",
+      "target": 808,
+      "manual": false,
+      "king": true,
+      "team": 3,
+      "power": 448
+    }
+  ],
+  "next_id": 21,
+  "w": 40,
+  "h": 26
+}
