@@ -37,6 +37,7 @@ func run() -> void:
 	test_leaders_and_result()
 	test_external_phase_order()
 	test_development_ai()
+	test_ai_stalemate()
 	test_attack_judgment()
 	test_bank_work()
 	test_golden()
@@ -434,6 +435,79 @@ func test_development_ai() -> void:
 	sim._ai()
 	equal(u.target, 40, "resource-starved housing unit returns to own village")
 	equal(u.ai_job, "rally", "resource-starved builder gathers rather than attacks")
+
+func test_ai_stalemate() -> void:
+	# A developed enemy must keep founding villages, while retaining a field army.
+	var sim = sandbox()
+	sim.state.w = 16; sim.state.h = 16; sim.state.cells = []
+	for _i in range(256): sim.state.cells.append({"terrain": 0, "owner": -1, "bridge": 0, "fence": 0, "bridge_built": false})
+	for team in range(4):
+		var home: int = [0, 15, 240, 255][team]
+		sim.state.factions[team].home = home
+		sim.state.factions[team].funds = 5000
+		sim.state.leaders[team].pos = home
+		sim.state.leaders[team].target = home
+	for pos in [15, 43, 45, 75, 77, 107, 109]:
+		sim.state.bases.append({"id": 100 + pos, "team": 1, "pos": pos, "pop": 32})
+	sim.state.next_id = 500
+	var builder: Dictionary = add_unit(sim, 300, 1, 140, 240, "auto", -1, false)
+	var army: Dictionary = add_unit(sim, 301, 1, 142, 700, "auto", -1, false)
+	sim._ai()
+	equal(builder.order, "build_base", "ordinary enemy auto keeps developing after seven villages")
+	expect(army.get("ai_job", "") != "develop", "development retains a separate field army")
+	for _project in range(3):
+		builder.pos = builder.target
+		sim._work()
+		sim._ai()
+	equal(sim.state.bases.size(), 10, "ordinary enemy completes multiple villages beyond former cap")
+	# Inadequate independent armies must meet and physically merge.
+	sim = sandbox()
+	sim.state.bases = [{"id": 90, "team": 1, "pos": 22, "pop": 32}, {"id": 93, "team": 1, "pos": 58, "pop": 32}]
+	sim.state.factions[1].funds = 0
+	var first: Dictionary = add_unit(sim, 91, 1, 22, 60, "auto", -1, false)
+	var second: Dictionary = add_unit(sim, 92, 1, 58, 60, "auto", -1, false)
+	sim._ai()
+	equal(first.target, second.target, "weak armies converge on same supply village")
+	for _move in range(12):
+		sim._movement()
+		sim._contacts()
+	equal(sim.state.units.size(), 1, "rally produces a merged army rather than permanent scattered waits")
+	equal(sim.state.units[0].power, 120, "rally preserves and combines both armies")
+	# An enemy army cannot select a distant weak target behind an impassable
+	# superior screen; a reachable detour must actually be used when one exists.
+	sim = sandbox()
+	sim.state.units = []
+	var mover: Dictionary = add_unit(sim, 91, 1, 36, 100, "move", 44, false)
+	mover["auto_mode"] = "auto"; mover["ai_job"] = "attack"
+	add_unit(sim, 92, 0, 40, 5000, "wait")
+	sim.state.leaders[0].power = 0; sim.state.leaders[2].power = 0; sim.state.leaders[3].power = 0
+	for _move in range(24): sim._movement()
+	equal(mover.pos, 44, "automatic army detours around superior enemy screen")
+	# A sealed choke must make the target unreachable during planning.
+	for pos in range(81):
+		if pos / 9 != 4: sim.state.cells[pos].terrain = 2
+	var reachable: Dictionary = sim._reachable(36, sim._threat_map(1), 100)
+	expect(not reachable.has(44), "sealed dangerous choke is excluded from attack planning")
+	# Regression for old-save builders repeatedly absorbed into a stationary army.
+	sim = sandbox()
+	sim.state.leaders[0].power = 0; sim.state.leaders[2].power = 0; sim.state.leaders[3].power = 0
+	var worker: Dictionary = add_unit(sim, 91, 1, 36, 100, "build_base", 44, false)
+	worker["auto_mode"] = "auto"; worker["ai_job"] = "develop"
+	add_unit(sim, 92, 1, 40, 1000, "wait", -1, true)
+	for _move in range(16):
+		sim._movement(); sim._contacts()
+	equal(worker.pos, 44, "builder detours around friendly army without losing its job")
+	equal(sim.state.units.size(), 2, "construction worker is not absorbed into stationary army")
+	sim._work()
+	expect(not sim.get_base(44).is_empty(), "detoured builder actually founds its village")
+	# Old saves remain valid without the new optional tuning fields.
+	sim = fresh()
+	var saved: Dictionary = sim.snapshot()
+	saved.rules.erase("ai_builder_max"); saved.rules.erase("ai_builder_divisor")
+	saved.checksum = sim.snapshot_hash(saved)
+	expect(sim.restore(saved), "old saves without builder tuning remain loadable")
+	saved.rules.ai_builder_divisor = 0; saved.checksum = sim.snapshot_hash(saved)
+	expect(not sim.restore(saved), "zero builder divisor cannot enter restored rules")
 
 func test_attack_judgment() -> void:
 	var sim = sandbox()

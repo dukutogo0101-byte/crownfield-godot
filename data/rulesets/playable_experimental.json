@@ -62,9 +62,14 @@
     "upkeep_on_own_base_only": "B candidate; enabled in C playable profile",
     "king_split_ratio": "C trigger; A fraction one quarter",
     "ai_attack_margin_percent": "C user-requested tactical safety margin; not original measured behavior",
-    "ai_attack_min_power": "C user-requested troop assembly threshold"
+    "ai_attack_min_power": "C user-requested troop assembly threshold",
+    "ai_development_bases": "C initial development target; no longer an expansion cap",
+    "ai_builder_max": "C development role budget, not an original measured value",
+    "ai_builder_divisor": "C reserve one builder per four eligible auto units"
   },
   "king_split_ratio": 2,
   "ai_attack_margin_percent": 150,
-  "ai_attack_min_power": 96
+  "ai_attack_min_power": 96,
+  "ai_builder_max": 3,
+  "ai_builder_divisor": 4
 }

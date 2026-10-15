@@ -1,47 +1,47 @@
 {
 	"checkpoints": [
 		{
-			"hash": "96c5be376626c31f6ddee374bbc9af14ece26c4e0f1736d68d703ca5c00c256f",
+			"hash": "f47554dd3b8a01bba05fac51fe7033d3aa275d4c75175ad4be4f921cb233f1bf",
 			"tick": 0
 		},
 		{
-			"hash": "67370dc3b1ccf1169cc2a6fe9e4311a7e5fc058256ed0237eeae7b8bf5e2ce78",
+			"hash": "04adebd98d66c6a67ce384f068106efa696d2322b2e4650fe0a0b12478ba8ad1",
 			"tick": 32
 		},
 		{
-			"hash": "7388a92cf3d22d240cae4ab72e8c3e99f1b0bb982e955ddacb3527d302160cc2",
+			"hash": "a07c748a916e6adf159fa87b5104f429b0a42aa256273a5a57a751a61ae0b752",
 			"tick": 64
 		},
 		{
-			"hash": "297f398010a15dac5b03deb5bf5d90003105ac1e3e9b5da1204fc490a77fc01a",
+			"hash": "a75c0b23891c59b61f2ec0fc0b9450e6b58f3bc71b788d1798a8c07e84433a87",
 			"tick": 96
 		},
 		{
-			"hash": "0a8b47e636a485ad216f0a1bf5a1722eec7abe12b305c137a69e40a1e7ab609d",
+			"hash": "61d06c06ff6a457b6ca68735f8f912b6a0ba172401231c52c715a24db12d4752",
 			"tick": 128
 		},
 		{
-			"hash": "077cb5651b187b0b0bb9d1b8996e7c3dd10dd123de847e34f3bb5a4cd2d88c22",
+			"hash": "84ff11a54edc9cf395c35e54da7cdc6098807ed25dd229c4f9a7ef994b57bcfa",
 			"tick": 160
 		},
 		{
-			"hash": "73d3f60ce5f1d4f47b8e550eeb220e854929ce267cfdd289cd4f1f5901391df0",
+			"hash": "c7bdc9b7885cd2cca50b43c8d300fad7d7e01ff576279d7c2dc0d68d7f6098ad",
 			"tick": 192
 		},
 		{
-			"hash": "d4a9006520f2f4856416f7b451b145bbf6812baa1fccf11f1cd4ee67c9f6d6b9",
+			"hash": "3b88206f806eafde7295d5ff1e0ffbfd99a73038442dbe1677f1706de6faf035",
 			"tick": 224
 		},
 		{
-			"hash": "6a054de563308fbcb114de9af7c0a2e8aa0973230c388c4bfd1ea19347824aa8",
+			"hash": "ca4e3dfb0908e2c260cac85f72e0d34e42524d7714769e420d6783cc28427d8f",
 			"tick": 256
 		},
 		{
-			"hash": "d16c9fb2fea84a3cd6492286178bb123a948164def50194c06048735b7161769",
+			"hash": "1289597b9647ca85ea67a9f83d73773b7814c50edd0bc4ec00bd1ff416c791d3",
 			"tick": 288
 		},
 		{
-			"hash": "03699569e7dfded72f4a8d7da57870a7f2eb484e619f3ed3e414282d3ba88f9b",
+			"hash": "bafaf399ca931c2ed55336571e1ff77170c884f67ca8c3dadbf330c149230827",
 			"tick": 320
 		}
 	],
@@ -51,7 +51,7 @@
 	"replay": {
 		"checkpoints": [
 			{
-				"hash": "03699569e7dfded72f4a8d7da57870a7f2eb484e619f3ed3e414282d3ba88f9b",
+				"hash": "bafaf399ca931c2ed55336571e1ff77170c884f67ca8c3dadbf330c149230827",
 				"tick": 320
 			}
 		],
@@ -108,17 +108,19 @@
 				"tick": 81
 			}
 		],
-		"final_hash": "03699569e7dfded72f4a8d7da57870a7f2eb484e619f3ed3e414282d3ba88f9b",
+		"final_hash": "bafaf399ca931c2ed55336571e1ff77170c884f67ca8c3dadbf330c149230827",
 		"final_tick": 320,
 		"format": 1,
 		"initial_state": {
-			"checksum": "5384497670bbd8a68988b675fdcb6dc9d7bd70bf90a5664a7c877f824c3a342a",
+			"checksum": "6daf01859d17f4dc9ad3219fea9694e566d3dffea2f5d42247ed462e2782a195",
 			"command_log": [],
 			"issued_sequence": 0,
 			"pending": [],
 			"rules": {
 				"ai_attack_margin_percent": 150,
 				"ai_attack_min_power": 96,
+				"ai_builder_divisor": 4,
+				"ai_builder_max": 3,
 				"ai_development_bases": 7,
 				"ai_period": 24,
 				"base_initial_population": 32,
@@ -166,6 +168,9 @@
 				"provenance": {
 					"ai_attack_margin_percent": "C user-requested tactical safety margin; not original measured behavior",
 					"ai_attack_min_power": "C user-requested troop assembly threshold",
+					"ai_builder_divisor": "C reserve one builder per four eligible auto units",
+					"ai_builder_max": "C development role budget, not an original measured value",
+					"ai_development_bases": "C initial development target; no longer an expansion cap",
 					"all_other_numerical_values": "C; unmeasured; not original claims",
 					"bridge_new_cost": "A",
 					"bridge_repair_cost": "A",
@@ -7720,7 +7725,7 @@
 				"winner": -1
 			}
 		},
-		"initial_state_hash": "96c5be376626c31f6ddee374bbc9af14ece26c4e0f1736d68d703ca5c00c256f",
+		"initial_state_hash": "f47554dd3b8a01bba05fac51fe7033d3aa275d4c75175ad4be4f921cb233f1bf",
 		"rng_state": "unused",
 		"ruleset_id": "PLAYABLE_EXPERIMENTAL_V1"
 	}

@@ -113,6 +113,8 @@ func _valid(saved: Dictionary) -> bool:
 		directions[direction]=true
 	for key in ["tax_max","growth_base","upkeep_threshold","upkeep_divisor","build_cost","build_population","base_initial_population","bridge_new_cost","bridge_repair_cost","fence_cost","fence_durability","castle_king_factor","castle_unit_factor","max_units","ai_development_bases","king_recovery"]:
 		if not saved.rules.get(key) is int or saved.rules[key]<1:return false
+	for key in ["ai_builder_max", "ai_builder_divisor"]:
+		if saved.rules.has(key) and (not saved.rules[key] is int or saved.rules[key] < 1): return false
 	for list in [saved.pending,saved.command_log]:
 		for cmd in list:
 			if not cmd is Dictionary or not cmd.get("tick") is int or not cmd.get("sequence") is int or cmd.tick<1 or cmd.sequence<1 or not cmd.get("action") is String or cmd.action not in ACTIONS or not cmd.get("actors") is Array or not cmd.get("target") is int or cmd.target< -1 or cmd.target>=s.cells.size() or not cmd.get("extra") is Dictionary:return false
@@ -277,6 +279,7 @@ func _commands() -> void:
 					u.erase("ai_job")
 	pending=keep
 func _movement() -> void:
+	var threats_by_team: Dictionary = {}
 	for group in [state.units,state.leaders]:
 		for u in group.duplicate():
 			if u.power<=0 or u.order in ["wait","auto","develop"]:continue
@@ -294,7 +297,15 @@ func _movement() -> void:
 					var path: Array=path_to(u.pos,p)
 					if u.pos==p:best=[];goal=p;break
 					if not path.is_empty() and (best.is_empty() or path.size()<best.size()):best=path;goal=p
-			var route: Array=work_route.route if not work_route.is_empty() else path_to(u.pos,goal)
+			var route: Array = []
+			if not work_route.is_empty(): route = work_route.route
+			elif not u.manual and u.get("ai_job", "") in ["attack", "rally", "develop"]:
+				if not threats_by_team.has(u.team): threats_by_team[u.team] = _threat_map(u.team)
+				var threats: Dictionary = threats_by_team[u.team]
+				var power: int = u.power if u.get("ai_job", "") == "attack" else 0
+				var blockers: Dictionary = _builder_blockers(u) if u.get("ai_job", "") == "develop" else {}
+				route = Path.path(u.pos, goal, state.w, state.h, func(p): return _passable(p) and not blockers.has(p) and _safe_step(p, threats, power), rules.path_neighbor_order)
+			else: route = path_to(u.pos, goal)
 			if route.is_empty():continue
 			var next: int=route[0];var occupied:=false
 			if not u.manual and u.get("ai_job", "") == "attack" and not _advantage(u.power, _enemy_strength(next, u.team)):
@@ -446,7 +457,19 @@ func _nearest(start: int, positions: Array) -> int:
 func _distance(a: int, b: int) -> int:
 	return absi(a % state.w - b % state.w) + absi(a / state.w - b / state.w)
 
-func _reachable(start: int) -> Dictionary:
+func _safe_step(pos: int, threats: Dictionary, power: int) -> bool:
+	var resistance: int = int(threats.get(pos, 0))
+	return resistance == 0 or (power > 0 and _advantage(power, resistance))
+
+func _builder_blockers(u: Dictionary) -> Dictionary:
+	# A builder absorbed by a stronger passing army loses its construction job.
+	# Avoid that contact instead of turning the entire field army into a builder.
+	var blocked: Dictionary = {}
+	for ally in _actors():
+		if ally.team == u.team and ally.id != u.id: blocked[ally.pos] = true
+	return blocked
+
+func _reachable(start: int, threats: Dictionary = {}, power: int = -1, blocked: Dictionary = {}) -> Dictionary:
 	var distances: Dictionary = {start: 0}
 	var queue: Array = [start]
 	var index: int = 0
@@ -454,7 +477,8 @@ func _reachable(start: int) -> Dictionary:
 		var pos: int = queue[index]
 		index += 1
 		for next in neighbors(pos):
-			if distances.has(next) or not _passable(next): continue
+			if distances.has(next) or blocked.has(next) or not _passable(next): continue
+			if power >= 0 and not _safe_step(next, threats, power): continue
 			distances[next] = distances[pos] + 1
 			queue.append(next)
 	return distances
@@ -524,15 +548,50 @@ func _site_reserved(pos: int, team: int, actor_id: int, reservations: Array) -> 
 			if entry.pos == pos or entry.pos in around(pos): return true
 	return false
 
-func _rally(u: Dictionary, distances: Dictionary) -> void:
-	var bases: Array = []
+func _rally(u: Dictionary, distances: Dictionary, threats: Dictionary = {}) -> void:
+	# All armies in a connected region choose the same safe supply village,
+	# rather than each waiting forever at its own nearest village.
+	var goal: int = -1
+	var best: Array = []
+	var enemies: Array = []
+	for enemy in _actors():
+		if enemy.team != u.team: enemies.append(enemy.pos)
 	for base in state.bases:
-		if base.team == u.team: bases.append(base.pos)
-	var goal: int = _nearest_reachable(bases, distances)
+		if base.team != u.team or base.pos == state.factions[u.team].home or not distances.has(base.pos): continue
+		var garrison: int = 0
+		for ally in state.units:
+			if ally.team == u.team and ally.pos == base.pos and ally.get("ai_job", "") == "rally": garrison += ally.power
+		var proximity: int = _distance(base.pos, _nearest(base.pos, enemies)) if not enemies.is_empty() else 0
+		var rank: Array = [int(threats.get(base.pos, 0)), -garrison, proximity, base.id]
+		var better: bool = best.is_empty()
+		for i in range(rank.size()):
+			if better or rank[i] == best[i]: continue
+			better = rank[i] < best[i]
+			break
+		if better: goal = base.pos; best = rank
 	if goal < 0: goal = state.factions[u.team].home
 	u.target = goal
 	u.order = "wait" if u.pos == goal else "move"
 	u["ai_job"] = "rally"
+
+func _builder_ids(team: int, threats: Dictionary, base_count: int) -> Dictionary:
+	var candidates: Array = []
+	for u in state.units:
+		if u.team != team or u.manual or u.power <= rules.build_population or int(threats.get(u.pos, 0)) > 0: continue
+		if u.get("auto_mode", "auto" if team > 0 else "") != "auto": continue
+		candidates.append(u)
+	candidates.sort_custom(func(a, b):
+		var a_work: bool = a.get("ai_job", "") == "develop"
+		var b_work: bool = b.get("ai_job", "") == "develop"
+		if a_work != b_work: return a_work
+		if a.power != b.power: return a.power < b.power
+		return a.id < b.id)
+	var count: int = mini(int(rules.get("ai_builder_max", 3)), maxi(1, ceili(candidates.size() / float(rules.get("ai_builder_divisor", 4)))))
+	if base_count < rules.ai_development_bases: count = mini(candidates.size(), int(rules.get("ai_builder_max", 3)))
+	count = mini(count, int(state.factions[team].funds / rules.build_cost))
+	var selected: Dictionary = {}
+	for i in range(mini(count, candidates.size())): selected[candidates[i].id] = true
+	return selected
 
 func _ai() -> void:
 	var threats_by_team: Dictionary = {}
@@ -546,8 +605,10 @@ func _ai() -> void:
 		sites_by_team[team] = _development_sites(team, threats_by_team[team])
 		counts[team] = 0
 	for base in state.bases: counts[base.team] = int(counts.get(base.team, 0)) + 1
+	var builders: Dictionary = {}
+	for team in sites_by_team: builders.merge(_builder_ids(team, threats_by_team[team], counts[team]))
 	for unit in state.units:
-		if unit.order in ["build_base", "build_village"]:
+		if unit.order in ["build_base", "build_village"] and (unit.manual or builders.has(unit.id) or unit.get("auto_mode", "") == "develop"):
 			reservations.append({"team": unit.team, "pos": unit.target, "id": unit.id})
 	for u in state.units:
 		if u.manual or not state.factions[u.team].alive: continue
@@ -555,17 +616,19 @@ func _ai() -> void:
 		if mode not in ["auto", "develop"]: continue
 		u["auto_mode"] = mode
 		var threats: Dictionary = threats_by_team[u.team]
-		var distances: Dictionary = _reachable(u.pos)
+		var distances: Dictionary = _reachable(u.pos, threats, 0)
 		if int(threats.get(u.pos, 0)) > 0 and not _advantage(u.power, threats[u.pos]):
-			_rally(u, distances)
+			_rally(u, distances, threats)
 			continue
+		var developing: bool = mode == "develop" or builders.has(u.id)
+		if developing: distances = _reachable(u.pos, threats, 0, _builder_blockers(u))
 		# Let valid construction finish; blocked jobs are reconsidered at the next decision.
-		if u.order in ["build_base", "build_village"] and _can_build(u.target, u.team) and get_base(u.target).is_empty() and distances.has(u.target) and int(threats.get(u.target, 0)) == 0 and state.factions[u.team].funds >= rules.build_cost and u.power > rules.build_population:
+		if developing and u.order in ["build_base", "build_village"] and _can_build(u.target, u.team) and get_base(u.target).is_empty() and distances.has(u.target) and int(threats.get(u.target, 0)) == 0 and state.factions[u.team].funds >= rules.build_cost and u.power > rules.build_population:
 			continue
-		if u.order == "reclaim" and state.cells[u.target].terrain == 1 and distances.has(u.target) and int(threats.get(u.target, 0)) == 0: continue
+		if developing and u.order == "reclaim" and state.cells[u.target].terrain == 1 and distances.has(u.target) and int(threats.get(u.target, 0)) == 0: continue
 		var sites: Dictionary = sites_by_team[u.team]
 		var available: Array = []
-		if mode == "develop" or counts[u.team] < rules.ai_development_bases:
+		if developing:
 			for pos in sites.builds:
 				if not _site_reserved(pos, u.team, u.id, reservations): available.append(pos)
 		var target: int = _nearest_reachable(available, distances)
@@ -577,7 +640,7 @@ func _ai() -> void:
 			counts[u.team] += 1
 			continue
 		# Only reclaim nearby useful land when there is no ready settlement site.
-		if available.is_empty() and (mode == "develop" or counts[u.team] < rules.ai_development_bases):
+		if target < 0 and developing:
 			target = _nearest_reachable(sites.rough, distances)
 			if target >= 0:
 				u.target = target
@@ -585,8 +648,9 @@ func _ai() -> void:
 				u["ai_job"] = "develop"
 				continue
 		if mode == "develop":
-			_rally(u, distances)
+			_rally(u, distances, threats)
 			continue
+		distances = _reachable(u.pos, threats, u.power)
 		var targets: Array = []
 		for base in state.bases:
 			if base.team != u.team and _advantage(u.power, int(threats.get(base.pos, 0))): targets.append(base.pos)
@@ -598,14 +662,14 @@ func _ai() -> void:
 			u.order = "move"
 			u["ai_job"] = "attack"
 		else:
-			_rally(u, distances)
+			_rally(u, _reachable(u.pos, threats, 0), threats)
 	for king in state.leaders:
 		if king.team == 0 or not king.alive: continue
 		var goals: Array = []
 		for enemy in state.leaders:
 			if enemy.team != king.team and enemy.alive and _advantage(king.power, _enemy_strength(enemy.pos, king.team)):
 				goals.append(enemy.pos)
-		var goal: int = _nearest_reachable(goals, _reachable(king.pos)) if not goals.is_empty() else -1
+		var goal: int = _nearest_reachable(goals, _reachable(king.pos, threats_by_team[king.team], king.power)) if not goals.is_empty() else -1
 		king.target = state.factions[king.team].home if goal < 0 else goal
 		king.order = "wait" if king.pos == king.target else "move"
 		king["ai_job"] = "rally" if goal < 0 else "attack"

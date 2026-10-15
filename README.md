@@ -25,13 +25,13 @@ PC: 左ドラッグで範囲選択、Shift追加、右ドラッグでパン、�
 
 13種類の盤面命令、税率、出兵時命令、全部隊／命令中除外／範囲選択、保存・読込、JSONリプレイの書出・再生・状態ハッシュ照合を実装。
 
-勝利手順の再現資料は `tests/golden/winning_playthrough.json`。PCの「記録」→「JSONファイル」→取込で再生できます。通常命令79件、2080 tick／346日で勝利した自動操作例です。強い敵城へ直行せず、前線村を守って援軍を集める戦略を使っています。テスト専用の状態書換えはありません。人間による面白さ・難易度の十分な試遊は今後の課題です。
+旧AIでの勝利手順資料は `tests/golden/winning_playthrough.json`（通常命令79件、2080 tick／346日）。AI停滞修正前の履歴資料で、正確な再生には旧コミットが必要です。通常の保存データは新AIでも読み込めます。人間による面白さ・難易度の十分な試遊は今後の課題です。
 
 ## 原作と実験用値を分離
 `data/rulesets/win_online_canon.json` は原作基準の未確定値をnullとして保持し、プレイ用にしません。実行する `playable_experimental.json` はC補完値を使い、各値に確度・出典・版・確認状態を記録。B仮説をAへ昇格していません。原作のPC98/MDの値をWindows確定値として混ぜていません。確度台帳は `docs/RULE_STATUS.csv`、要求仕様は `docs/SPEC_CANONICAL_JA.md`、今回の実装範囲は `docs/FINAL_DIFF.md`。
 
 ## 開発・テスト
-`GODOT_BIN=/path/to/godot ./tools/run_tests.sh`。重要単体・回帰172件、反復1200 tick×3、通常命令の勝利と全tickリプレイを検査。Python3も必要。勝利試験は本環境で約65秒。テスト結果は `tests/validation_summary.json`。
+`GODOT_BIN=/path/to/godot ./tools/run_tests.sh`。コア回帰、UI操作、反復1200 tick×3を検査。AI停滞は `godot --headless --path . --script res://tests/ai_progression.gd` で旧保存からの再開と新規ゲームを検査します。現行の結果は `tests/test_results.json`、`tests/ui_smoke_results.json`、`tests/ai_progression_results.json`。以前のvalidation_summaryと勝利資料は旧AIの検証記録です。Python3も必要。
 `tools/visual_smoke.gd` は表示可能なGodotで実行し、実際のGUIへマウス／タッチイベントを投入します。出力は `verification/`。実機Android試験の代わりにはなりません。
 ビルド手順は `docs/EXPORT.md`。`GODOT_BIN` を指定して `tools/build.sh`。Godotテンプレート・JDK17・Android SDK35が必要。ソース整合性とバイナリSHA256は `builds/build_manifest.json` に記録。
 

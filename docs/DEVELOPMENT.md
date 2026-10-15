@@ -143,4 +143,8 @@ UI回帰テストは `godot --headless --path . --script res://tests/ui_smoke.gd
 
 ## 現在の課題
 
+AI停滞修正では7村の開発上限を撤去し、内政担当・共同集結・安全な経路を導入した。この意図的な挙動変更により旧goldenの64 tick以降のハッシュが変わる。独立した内政・合流・迂回・旧保存互換の回帰試験を確認した後、record_golden.gdで現行goldenを更新する。旧版のリプレイは旧コミットでのみ正確に再現できる。通常セーブは読み込み可能で、その先は新AIで進行する。
+
+`tests/ai_progression.gd`は旧公開版を480日進めて保存した停滞状態と新規ゲームを実際に進め、国別の村数・人口・役割を`tests/ai_progression_results.json`へ出力する。`tests/fixtures/pre_ai_fix_stalemate.json`は個人データを含まない自動生成セーブ。旧AIでは480日後も敵が各7村だったケースを固定する。
+
 原作との差分・未確定値、複数面、魔物、同盟、難易度、実機でのタッチ・速度・保存・PWA検証。古いOPEN_QUESTIONSには現行コードと違う記述がある（AI優先順位、王分裂の未実装記述など）。判断時は現在の実装とGAME_SYSTEMを優先して照合する。
