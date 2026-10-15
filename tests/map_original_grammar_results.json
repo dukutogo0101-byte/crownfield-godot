@@ -1,0 +1,697 @@
+{
+	"checks": 108,
+	"engine": "4.5.2-stable (official)",
+	"failed": [],
+	"maps": [
+		{
+			"end": {
+				"alive": [
+					true,
+					true,
+					true,
+					true
+				],
+				"bases": [
+					73,
+					47,
+					28,
+					30
+				],
+				"bridge_cells": 5,
+				"day": 200,
+				"funds": [
+					5159,
+					613,
+					578,
+					3378
+				],
+				"population": [
+					23927,
+					8501,
+					8759,
+					24694
+				],
+				"result": "playing",
+				"tick": 1200
+			},
+			"id": "succession_isthmus",
+			"name": "継承の地峡",
+			"outcome": "playing",
+			"peak_bases": [
+				74,
+				47,
+				37,
+				30
+			],
+			"samples": [
+				{
+					"alive": [
+						true,
+						true,
+						true,
+						true
+					],
+					"bases": [
+						2,
+						2,
+						2,
+						2
+					],
+					"bridge_cells": 2,
+					"day": 0,
+					"funds": [
+						800,
+						800,
+						800,
+						800
+					],
+					"population": [
+						448,
+						448,
+						448,
+						448
+					],
+					"result": "playing",
+					"tick": 0
+				},
+				{
+					"alive": [
+						true,
+						true,
+						true,
+						true
+					],
+					"bases": [
+						15,
+						10,
+						16,
+						15
+					],
+					"bridge_cells": 2,
+					"day": 40,
+					"funds": [
+						176,
+						144,
+						183,
+						216
+					],
+					"population": [
+						2189,
+						1431,
+						1581,
+						1906
+					],
+					"result": "playing",
+					"tick": 240
+				},
+				{
+					"alive": [
+						true,
+						true,
+						true,
+						true
+					],
+					"bases": [
+						24,
+						17,
+						31,
+						30
+					],
+					"bridge_cells": 3,
+					"day": 80,
+					"funds": [
+						244,
+						206,
+						360,
+						637
+					],
+					"population": [
+						4489,
+						2097,
+						3836,
+						5753
+					],
+					"result": "playing",
+					"tick": 480
+				},
+				{
+					"alive": [
+						true,
+						true,
+						true,
+						true
+					],
+					"bases": [
+						42,
+						27,
+						25,
+						30
+					],
+					"bridge_cells": 5,
+					"day": 120,
+					"funds": [
+						371,
+						250,
+						1432,
+						1581
+					],
+					"population": [
+						8187,
+						3744,
+						5696,
+						12089
+					],
+					"result": "playing",
+					"tick": 720
+				},
+				{
+					"alive": [
+						true,
+						true,
+						true,
+						true
+					],
+					"bases": [
+						67,
+						35,
+						25,
+						30
+					],
+					"bridge_cells": 5,
+					"day": 160,
+					"funds": [
+						1252,
+						172,
+						727,
+						2507
+					],
+					"population": [
+						15675,
+						5461,
+						7204,
+						18481
+					],
+					"result": "playing",
+					"tick": 960
+				},
+				{
+					"alive": [
+						true,
+						true,
+						true,
+						true
+					],
+					"bases": [
+						73,
+						47,
+						28,
+						30
+					],
+					"bridge_cells": 5,
+					"day": 200,
+					"funds": [
+						5159,
+						613,
+						578,
+						3378
+					],
+					"population": [
+						23927,
+						8501,
+						8759,
+						24694
+					],
+					"result": "playing",
+					"tick": 1200
+				}
+			],
+			"start_bases": [
+				2,
+				2,
+				2,
+				2
+			]
+		},
+		{
+			"end": {
+				"alive": [
+					true,
+					true,
+					true,
+					true
+				],
+				"bases": [
+					7,
+					31,
+					55,
+					75
+				],
+				"bridge_cells": 6,
+				"day": 200,
+				"funds": [
+					116,
+					518,
+					2032,
+					3954
+				],
+				"population": [
+					5911,
+					7859,
+					13042,
+					17759
+				],
+				"result": "playing",
+				"tick": 1200
+			},
+			"id": "half_sea",
+			"name": "片海",
+			"outcome": "playing",
+			"peak_bases": [
+				16,
+				35,
+				62,
+				75
+			],
+			"samples": [
+				{
+					"alive": [
+						true,
+						true,
+						true,
+						true
+					],
+					"bases": [
+						2,
+						2,
+						2,
+						2
+					],
+					"bridge_cells": 0,
+					"day": 0,
+					"funds": [
+						800,
+						800,
+						800,
+						800
+					],
+					"population": [
+						448,
+						448,
+						448,
+						448
+					],
+					"result": "playing",
+					"tick": 0
+				},
+				{
+					"alive": [
+						true,
+						true,
+						true,
+						true
+					],
+					"bases": [
+						10,
+						14,
+						15,
+						15
+					],
+					"bridge_cells": 0,
+					"day": 40,
+					"funds": [
+						85,
+						147,
+						125,
+						130
+					],
+					"population": [
+						1557,
+						2177,
+						1977,
+						1696
+					],
+					"result": "playing",
+					"tick": 240
+				},
+				{
+					"alive": [
+						true,
+						true,
+						true,
+						true
+					],
+					"bases": [
+						8,
+						33,
+						26,
+						31
+					],
+					"bridge_cells": 3,
+					"day": 80,
+					"funds": [
+						101,
+						276,
+						182,
+						238
+					],
+					"population": [
+						2466,
+						3509,
+						3466,
+						4748
+					],
+					"result": "playing",
+					"tick": 480
+				},
+				{
+					"alive": [
+						true,
+						true,
+						true,
+						true
+					],
+					"bases": [
+						14,
+						30,
+						34,
+						54
+					],
+					"bridge_cells": 3,
+					"day": 120,
+					"funds": [
+						68,
+						371,
+						210,
+						315
+					],
+					"population": [
+						3935,
+						4954,
+						5166,
+						7068
+					],
+					"result": "playing",
+					"tick": 720
+				},
+				{
+					"alive": [
+						true,
+						true,
+						true,
+						true
+					],
+					"bases": [
+						10,
+						33,
+						56,
+						68
+					],
+					"bridge_cells": 4,
+					"day": 160,
+					"funds": [
+						112,
+						157,
+						1344,
+						2690
+					],
+					"population": [
+						5371,
+						5759,
+						7912,
+						12181
+					],
+					"result": "playing",
+					"tick": 960
+				},
+				{
+					"alive": [
+						true,
+						true,
+						true,
+						true
+					],
+					"bases": [
+						7,
+						31,
+						55,
+						75
+					],
+					"bridge_cells": 6,
+					"day": 200,
+					"funds": [
+						116,
+						518,
+						2032,
+						3954
+					],
+					"population": [
+						5911,
+						7859,
+						13042,
+						17759
+					],
+					"result": "playing",
+					"tick": 1200
+				}
+			],
+			"start_bases": [
+				2,
+				2,
+				2,
+				2
+			]
+		},
+		{
+			"end": {
+				"alive": [
+					true,
+					true,
+					true,
+					true
+				],
+				"bases": [
+					23,
+					44,
+					36,
+					16
+				],
+				"bridge_cells": 9,
+				"day": 200,
+				"funds": [
+					2375,
+					2568,
+					1296,
+					122
+				],
+				"population": [
+					9765,
+					16341,
+					8780,
+					3682
+				],
+				"result": "playing",
+				"tick": 1200
+			},
+			"id": "spiral_channel",
+			"name": "渦の水路",
+			"outcome": "playing",
+			"peak_bases": [
+				32,
+				48,
+				37,
+				22
+			],
+			"samples": [
+				{
+					"alive": [
+						true,
+						true,
+						true,
+						true
+					],
+					"bases": [
+						2,
+						2,
+						2,
+						2
+					],
+					"bridge_cells": 0,
+					"day": 0,
+					"funds": [
+						800,
+						800,
+						800,
+						800
+					],
+					"population": [
+						448,
+						448,
+						448,
+						448
+					],
+					"result": "playing",
+					"tick": 0
+				},
+				{
+					"alive": [
+						true,
+						true,
+						true,
+						true
+					],
+					"bases": [
+						15,
+						15,
+						15,
+						15
+					],
+					"bridge_cells": 1,
+					"day": 40,
+					"funds": [
+						151,
+						141,
+						191,
+						136
+					],
+					"population": [
+						2474,
+						1905,
+						1907,
+						1925
+					],
+					"result": "playing",
+					"tick": 240
+				},
+				{
+					"alive": [
+						true,
+						true,
+						true,
+						true
+					],
+					"bases": [
+						21,
+						31,
+						24,
+						19
+					],
+					"bridge_cells": 3,
+					"day": 80,
+					"funds": [
+						403,
+						235,
+						338,
+						176
+					],
+					"population": [
+						4916,
+						4399,
+						2227,
+						3192
+					],
+					"result": "playing",
+					"tick": 480
+				},
+				{
+					"alive": [
+						true,
+						true,
+						true,
+						true
+					],
+					"bases": [
+						29,
+						42,
+						25,
+						16
+					],
+					"bridge_cells": 4,
+					"day": 120,
+					"funds": [
+						907,
+						1499,
+						292,
+						112
+					],
+					"population": [
+						7767,
+						7227,
+						3323,
+						3599
+					],
+					"result": "playing",
+					"tick": 720
+				},
+				{
+					"alive": [
+						true,
+						true,
+						true,
+						true
+					],
+					"bases": [
+						30,
+						47,
+						32,
+						14
+					],
+					"bridge_cells": 5,
+					"day": 160,
+					"funds": [
+						2226,
+						1938,
+						624,
+						483
+					],
+					"population": [
+						8996,
+						12646,
+						4592,
+						4095
+					],
+					"result": "playing",
+					"tick": 960
+				},
+				{
+					"alive": [
+						true,
+						true,
+						true,
+						true
+					],
+					"bases": [
+						23,
+						44,
+						36,
+						16
+					],
+					"bridge_cells": 9,
+					"day": 200,
+					"funds": [
+						2375,
+						2568,
+						1296,
+						122
+					],
+					"population": [
+						9765,
+						16341,
+						8780,
+						3682
+					],
+					"result": "playing",
+					"tick": 1200
+				}
+			],
+			"start_bases": [
+				2,
+				2,
+				2,
+				2
+			]
+		}
+	],
+	"passed": 108,
+	"scope": "Godot headless map structure, paid land-bank construction, all-country connectivity after bridging, and 1200 ticks with current strategic AI; phone and human difficulty not tested.",
+	"ticks": 1200
+}

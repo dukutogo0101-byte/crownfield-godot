@@ -7,7 +7,10 @@ const MAPS = [
 	{"id": "four_rivers", "path": "res://data/maps/four_rivers.json", "name": "四つの川", "description": "従来のマップ。四方の川と橋を巡って争う標準面。"},
 	{"id": "open_plains", "path": "res://data/maps/open_plains.json", "name": "開けた野", "description": "入門向け。広い平地で村を増やし、兵を集める基本を学ぶ。"},
 	{"id": "twin_crossings", "path": "res://data/maps/twin_crossings.json", "name": "二つの渡し", "description": "橋の防衛と迂回を楽しむ面。各方面の複数の渡しを使おう。"},
-	{"id": "borderlands", "path": "res://data/maps/borderlands.json", "name": "境界の半島", "description": "標準向け。半島の内政地を育て、中央の争奪地へ進もう。"}
+	{"id": "borderlands", "path": "res://data/maps/borderlands.json", "name": "境界の半島", "description": "標準向け。半島の内政地を育て、中央の争奪地へ進もう。"},
+	{"id": "succession_isthmus", "path": "res://data/maps/succession_isthmus.json", "name": "継承の地峡", "description": "既設橋と地峡で攻防。南の桟橋へ架橋すれば、海の向こうの国にも進める。"},
+	{"id": "half_sea", "path": "res://data/maps/half_sea.json", "name": "片海", "description": "海で東西に分かれた戦場。各地峡を守り、北の桟橋から海を越えよう。"},
+	{"id": "spiral_channel", "path": "res://data/maps/spiral_channel.json", "name": "渦の水路", "description": "4国が水路で隔てられた面。敵も架橋するので、内政と渡河のタイミングが重要。"}
 ]
 const ORDERS = [
 	["move", "移動", "選択した部隊を目的地へ移動。王に出せる行動命令は移動だけです。"],

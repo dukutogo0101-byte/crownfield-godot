@@ -23,15 +23,16 @@
 | core/combat_resolver.gd | 純粋関数による戦闘損害 |
 | ui/game.gd | 入力、選択、命令予約、HUD、モーダル、実時間速度、保存、UI形式のリプレイ |
 | ui/board.gd | 地図描画、座標変換、選択・長押し・パン・ピンチ・ミニマップ。状態のルール変更を行わない |
-| data/maps/four_rivers.json | マップと初期状態 |
+| data/maps/*.json | 全7面の地形と初期状態。UIのMAPSで選択肢に登録 |
 | data/rulesets/playable_experimental.json | 実行する周期・費用・閾値と確度・出典区分 |
 | data/rulesets/win_online_canon.json | 原作研究用の未確定値をnullで保持。プレイ用ではない |
 | tests/test_runner.gd | コアの単体・統合・golden回帰 |
 | tests/strategy_ai.gd | 税の積算・端数・出兵、工兵と岸・費用・防衛遮断・退避・保存の独立シナリオ |
 | tests/strategy_soak.gd | 4面の攻撃・戦闘・発展・経済・後半保存。標準面3600 tick、他面1200 tick |
 | tests/ui_smoke.gd | 画面操作からコアへの命令、保存、税率、リプレイ、横持ちHUDの回帰 |
-| tests/map_selection_ui.gd | 全4面の選択→開始→命令→保存→読込→同一面再挑戦と横持ちでの開始ボタン位置 |
-| tests/map_grok_three.gd | Grok制作3面の到達性、税路、保存互換と1200 tickの発展 |
+| tests/map_selection_ui.gd | 全7面の選択→開始→命令→保存→読込→同一面再挑戦と横持ちでの開始ボタン位置 |
+| tests/map_grok_three.gd | Grok制作の前半3面の到達性、税路、保存互換と1200 tickの発展 |
+| tests/map_original_grammar.gd | 後半3面の分断・合法な架橋後の全城接続と1200 tick。最新AIで検証 |
 | tests/sim_stats.gd | 実マップ1200 tick × 3回の決定論・規模確認 |
 | tests/record_golden.gd | 開発者が明示的に実行するgolden更新。通常テストでは実行しない |
 | web/shell.html | 全画面起動、横向きロック、ブラウザのファイル選択、HTMLローダー |

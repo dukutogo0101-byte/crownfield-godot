@@ -17,7 +17,7 @@ func run() -> void:
 	var scene = load("res://main.tscn").instantiate()
 	root.add_child(scene)
 	for _frame in range(4): await process_frame
-	check(scene.map_selector.item_count == 4, "title offers original and three Grok maps")
+	check(scene.map_selector.item_count == 7, "title offers all seven registered maps")
 	for index in range(scene.MAPS.size()):
 		var entry: Dictionary = scene.MAPS[index]
 		scene._show_title()
@@ -53,7 +53,7 @@ func run() -> void:
 		check(scene.map_selector.selected == index, "map picker remembers loaded or retried map " + entry.id)
 		scene._close_modal()
 	scene._on_game_menu(10)
-	check(scene.modal != null and scene.map_selector.item_count == 4, "game menu opens map selection")
+	check(scene.modal != null and scene.map_selector.item_count == 7, "game menu opens map selection")
 	var original: String = scene.sim.state_hash()
 	scene.map_selector.item_selected.emit(0)
 	scene._close_modal()
