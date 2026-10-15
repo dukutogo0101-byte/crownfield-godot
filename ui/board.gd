@@ -7,6 +7,29 @@ signal inspect_requested(cell: int)
 
 const COLORS = [Color("54b9f3"), Color("ee7771"), Color("e9b959"), Color("8bcfa6")]
 const LAND = [Color("77946c"), Color("586f53"), Color("356782"), Color("4c5759")]
+class PaintedLayer:
+	extends Control
+	var paint: Callable
+	func _draw() -> void: paint.call(self)
+
+var _map_layer: PaintedLayer
+var _actor_layer: PaintedLayer
+var _mini_layer: PaintedLayer
+var _canvas: CanvasItem
+var _motion: Dictionary = {}
+var _display_tick: int = -1
+var _map_key: String = ""
+var animation_enabled: bool = false
+var movement_duration: float = 0.4
+var prefer_actor_taps: bool = true
+var render_stats: Dictionary = {"map_passes": 0, "actor_passes": 0, "path_searches": 0}
+var _preview_key: Array = []
+var _preview_path: Array = []
+var _preview_revision: int = 0
+var _mini_signature: PackedInt32Array = PackedInt32Array()
+var _mini_texture: ImageTexture
+var _text_widths: Dictionary = {}
+var _shadow: PackedVector2Array = PackedVector2Array()
 var state: Dictionary = {}
 var selected: Array = []
 var path_provider: Callable
@@ -38,6 +61,18 @@ var _fitted: bool = false
 var view_padding: Vector4 = Vector4(8, 68, 8, 72)
 
 func _ready() -> void:
+	for callback in [_paint_map, _paint_actors, _paint_minimap]:
+		var layer: PaintedLayer = PaintedLayer.new()
+		layer.paint = callback
+		layer.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		layer.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+		add_child(layer)
+		if _map_layer == null: _map_layer = layer
+		elif _actor_layer == null: _actor_layer = layer
+		else: _mini_layer = layer; layer.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	for i in 16:
+		var angle: float = TAU * float(i) / 16.0
+		_shadow.append(Vector2(cos(angle), sin(angle)))
 	mouse_filter = Control.MOUSE_FILTER_STOP
 	clip_contents = true
 	font = ThemeDB.fallback_font
@@ -55,6 +90,9 @@ func _load_texture(key: String, path: String) -> void:
 
 func set_state(value: Dictionary) -> void:
 	state = value
+	_sync_motion()
+	_update_minimap()
+	_preview_revision += 1
 	if not _fitted and not state.is_empty() and size.x > 0:
 		fit_map()
 	queue_redraw()
@@ -113,7 +151,55 @@ func clear_gestures() -> void:
 	_dragging_range = false
 	queue_redraw()
 
+func reset_motion() -> void:
+	_motion.clear(); _map_key = ""; _display_tick = -1
+
+func _sync_motion() -> void:
+	var key: String = str(state.get("id", "")) + ":" + str(state.get("w", 0)) + ":" + str(state.get("h", 0))
+	var tick: int = int(state.get("tick", 0))
+	if key != _map_key or tick < _display_tick or tick - _display_tick > 4: _motion.clear()
+	_map_key = key; _display_tick = tick
+	var alive: Dictionary = {}
+	for group in [state.get("units", []), state.get("leaders", [])]:
+		for entity in group:
+			if not entity.get("alive", true): continue
+			var id: int = entity.id
+			var target: Vector2 = Vector2(entity.pos % int(state.w), entity.pos / int(state.w))
+			alive[id] = true
+			if not _motion.has(id): _motion[id] = {"from": target, "to": target, "elapsed": movement_duration, "duration": movement_duration}
+			elif _motion[id].to != target:
+				var previous: Vector2 = _motion[id].to
+				var start: Vector2 = _display_position(id)
+				if absf(previous.x - target.x) + absf(previous.y - target.y) > 1.01: start = target
+				_motion[id] = {"from": start, "to": target, "elapsed": 0.0, "duration": maxf(0.01, movement_duration)}
+	for id in _motion.keys():
+		if not alive.has(id): _motion.erase(id)
+
+func _display_position(id: int) -> Vector2:
+	var move: Dictionary = _motion[id]
+	return (move["from"] as Vector2).lerp(move.to, clampf(float(move.elapsed) / maxf(0.01, move.duration), 0.0, 1.0))
+
+func entity_point(entity: Dictionary) -> Vector2:
+	var position: Vector2 = _display_position(entity.id) if _motion.has(entity.id) else Vector2(entity.pos % int(state.w), entity.pos / int(state.w))
+	return map_origin() + (position + Vector2(0.5, 0.5)) * cell_size()
+
+func _emit_tap(point: Vector2, additive: bool) -> void:
+	var cell: int = cell_at(point)
+	if prefer_actor_taps:
+		var closest: float = maxf(5.0, cell_size() * 0.45)
+		for group in [state.leaders, state.units]:
+			for entity in group:
+				if entity.team != 0 or not entity.get("alive", true): continue
+				var distance: float = entity_point(entity).distance_to(point)
+				if distance < closest: closest = distance; cell = entity.pos
+	cell_tapped.emit(cell, additive)
+
 func _process(_delta: float) -> void:
+	if animation_enabled:
+		var changed: bool = false
+		for move in _motion.values():
+			if float(move.elapsed) < float(move.duration): move.elapsed = minf(move.duration, move.elapsed + _delta); changed = true
+		if changed and is_instance_valid(_actor_layer): _actor_layer.queue_redraw()
 	if input_enabled and touches.size() == 1 and not gesture_active and not _touch_moved and not _long_press_fired and not range_mode:
 		if Time.get_ticks_msec() - _touch_start_ms >= 550:
 			_long_press_fired = true
@@ -176,7 +262,7 @@ func _mouse_button(event: InputEventMouseButton) -> void:
 				if _dragging_range:
 					_emit_range(_press_position, event.position, _additive)
 				else:
-					cell_tapped.emit(cell_at(event.position), event.shift_pressed)
+					_emit_tap(event.position, event.shift_pressed)
 			_left_down = false
 			_dragging_range = false
 	queue_redraw()
@@ -204,7 +290,7 @@ func _touch(event: InputEventScreenTouch) -> void:
 			if range_mode and _touch_moved:
 				_emit_range(_touch_start, event.position, false)
 			elif not _touch_moved:
-				cell_tapped.emit(cell_at(event.position), false)
+				_emit_tap(event.position, false)
 		if touches.is_empty():
 			gesture_active = false
 			_dragging_range = false
@@ -248,42 +334,56 @@ func _emit_range(first: Vector2, last: Vector2, additive: bool) -> void:
 
 func _sprite(kind: String, rect: Rect2, tint: Color = Color.WHITE) -> void:
 	if textures.has(kind):
-		draw_texture_rect(textures[kind], rect, false, tint)
+		_canvas.draw_texture_rect(textures[kind], rect, false, tint)
 
 func _draw() -> void:
 	draw_rect(Rect2(Vector2.ZERO, size), Color("101c29"))
+	if is_instance_valid(_map_layer):
+		_map_layer.queue_redraw(); _actor_layer.queue_redraw(); _mini_layer.queue_redraw()
+
+func _paint_map(canvas: CanvasItem) -> void:
+	_canvas = canvas
+	render_stats.map_passes += 1
 	if state.is_empty():
 		return
 	var cs: float = cell_size()
 	var origin: Vector2 = map_origin()
 	var width: int = int(state.w)
 	var world_rect: Rect2 = Rect2(origin, Vector2(width, int(state.h)) * cs)
-	draw_rect(world_rect.grow(7), Color("080f18"))
-	draw_rect(world_rect.grow(4), Color("394746"), false, 2)
-	for cell in state.cells.size():
+	_canvas.draw_rect(world_rect.grow(7), Color("080f18"))
+	_canvas.draw_rect(world_rect.grow(4), Color("394746"), false, 2)
+	var first_x: int = clampi(floori(-origin.x / cs), 0, width - 1)
+	var last_x: int = clampi(ceili((size.x - origin.x) / cs), 0, width)
+	var first_y: int = clampi(floori(-origin.y / cs), 0, int(state.h) - 1)
+	var last_y: int = clampi(ceili((size.y - origin.y) / cs), 0, int(state.h))
+	var visible: Array = []
+	for row in range(first_y, last_y):
+		for column in range(first_x, last_x): visible.append(row * width + column)
+	for cell in visible:
 		var data: Dictionary = state.cells[cell]
 		var terrain: int = int(data.get("terrain", 0))
 		var owner: int = int(data.get("owner", -1))
 		var rect: Rect2 = Rect2(origin + Vector2(cell % width, cell / width) * cs, Vector2(cs, cs))
 		if not rect.intersects(Rect2(Vector2.ZERO, size)):
 			continue
-		draw_rect(rect, LAND[clampi(terrain, 0, 3)])
+		_canvas.draw_rect(rect, LAND[clampi(terrain, 0, 3)])
 		_sprite(["grass", "rough", "water", "cave"][clampi(terrain, 0, 3)], rect)
 		if owner >= 0 and owner < 4 and terrain != 2:
-			draw_rect(rect, Color(COLORS[owner], 0.22))
+			_canvas.draw_rect(rect, Color(COLORS[owner], 0.22))
 			if cell % width == 0 or int(state.cells[cell - 1].get("owner", -1)) != owner:
-				draw_line(rect.position, rect.position + Vector2(0, cs), Color(COLORS[owner], 0.7), 1.2)
+				_canvas.draw_line(rect.position, rect.position + Vector2(0, cs), Color(COLORS[owner], 0.7), 1.2)
 			if cell < width or int(state.cells[cell - width].get("owner", -1)) != owner:
-				draw_line(rect.position, rect.position + Vector2(cs, 0), Color(COLORS[owner], 0.7), 1.2)
+				_canvas.draw_line(rect.position, rect.position + Vector2(cs, 0), Color(COLORS[owner], 0.7), 1.2)
 		if int(data.get("bridge", 0)) > 0:
 			_sprite("bridge", rect.grow(cs * 0.12))
 		if int(data.get("fence", 0)) > 0:
 			_sprite("fence", rect)
 		if cs > 28:
-			draw_rect(rect, Color(0, 0, 0, 0.08), false, 0.7)
+			_canvas.draw_rect(rect, Color(0, 0, 0, 0.08), false, 0.7)
 	for base in state.bases:
 		var team: int = int(base.team)
 		var p: Vector2 = cell_point(int(base.pos))
+		if not Rect2(Vector2.ZERO, size).grow(cs * 2).has_point(p): continue
 		var rect: Rect2 = Rect2(p - Vector2(cs * 0.65, cs * 0.75), Vector2(cs * 1.3, cs * 1.3))
 		_sprite("village", rect)
 		_draw_flag(p + Vector2(cs * 0.3, -cs * 0.32), COLORS[team], cs)
@@ -295,14 +395,22 @@ func _draw() -> void:
 		var p: Vector2 = cell_point(int(faction.home))
 		_sprite("castle", Rect2(p - Vector2(cs, cs * 1.25), Vector2(cs * 2, cs * 2)))
 		_draw_flag(p + Vector2(cs * 0.15, -cs), COLORS[int(faction.id)], cs * 1.2)
+func _paint_actors(canvas: CanvasItem) -> void:
+	_canvas = canvas
+	render_stats.actor_passes += 1
+	if state.is_empty(): return
+	var cs: float = cell_size()
 	if path_provider.is_valid() and target_preview >= 0 and not selected.is_empty():
-		var path: Array = path_provider.call(int(selected[0]), target_preview)
+		var key: Array = [_preview_revision, int(selected[0]), target_preview]
+		if key != _preview_key:
+			_preview_key = key; _preview_path = path_provider.call(int(selected[0]), target_preview); render_stats.path_searches += 1
+		var path: Array = _preview_path
 		if path.size() > 1:
 			var points: PackedVector2Array = PackedVector2Array()
 			for cell in path:
 				points.append(cell_point(int(cell)))
-			draw_polyline(points, Color(1, 0.91, 0.63, 0.8), 2.0)
-			draw_circle(points[-1], 4.0, Color("f7dd91"))
+			_canvas.draw_polyline(points, Color(1, 0.91, 0.63, 0.8), 2.0)
+			_canvas.draw_circle(points[-1], 4.0, Color("f7dd91"))
 	for unit in state.units:
 		_draw_entity(unit, false, cs)
 	for leader in state.leaders:
@@ -310,18 +418,18 @@ func _draw() -> void:
 			_draw_entity(leader, true, cs)
 	if _dragging_range:
 		var rect: Rect2 = Rect2(_press_position, _drag_end - _press_position).abs()
-		draw_rect(rect, Color(0.44, 0.77, 0.95, 0.16))
-		draw_rect(rect, Color("8bd6f6"), false, 1.5)
-	_draw_minimap()
+		_canvas.draw_rect(rect, Color(0.44, 0.77, 0.95, 0.16))
+		_canvas.draw_rect(rect, Color("8bd6f6"), false, 1.5)
 
 func _draw_entity(entity: Dictionary, leader: bool, cs: float) -> void:
 	var team: int = int(entity.team)
-	var p: Vector2 = cell_point(int(entity.pos))
+	var p: Vector2 = entity_point(entity)
+	if not Rect2(Vector2.ZERO, size).grow(cs * 2).has_point(p): return
 	var power: int = int(entity.power)
 	var radius: float = maxf(5.0, cs * 0.34)
 	if selected.has(int(entity.id)):
-		draw_arc(p, radius + 5, 0, TAU, 28, Color("fff0ac"), 2.0)
-		draw_circle(p, radius + 3, Color(1, 0.94, 0.7, 0.14))
+		_canvas.draw_arc(p, radius + 5, 0, TAU, 28, Color("fff0ac"), 2.0)
+		_canvas.draw_circle(p, radius + 3, Color(1, 0.94, 0.7, 0.14))
 	draw_ellipse_shadow(p + Vector2(0, cs * 0.27), Vector2(radius, radius * 0.36))
 	var extent: float = maxf(14.0, cs * (1.15 if leader else 0.95))
 	_sprite("leader" if leader else "unit", Rect2(p - Vector2(extent * 0.5, extent * 0.65), Vector2(extent, extent)))
@@ -336,37 +444,51 @@ func _draw_entity(entity: Dictionary, leader: bool, cs: float) -> void:
 		_text(tier, p + Vector2(-extent * 0.5, -extent * 0.35), 10, Color("fce39a"))
 
 func draw_ellipse_shadow(center: Vector2, radii: Vector2) -> void:
-	var points: PackedVector2Array = PackedVector2Array()
-	for i in 16:
-		var angle: float = TAU * float(i) / 16.0
-		points.append(center + Vector2(cos(angle) * radii.x, sin(angle) * radii.y))
-	draw_colored_polygon(points, Color(0.02, 0.04, 0.04, 0.34))
+	_canvas.draw_set_transform(center, 0.0, radii)
+	_canvas.draw_colored_polygon(_shadow, Color(0.02, 0.04, 0.04, 0.34))
+	_canvas.draw_set_transform(Vector2.ZERO)
 
 func _draw_flag(p: Vector2, color: Color, cs: float) -> void:
 	var height: float = maxf(7.0, cs * 0.4)
-	draw_line(p + Vector2(0, height * 0.6), p - Vector2(0, height), Color("e1d5a4"), 1.1)
-	draw_colored_polygon(PackedVector2Array([p - Vector2(0, height), p + Vector2(height * 0.85, -height * 0.8), p + Vector2(0, -height * 0.3)]), color)
+	_canvas.draw_line(p + Vector2(0, height * 0.6), p - Vector2(0, height), Color("e1d5a4"), 1.1)
+	_canvas.draw_colored_polygon(PackedVector2Array([p - Vector2(0, height), p + Vector2(height * 0.85, -height * 0.8), p + Vector2(0, -height * 0.3)]), color)
 
 func _text(value: String, position: Vector2, font_size: int, color: Color) -> void:
-	var offset: Vector2 = Vector2(font.get_string_size(value, HORIZONTAL_ALIGNMENT_LEFT, -1, font_size).x * 0.5, 0)
-	draw_string_outline(font, position - offset, value, HORIZONTAL_ALIGNMENT_LEFT, -1, font_size, 3, Color("15201e"))
-	draw_string(font, position - offset, value, HORIZONTAL_ALIGNMENT_LEFT, -1, font_size, color)
+	var key: String = str(font_size) + ":" + value
+	if not _text_widths.has(key):
+		if _text_widths.size() > 512: _text_widths.clear()
+		_text_widths[key] = font.get_string_size(value, HORIZONTAL_ALIGNMENT_LEFT, -1, font_size).x * 0.5
+	var offset: Vector2 = Vector2(_text_widths[key], 0)
+	_canvas.draw_string_outline(font, position - offset, value, HORIZONTAL_ALIGNMENT_LEFT, -1, font_size, 3, Color("15201e"))
+	_canvas.draw_string(font, position - offset, value, HORIZONTAL_ALIGNMENT_LEFT, -1, font_size, color)
+
+func _update_minimap() -> void:
+	if state.is_empty(): return
+	var signature: PackedInt32Array = PackedInt32Array([state.w, state.h])
+	for cell in state.cells: signature.append(cell.terrain + (cell.owner + 1) * 4)
+	if signature == _mini_signature: return
+	_mini_signature = signature
+	var image: Image = Image.create(state.w, state.h, false, Image.FORMAT_RGBA8)
+	for pos in state.cells.size():
+		var cell: Dictionary = state.cells[pos]
+		var color: Color = COLORS[cell.owner].darkened(0.2) if cell.owner in [0, 1, 2, 3] else LAND[clampi(cell.terrain, 0, 3)]
+		image.set_pixel(pos % int(state.w), pos / int(state.w), color)
+	if _mini_texture == null or _mini_texture.get_width() != state.w or _mini_texture.get_height() != state.h: _mini_texture = ImageTexture.create_from_image(image)
+	else: _mini_texture.update(image)
+
+func _paint_minimap(canvas: CanvasItem) -> void:
+	_canvas = canvas
+	if not state.is_empty(): _draw_minimap()
 
 func _draw_minimap() -> void:
 	var width: float = minf(108, size.x * 0.18)
 	var height: float = width * float(state.h) / float(state.w)
 	_minimap = Rect2(Vector2(size.x - width - 12, size.y - height - view_padding.w - 8), Vector2(width, height))
-	draw_rect(_minimap.grow(4), Color("101b25"))
+	_canvas.draw_rect(_minimap.grow(4), Color("101b25"))
 	var mini_cell: Vector2 = _minimap.size / Vector2(int(state.w), int(state.h))
-	for cell in state.cells.size():
-		var data: Dictionary = state.cells[cell]
-		var owner: int = int(data.get("owner", -1))
-		var color: Color = LAND[clampi(int(data.get("terrain", 0)), 0, 3)]
-		if owner >= 0 and owner < 4:
-			color = COLORS[owner].darkened(0.2)
-		draw_rect(Rect2(_minimap.position + Vector2(cell % int(state.w), cell / int(state.w)) * mini_cell, mini_cell + Vector2(0.1, 0.1)), color)
+	if _mini_texture != null: _canvas.draw_texture_rect(_mini_texture, _minimap, false)
 	for leader in state.leaders:
 		if bool(leader.get("alive", true)):
 			var p: Vector2 = _minimap.position + Vector2(int(leader.pos) % int(state.w) + 0.5, int(leader.pos) / int(state.w) + 0.5) * mini_cell
-			draw_circle(p, 2.7, Color("ffffdc"))
-	draw_rect(_minimap, Color("a1ad92"), false, 1)
+			_canvas.draw_circle(p, 2.7, Color("ffffdc"))
+	_canvas.draw_rect(_minimap, Color("a1ad92"), false, 1)

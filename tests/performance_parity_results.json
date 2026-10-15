@@ -1,0 +1,23 @@
+{
+  "source_before": "beb6737de5a5941180fbaaf3d2c6bc6ebd90e4e3",
+  "ticks_per_map": 240,
+  "identical": true,
+  "before": {
+    "borderlands": "87ebefd93be7dbce878c81bb4f25322b2be4692cac19d649660631a005b7dab9",
+    "four_rivers": "cd49719e414a4e38f3e5cf29bc29ce60c5555be20b7b8eadbe665d31b5854180",
+    "half_sea": "90ae4b5ee3fea3c6857a879be82d47d750096b2585c98e755d64e91ca7d2df02",
+    "open_plains": "99e359f4d35001dea1e9d44f56777df586cd7bb7061448bb57a11feb352c2458",
+    "spiral_channel": "9d53b2e92993711649850cd704b351245d98381f8a0b2e90c1a79cc8c95d7a7c",
+    "succession_isthmus": "34b5ecdb4a69e40b2f2024210aebf6f7f678d953b5fc803a91c491c3c036f83c",
+    "twin_crossings": "c0a21d96733d079772e3e6867051eb1d097f7289b36e87565d3075e87dab4517"
+  },
+  "after": {
+    "borderlands": "87ebefd93be7dbce878c81bb4f25322b2be4692cac19d649660631a005b7dab9",
+    "four_rivers": "cd49719e414a4e38f3e5cf29bc29ce60c5555be20b7b8eadbe665d31b5854180",
+    "half_sea": "90ae4b5ee3fea3c6857a879be82d47d750096b2585c98e755d64e91ca7d2df02",
+    "open_plains": "99e359f4d35001dea1e9d44f56777df586cd7bb7061448bb57a11feb352c2458",
+    "spiral_channel": "9d53b2e92993711649850cd704b351245d98381f8a0b2e90c1a79cc8c95d7a7c",
+    "succession_isthmus": "34b5ecdb4a69e40b2f2024210aebf6f7f678d953b5fc803a91c491c3c036f83c",
+    "twin_crossings": "c0a21d96733d079772e3e6867051eb1d097f7289b36e87565d3075e87dab4517"
+  }
+}

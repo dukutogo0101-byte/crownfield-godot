@@ -10,6 +10,11 @@ var command_log: Array = []
 var issued_sequence: int = 0
 var pending: Array = []
 var replay_origin: Dictionary = {}
+# Derived query caches never enter saves, state hashes or replays.
+var _tax_signature: PackedInt32Array = PackedInt32Array()
+var _tax_routes: Dictionary = {}
+var _tax_kings: Dictionary = {}
+
 
 func new_game(map_path: String = "res://data/maps/four_rivers.json", rules_path: String = "res://data/rulesets/playable_experimental.json") -> bool:
 	if not FileAccess.file_exists(map_path) or not FileAccess.file_exists(rules_path):return false
@@ -38,16 +43,9 @@ func _integers(value):
 	return value
 
 func _canonical(value) -> String:
-	if value is Dictionary:
-		var keys: Array = value.keys(); keys.sort()
-		var parts: Array = []
-		for key in keys: parts.append(JSON.stringify(str(key)) + ":" + _canonical(value[key]))
-		return "{" + ",".join(parts) + "}"
-	if value is Array:
-		var parts: Array = []
-		for item in value: parts.append(_canonical(item))
-		return "[" + ",".join(parts) + "]"
-	return JSON.stringify(value)
+	# Native recursive key sorting emits the same canonical JSON as the former
+	# GDScript recursion, without thousands of individual stringify calls.
+	return JSON.stringify(value, "", true)
 
 func state_hash() -> String: return _canonical({"state":state,"rules":rules}).sha256_text()
 func snapshot_hash(saved: Dictionary) -> String:
@@ -193,14 +191,18 @@ func _land(pos: int) -> bool:
 	return state.cells[pos].terrain in [0, 1] and _passable(pos)
 
 func _work_route(start: int, target: int, threats: Dictionary = {}, power: int = -1) -> Dictionary:
-	var best: Dictionary = {"goal": -1, "route": []}
+	var banks: Array = []
 	for bank in neighbors(target):
 		if not _land(bank) or (power >= 0 and not _safe_step(bank, threats, power)): continue
 		if bank == start: return {"goal": bank, "route": []}
-		var route: Array = Path.path(start, bank, state.w, state.h, func(p): return p != target and _passable(p) and (power < 0 or _safe_step(p, threats, power)), rules.path_neighbor_order)
-		if not route.is_empty() and (best.goal < 0 or route.size() < best.route.size()):
-			best = {"goal": bank, "route": route}
-	return best
+		banks.append(bank)
+	var best: int = -1; var length: int = 2147483647
+	if not banks.is_empty():
+		var tree: Dictionary = Path.flood(start, state.w, state.h, func(p): return p != target and _passable(p) and (power < 0 or _safe_step(p, threats, power)), rules.path_neighbor_order)
+		for bank in banks:
+			if tree.distance.has(bank) and int(tree.distance[bank]) < length: best = bank; length = tree.distance[bank]
+		return {"goal": best, "route": Path.route(tree, best) if best >= 0 else []}
+	return {"goal": -1, "route": []}
 
 func path_preview(id: int,target: int, action: String = "") -> Array:
 	var u: Dictionary=get_unit(id)
@@ -229,12 +231,13 @@ func tax_network(team: int, blocked: Dictionary = {}) -> Dictionary:
 	if not faction.alive or not king.alive or king.pos != faction.home: return {}
 	var owners: Dictionary = {}
 	for base in state.bases: owners[base.pos] = base.team
+	var adjacent: Array = Path.grid(state.w, state.h, rules.path_neighbor_order)
 	var reached: Dictionary = {faction.home: 0}
 	var queue: Array = [faction.home]
 	var cursor: int = 0
 	while cursor < queue.size():
 		var pos: int = queue[cursor]; cursor += 1
-		for next in neighbors(pos):
+		for next in adjacent[pos]:
 			if reached.has(next) or blocked.has(next) or not _passable(next): continue
 			if state.cells[next].owner not in [-1, team] or int(owners.get(next, team)) != team: continue
 			reached[next] = int(reached[pos]) + 1
@@ -244,7 +247,7 @@ func tax_network(team: int, blocked: Dictionary = {}) -> Dictionary:
 func economy_forecast(team: int, rate: int = -1) -> Dictionary:
 	if rate < 0: rate = state.factions[team].tax
 	rate = clampi(rate, 0, rules.tax_max)
-	var network: Dictionary = tax_network(team)
+	var network: Dictionary = _economy_networks().get(team, {})
 	var collection: int = rules.tax_period - state.tick % rules.tax_period
 	var result: Dictionary = {"rate": rate, "villages": 0, "connected": 0, "income": 0, "next_income": 0, "growth": 0, "collection_ticks": collection, "tax_days": float(rules.tax_period) / rules.day_ticks, "growth_days": float(rules.base_period) / rules.day_ticks, "reason": ""}
 	var projected: int = 0
@@ -354,6 +357,13 @@ func _commands() -> void:
 	pending=keep
 	_continue_development(immediate_development.values())
 func _movement() -> void:
+	var actors: Array = _actors()
+	var rally_fields: Dictionary = {}
+	var rally_counts: Dictionary = {}
+	for u in state.units:
+		if not u.manual and u.get("ai_job", "") == "rally" and u.order not in ["wait", "auto", "develop"] and u.pos != u.target:
+			var key: String = str(u.team) + ":" + str(u.target)
+			rally_counts[key] = int(rally_counts.get(key, 0)) + 1
 	var threats_by_team: Dictionary = {}
 	for group in [state.units,state.leaders]:
 		for u in group.duplicate():
@@ -377,8 +387,20 @@ func _movement() -> void:
 			var route: Array = []
 			if not work_route.is_empty(): route = work_route.route
 			elif automatic and u.get("ai_job", "") == "retreat":
-				route = Path.route(Strategy.retreat_tree(self, u, threats_by_team[u.team]), goal)
-			elif automatic and u.get("ai_job", "") in ["attack", "defend", "escort", "rally", "develop"]:
+				route = Path.route(Strategy.retreat_tree(self, u, threats_by_team[u.team], goal), goal)
+			elif automatic and u.get("ai_job", "") == "rally":
+				var key: String = str(u.team) + ":" + str(goal)
+				var threats: Dictionary = threats_by_team[u.team]
+				if int(rally_counts.get(str(u.team) + ":" + str(u.target), 0)) < 3:
+					route = Path.path(u.pos, goal, state.w, state.h, func(p): return _passable(p) and _safe_step(p, threats, 0), rules.path_neighbor_order)
+				else:
+					if not rally_fields.has(key): rally_fields[key] = _reachable(goal, threats, 0) if _passable(goal) and _safe_step(goal, threats, 0) else {}
+					var field: Dictionary = rally_fields[key]
+					var best: int = -1; var distance: int = 2147483647
+					for next in neighbors(u.pos):
+						if field.has(next) and int(field[next]) < distance: best = next; distance = field[next]
+					if best >= 0: route = [best]
+			elif automatic and u.get("ai_job", "") in ["attack", "defend", "escort", "develop"]:
 				if not threats_by_team.has(u.team): threats_by_team[u.team] = _threat_map(u.team)
 				var threats: Dictionary = threats_by_team[u.team]
 				var power: int = u.power if u.get("ai_job", "") in ["attack", "defend", "escort"] else 0
@@ -387,9 +409,10 @@ func _movement() -> void:
 			else: route = path_to(u.pos, goal)
 			if route.is_empty():continue
 			var next: int=route[0];var occupied:=false
-			if not u.manual and u.get("ai_job", "") in ["attack", "defend", "escort", "engineer"] and _enemy_strength(next, u.team) > 0 and not _advantage(u.power, _enemy_strength(next, u.team)):
+			var resistance: int = _enemy_strength(next, u.team, actors) if automatic else 0
+			if automatic and u.get("ai_job", "") in ["attack", "defend", "escort", "engineer"] and resistance > 0 and not _advantage(u.power, resistance):
 				continue
-			for enemy in _actors():
+			for enemy in actors:
 				if enemy.team!=u.team and enemy.pos==next and enemy.power>0:occupied=true;break
 			if not occupied:
 				u.pos=next
@@ -521,12 +544,29 @@ func _population() -> void:
 			elif state.units.size()<rules.max_units:
 				var initial: String = state.factions[b.team].initial_order
 				state.units.append({"id":state.next_id,"team":b.team,"pos":b.pos,"power":b.pop-1,"order":initial,"target":b.pos,"manual":false,"king":false,"auto_mode":initial if initial in ["auto", "develop"] else ""});state.next_id+=1;b.pop=1
+func _economy_networks() -> Dictionary:
+	# Exact topology comparison (no hash collisions). Population and bridge
+	# durability above zero do not change connectivity. Direct state edits in
+	# tests/imports are detected just like changes caused by movement or work.
+	var signature: PackedInt32Array = PackedInt32Array([state.w, state.h])
+	for direction in rules.path_neighbor_order: signature.append(["up", "left", "right", "down"].find(direction))
+	for cell in state.cells: signature.append((cell.owner + 1) * 2 + int(cell.fence == 0 and (cell.terrain != 2 or cell.bridge > 0) and cell.terrain != 3))
+	for base in state.bases: signature.append(base.pos); signature.append(base.team)
+	if signature != _tax_signature:
+		_tax_signature = signature; _tax_routes.clear(); _tax_kings.clear()
+	var networks: Dictionary = {}
+	for faction in state.factions:
+		var king: Dictionary = state.leaders[faction.id]
+		var key: Array = [faction.home, faction.alive, king.pos, king.alive]
+		if not _tax_kings.has(faction.id) or _tax_kings[faction.id] != key:
+			_tax_kings[faction.id] = key; _tax_routes[faction.id] = tax_network(faction.id)
+		if faction.alive: networks[faction.id] = _tax_routes[faction.id]
+	return networks
+
 func _economy() -> void:
 	# Accrue every tick, with one connectivity traversal per country. A sortie
 	# immediately before collection no longer erases the preceding tax period.
-	var networks: Dictionary = {}
-	for faction in state.factions:
-		if faction.alive: networks[faction.id] = tax_network(faction.id)
+	var networks: Dictionary = _economy_networks()
 	for base in state.bases:
 		if not networks.get(base.team, {}).has(base.pos): continue
 		base["tax_credit"] = int(base.get("tax_credit", 0)) + base.pop * state.factions[base.team].tax
@@ -567,13 +607,14 @@ func _builder_blockers(u: Dictionary) -> Dictionary:
 	return blocked
 
 func _reachable(start: int, threats: Dictionary = {}, power: int = -1, blocked: Dictionary = {}) -> Dictionary:
+	var adjacent: Array = Path.grid(state.w, state.h, rules.path_neighbor_order)
 	var distances: Dictionary = {start: 0}
 	var queue: Array = [start]
 	var index: int = 0
 	while index < queue.size():
 		var pos: int = queue[index]
 		index += 1
-		for next in neighbors(pos):
+		for next in adjacent[pos]:
 			if distances.has(next) or blocked.has(next) or not _passable(next): continue
 			if power >= 0 and not _safe_step(next, threats, power): continue
 			distances[next] = distances[pos] + 1
@@ -589,9 +630,10 @@ func _nearest_reachable(positions: Array, distances: Dictionary) -> int:
 			length = distances[pos]
 	return best
 
-func _enemy_strength(pos: int, team: int) -> int:
+func _enemy_strength(pos: int, team: int, actors: Array = []) -> int:
 	var strength: int = 0
-	for enemy in _actors():
+	if actors.is_empty(): actors = _actors()
+	for enemy in actors:
 		if enemy.team != team and _distance(pos, enemy.pos) <= 3:
 			strength += enemy.power * _castle_factor(enemy)
 	var base: Dictionary = get_base(pos)
@@ -630,11 +672,24 @@ func _development_sites(team: int, threats: Dictionary) -> Dictionary:
 		if base.team == team:
 			anchors.append(base.pos)
 			for neighbor in around(base.pos): blocked[neighbor] = true
+	# Multi-source distance field is exactly Manhattan distance to the nearest
+	# anchor, including through water; this replaces O(cells * villages) scans.
+	var distance: PackedInt32Array = PackedInt32Array(); distance.resize(state.cells.size()); distance.fill(-1)
+	var adjacent: Array = Path.grid(state.w, state.h, rules.path_neighbor_order)
+	var queue: Array = []
+	for anchor in anchors:
+		if distance[anchor] < 0: distance[anchor] = 0; queue.append(anchor)
+	var cursor: int = 0
+	while cursor < queue.size():
+		var origin: int = queue[cursor]; cursor += 1
+		if distance[origin] >= 6: continue
+		for next in adjacent[origin]:
+			if distance[next] < 0: distance[next] = distance[origin] + 1; queue.append(next)
 	for pos in range(state.cells.size()):
 		var cell: Dictionary = state.cells[pos]
 		if cell.owner not in [-1, team] or int(threats.get(pos, 0)) > 0: continue
 		# Expand outward from existing settlements, instead of crossing the map to develop enemy land.
-		if _distance(pos, _nearest(pos, anchors)) > 6: continue
+		if distance[pos] < 0: continue
 		if cell.terrain == 0 and cell.fence == 0 and not blocked.has(pos): builds.append(pos)
 		elif cell.terrain == 1 and cell.fence == 0: rough.append(pos)
 	return {"builds": builds, "rough": rough}
@@ -694,8 +749,13 @@ func _builder_ids(team: int, threats: Dictionary, base_count: int) -> Dictionary
 
 func _assign_development(u: Dictionary, sites: Dictionary, distances: Dictionary, reservations: Array) -> bool:
 	var available: Array = []
+	var reserved: Dictionary = {}
+	for entry in reservations:
+		if entry.team != u.team or entry.id == u.id: continue
+		reserved[entry.pos] = true
+		for adjacent in around(entry.pos): reserved[adjacent] = true
 	for pos in sites.builds:
-		if not _site_reserved(pos, u.team, u.id, reservations): available.append(pos)
+		if not reserved.has(pos): available.append(pos)
 	var target: int = _nearest_reachable(available, distances)
 	if target >= 0 and state.factions[u.team].funds >= rules.build_cost and u.power > rules.build_population:
 		u.target = target

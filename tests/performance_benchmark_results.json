@@ -1,0 +1,121 @@
+{
+  "before_commit": "beb6737de5a5941180fbaaf3d2c6bc6ebd90e4e3",
+  "engine": "4.5.2-stable (official)",
+  "scope": "Native Godot headless CPU, three repetitions of each 120-tick case. Not real-device FPS.",
+  "cases": [
+    {
+      "case": "fresh",
+      "before": {
+        "ai_ticks": {
+          "count": 15,
+          "max_ms": 167.236,
+          "mean_ms": 104.360133333333,
+          "p95_ms": 167.236
+        },
+        "case": "fresh",
+        "hashes": [
+          "c0cf784419194b7eb7d593f7197c6c3279184f90bfda6d6a4d4dfd5a458919a2",
+          "c0cf784419194b7eb7d593f7197c6c3279184f90bfda6d6a4d4dfd5a458919a2",
+          "c0cf784419194b7eb7d593f7197c6c3279184f90bfda6d6a4d4dfd5a458919a2"
+        ],
+        "hashing": {
+          "count": 3,
+          "max_ms": 8.235,
+          "mean_ms": 7.90366666666667,
+          "p95_ms": 8.235
+        },
+        "ticks": {
+          "count": 360,
+          "max_ms": 167.236,
+          "mean_ms": 18.2463222222222,
+          "p95_ms": 70.813
+        }
+      },
+      "after": {
+        "ai_ticks": {
+          "count": 15,
+          "max_ms": 63.135,
+          "mean_ms": 40.6316,
+          "p95_ms": 63.135
+        },
+        "case": "fresh",
+        "hashes": [
+          "c0cf784419194b7eb7d593f7197c6c3279184f90bfda6d6a4d4dfd5a458919a2",
+          "c0cf784419194b7eb7d593f7197c6c3279184f90bfda6d6a4d4dfd5a458919a2",
+          "c0cf784419194b7eb7d593f7197c6c3279184f90bfda6d6a4d4dfd5a458919a2"
+        ],
+        "hashing": {
+          "count": 3,
+          "max_ms": 3.19,
+          "mean_ms": 3.01466666666667,
+          "p95_ms": 3.19
+        },
+        "ticks": {
+          "count": 360,
+          "max_ms": 63.135,
+          "mean_ms": 5.04768888888889,
+          "p95_ms": 33.065
+        }
+      },
+      "mean_tick_reduction_percent": 72.33585581021195,
+      "max_tick_reduction_percent": 62.2479609653424
+    },
+    {
+      "case": "late",
+      "before": {
+        "ai_ticks": {
+          "count": 15,
+          "max_ms": 336.381,
+          "mean_ms": 239.0802,
+          "p95_ms": 336.381
+        },
+        "case": "late",
+        "hashes": [
+          "57ce12068d9fa832317ee831fdc4ee37587dacab4945f3d3124ff7677621b1b4",
+          "57ce12068d9fa832317ee831fdc4ee37587dacab4945f3d3124ff7677621b1b4",
+          "57ce12068d9fa832317ee831fdc4ee37587dacab4945f3d3124ff7677621b1b4"
+        ],
+        "hashing": {
+          "count": 3,
+          "max_ms": 8.756,
+          "mean_ms": 8.442,
+          "p95_ms": 8.756
+        },
+        "ticks": {
+          "count": 360,
+          "max_ms": 336.381,
+          "mean_ms": 28.1482111111111,
+          "p95_ms": 93.272
+        }
+      },
+      "after": {
+        "ai_ticks": {
+          "count": 15,
+          "max_ms": 133.48,
+          "mean_ms": 108.551133333333,
+          "p95_ms": 133.48
+        },
+        "case": "late",
+        "hashes": [
+          "57ce12068d9fa832317ee831fdc4ee37587dacab4945f3d3124ff7677621b1b4",
+          "57ce12068d9fa832317ee831fdc4ee37587dacab4945f3d3124ff7677621b1b4",
+          "57ce12068d9fa832317ee831fdc4ee37587dacab4945f3d3124ff7677621b1b4"
+        ],
+        "hashing": {
+          "count": 3,
+          "max_ms": 3.171,
+          "mean_ms": 3.09033333333333,
+          "p95_ms": 3.171
+        },
+        "ticks": {
+          "count": 360,
+          "max_ms": 133.48,
+          "mean_ms": 14.1515722222222,
+          "p95_ms": 40.238
+        }
+      },
+      "mean_tick_reduction_percent": 49.724790089285385,
+      "max_tick_reduction_percent": 60.31880516438206
+    }
+  ]
+}

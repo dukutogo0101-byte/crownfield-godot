@@ -337,13 +337,14 @@ func _toggle_fullscreen() -> void:
 func _process(delta: float) -> void:
 	if sim.state.is_empty() or paused or is_instance_valid(modal):
 		return
-	accumulator += delta * float(speed)
+	accumulator = minf(accumulator + minf(delta, 0.25) * float(speed), 0.4)
+	var began: int = Time.get_ticks_usec()
 	var count: int = 0
-	while accumulator >= 0.2 and count < 20:
+	while accumulator >= 0.2 and count < 2:
 		accumulator -= 0.2
 		_step_game()
 		count += 1
-		if paused or str(sim.state.get("result", "playing")) != "playing":
+		if paused or str(sim.state.get("result", "playing")) != "playing" or Time.get_ticks_usec() - began >= 6000:
 			break
 	if count > 0:
 		_refresh()
@@ -398,6 +399,9 @@ func _refresh() -> void:
 	if sim.state.is_empty():
 		return
 	board.selected = selected
+	board.animation_enabled = not paused and not is_instance_valid(modal)
+	board.movement_duration = float(sim.rules.move_period) * 0.2 / float(speed)
+	board.prefer_actor_taps = active_order.is_empty()
 	board.set_state(sim.state)
 	pause_button.text = "▶" if paused else "Ⅱ"
 	pause_button.tooltip_text = "再開" if paused else "一時停止"
@@ -608,6 +612,7 @@ func _inspect_cell(cell: int) -> void:
 	_set_status("(" + str(cell % int(sim.state.w)) + ", " + str(cell / int(sim.state.w)) + ")  " + info)
 
 func _new_recording() -> void:
+	board.reset_motion()
 	replay_initial = sim.snapshot().duplicate(true)
 	command_log.clear()
 	checkpoints = [{"tick": int(sim.state.tick), "hash": sim.state_hash()}]
@@ -641,6 +646,7 @@ func _load_game() -> bool:
 	end_shown = false
 	active_order = ""
 	_set_status("保存状態を読み込みました。再開で時間が進みます。")
+	board.reset_motion()
 	_refresh()
 	return true
 
@@ -682,6 +688,7 @@ func _start_playback(data) -> void:
 		_close_modal()
 		_set_status("リプレイの初期状態ハッシュが一致しません。", true)
 		return
+	board.reset_motion()
 	playback_data = data
 	playback_index = 0
 	replay_playback = true
@@ -798,6 +805,7 @@ func _open_modal(title: String) -> VBoxContainer:
 	if is_instance_valid(modal):
 		_close_modal()
 	board.input_enabled = false
+	board.animation_enabled = false
 	board.clear_gestures()
 	var overlay: Panel = Panel.new()
 	overlay.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
@@ -836,6 +844,7 @@ func _close_modal() -> void:
 	modal = null
 	if is_instance_valid(board):
 		board.input_enabled = true
+		board.animation_enabled = not paused
 	accumulator = 0.0
 
 func _show_title() -> void:

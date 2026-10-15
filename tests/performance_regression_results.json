@@ -1,0 +1,6 @@
+{
+	"checks": 70,
+	"failed": [],
+	"passed": 70,
+	"scope": "Headless cache correctness, deterministic prior-state hashes, interpolation, hit testing, draw invalidation and frame budget; not device FPS"
+}

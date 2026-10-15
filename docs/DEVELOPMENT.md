@@ -22,7 +22,7 @@
 | core/pathfinder.gd | 4方向BFSと安定ヒープDijkstra。乱数なし、同距離では既定の上/左/右/下順 |
 | core/combat_resolver.gd | 純粋関数による戦闘損害 |
 | ui/game.gd | 入力、選択、命令予約、HUD、モーダル、実時間速度、保存、UI形式のリプレイ |
-| ui/board.gd | 地図描画、座標変換、選択・長押し・パン・ピンチ・ミニマップ。状態のルール変更を行わない |
+| ui/board.gd | 地形・部隊・ミニマップを独立描画。表示専用の移動補間とヒット判定。論理状態は変更しない |
 | data/maps/*.json | 全7面の地形と初期状態。UIのMAPSで選択肢に登録 |
 | data/rulesets/playable_experimental.json | 実行する周期・費用・閾値と確度・出典区分 |
 | data/rulesets/win_online_canon.json | 原作研究用の未確定値をnullで保持。プレイ用ではない |
@@ -164,3 +164,9 @@ AI停滞修正では7村の開発上限を撤去し、内政担当・共同集�
 [AI_ECONOMY_UPDATE.md](AI_ECONOMY_UPDATE.md) に変更理由と結果を記録する。`tests/strategy_ai.gd` は既存goldenに依存せず、費用・岸・侵攻・遮断・税収の意味を検査する。既存goldenは旧AIの結果と一致しなくなるため、独立検査の成功後に `record_golden.gd` を明示的に実行し、別の `test_runner.gd` 実行で比較する。旧セーブは読めるが、旧版で記録したリプレイの最終ハッシュは一致しない。
 
 長期検証は `godot --headless --path . --script res://tests/strategy_soak.gd`。CPU同士の実戦・脱落を正常な結果として記録する。実機の操作感や難易度は人間のプレイで別途確認する。
+
+## 描画と処理負荷
+
+[PERFORMANCE.md](PERFORMANCE.md) に計測方法と互換性検証を記録。派生キャッシュは保存・ハッシュに入れない。税路は正確な地形・所有・村・王の条件を比較して無効化する。地形描画は部隊アニメーションのフレームでは更新せず、経路プレビューも同じ条件なら再利用する。`board.entity_point` が表示位置、simulationのposが論理位置。表示上の部隊へのタップは論理位置へ変換し、建設先指定は盤面座標を使う。
+
+`tests/performance_regression.gd` は補間・休止・表示位置の選択・キャッシュ無効化・長フレームの負荷制限を検査する。`tests/performance_benchmark.gd` はネイティブヘッドレスのCPU時間を計測する。結果を実機FPSとして報告しない。

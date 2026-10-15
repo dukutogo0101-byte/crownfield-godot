@@ -12,6 +12,8 @@ var used: Dictionary
 var reservations: Array
 var reachable_land: Dictionary
 var engineer: Dictionary
+var safe_components: Dictionary
+var safe_regions: Array
 
 func _init(simulation) -> void:
 	sim = simulation
@@ -29,7 +31,7 @@ func _order(u: Dictionary, action: String, target: int, job: String) -> bool:
 	return true
 
 func _country(country: int) -> void:
-	team = country; used = {}; reservations = []; engineer = {}
+	team = country; used = {}; reservations = []; engineer = {}; safe_components = {}; safe_regions = []
 	threats = sim._threat_map(team)
 	sites = sim._development_sites(team, threats)
 	units = []
@@ -57,7 +59,7 @@ func _country(country: int) -> void:
 			continuing = continuing or (u.order == "reclaim" and sim.state.cells[u.target].terrain == 1 and distances.has(u.target) and int(threats.get(u.target, 0)) == 0)
 			if continuing or sim._assign_development(u, sites, distances, reservations): used[u.id] = true
 			elif u.get("auto_mode", "") == "develop":
-				sim._rally(u, sim._reachable(u.pos, threats, 0), threats); used[u.id] = true
+				sim._rally(u, _safe_region(u.pos), threats); used[u.id] = true
 	var soldiers: Array = []
 	for u in units:
 		if not used.has(u.id): soldiers.append(u)
@@ -78,7 +80,7 @@ func _country(country: int) -> void:
 		var primary: Dictionary = available[0]
 		reachable_land = sim._reachable(primary.pos)
 		var probe: Dictionary = primary.duplicate(true)
-		sim._rally(probe, sim._reachable(primary.pos, threats, 0), threats)
+		sim._rally(probe, _safe_region(primary.pos), threats)
 		var rally: int = probe.target
 		var task: Dictionary = _defensive_work(invader)
 		if task.is_empty(): task = _supply_work(primary)
@@ -104,11 +106,20 @@ func _country(country: int) -> void:
 		for u in available:
 			if used.has(u.id): continue
 			var goal: int = rally
-			if not sim._reachable(u.pos, threats, 0).has(goal):
-				sim._rally(u, sim._reachable(u.pos, threats, 0), threats)
+			if not _safe_region(u.pos).has(goal):
+				sim._rally(u, _safe_region(u.pos), threats)
 			else: _order(u, "wait" if u.pos == goal else "reinforce", goal, "rally")
 	else: _write_plan(phase, invader.get("pos", -1), "invasion" if not invader.is_empty() else "", -1)
 	_king_policy(invader)
+
+func _safe_region(start: int) -> Dictionary:
+	if not sim._passable(start) or int(threats.get(start, 0)) > 0: return sim._reachable(start, threats, 0)
+	if safe_components.has(start): return safe_regions[safe_components[start]]
+	var reached: Dictionary = sim._reachable(start, threats, 0)
+	var index: int = safe_regions.size()
+	safe_regions.append(reached)
+	for pos in reached: safe_components[pos] = index
+	return reached
 
 func _economic_policy(base_count: int) -> void:
 	if team == 0: return
@@ -156,9 +167,9 @@ func _defend(soldiers: Array, invader: Dictionary) -> void:
 	if sim._distance(home, invader.pos) <= 6:
 		for u in candidates:
 			if used.has(u.id): continue
-			if sim._reachable(u.pos, threats, 0).has(home): _order(u, "defend", home, "defend"); used[u.id] = true
+			if _safe_region(u.pos).has(home): _order(u, "defend", home, "defend"); used[u.id] = true
 
-static func retreat_tree(simulation, u: Dictionary, danger: Dictionary) -> Dictionary:
+static func retreat_tree(simulation, u: Dictionary, danger: Dictionary, target: int = -1) -> Dictionary:
 	var blocked: Dictionary = {}
 	var contact: Dictionary = {}
 	for enemy in simulation._actors():
@@ -168,7 +179,7 @@ static func retreat_tree(simulation, u: Dictionary, danger: Dictionary) -> Dicti
 	var initial: int = int(contact.get(u.pos, 0))
 	return Path.cost_tree(u.pos, simulation.state.w, simulation.state.h, func(p):
 		if not simulation._passable(p) or blocked.has(p) or int(contact.get(p, 0)) > initial: return -1
-		return 10 + int(danger.get(p, 0)) * 12 / maxi(1, u.power) + int(contact.get(p, 0)) * 40 / maxi(1, u.power), simulation.rules.path_neighbor_order)
+		return 10 + int(danger.get(p, 0)) * 12 / maxi(1, u.power) + int(contact.get(p, 0)) * 40 / maxi(1, u.power), simulation.rules.path_neighbor_order, target)
 
 func _retreat(u: Dictionary) -> void:
 	var tree: Dictionary = retreat_tree(sim, u, threats)
