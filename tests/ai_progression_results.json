@@ -1,40 +1,40 @@
 {
 	"cases": [
 		{
-			"elapsed_ms": 22589,
+			"elapsed_ms": 17720,
 			"end": {
 				"bases": [
-					35,
-					7,
+					21,
+					31,
 					5,
-					25
+					21
 				],
 				"jobs": {
-					"1:attack": 1,
-					"1:develop": 1,
-					"1:rally": 4,
+					"1:attack": 13,
+					"1:develop": 2,
+					"1:rally": 2,
 					"2:attack": 2,
-					"2:rally": 3,
-					"3:attack": 3,
+					"2:rally": 4,
+					"3:attack": 6,
 					"3:develop": 1,
-					"3:rally": 6
+					"3:rally": 4
 				},
 				"population": [
-					17074,
-					4729,
-					2356,
-					6423
+					10886,
+					9981,
+					2956,
+					5698
 				],
 				"tick": 3480
 			},
-			"final_hash": "3aa15cce47c21e7d7294e256276e5e202db002e0e64abe42ccf75689b9553620",
+			"final_hash": "7e6d7fea0dd20bb69dcd931757b68d3ebaf940652e285e0b9d558214298b7616",
 			"name": "resume_stalled_day_480",
 			"outcome": "playing",
 			"peak_bases": [
-				36,
-				15,
-				10,
-				25
+				29,
+				32,
+				14,
+				26
 			],
 			"samples": [
 				{
@@ -61,126 +61,127 @@
 				},
 				{
 					"bases": [
-						25,
-						11,
-						8,
-						14
+						26,
+						19,
+						13,
+						20
 					],
 					"jobs": {
-						"1:attack": 4,
+						"1:attack": 3,
 						"1:develop": 1,
-						"1:rally": 3,
-						"2:attack": 3,
+						"1:rally": 4,
+						"2:attack": 4,
 						"2:develop": 1,
-						"2:rally": 2,
+						"2:rally": 1,
 						"3:attack": 1,
-						"3:develop": 2,
-						"3:rally": 3
+						"3:develop": 1,
+						"3:rally": 5
 					},
 					"population": [
-						13261,
-						4860,
-						3271,
-						2104
+						13448,
+						5310,
+						3568,
+						2124
 					],
 					"tick": 3000
 				},
 				{
 					"bases": [
-						29,
-						13,
-						5,
-						20
+						27,
+						21,
+						12,
+						23
 					],
 					"jobs": {
-						"1:attack": 2,
-						"1:develop": 1,
-						"1:rally": 5,
-						"2:attack": 2,
-						"2:rally": 1,
-						"3:attack": 2,
+						"1:attack": 3,
+						"1:develop": 3,
+						"1:rally": 9,
+						"2:attack": 5,
+						"2:develop": 1,
+						"2:rally": 2,
+						"3:attack": 6,
 						"3:develop": 1,
 						"3:rally": 3
 					},
 					"population": [
-						14429,
-						5245,
-						2836,
-						3161
+						14311,
+						6187,
+						4056,
+						4027
 					],
 					"tick": 3120
 				},
 				{
 					"bases": [
-						34,
-						10,
-						5,
-						19
+						24,
+						23,
+						9,
+						25
 					],
 					"jobs": {
 						"1:attack": 4,
-						"1:develop": 1,
-						"1:rally": 5,
-						"2:attack": 3,
-						"2:develop": 1,
-						"3:attack": 7,
-						"3:develop": 3
+						"1:develop": 2,
+						"1:rally": 3,
+						"2:attack": 7,
+						"2:rally": 1,
+						"3:attack": 9,
+						"3:develop": 1,
+						"3:rally": 3
 					},
 					"population": [
-						15432,
-						5294,
-						2802,
-						4277
+						14843,
+						7006,
+						3821,
+						5296
 					],
 					"tick": 3240
 				},
 				{
 					"bases": [
-						32,
-						8,
-						4,
-						20
+						21,
+						27,
+						6,
+						24
 					],
 					"jobs": {
-						"1:attack": 2,
-						"1:develop": 1,
-						"1:rally": 4,
+						"1:attack": 8,
+						"1:develop": 2,
+						"1:rally": 2,
 						"2:attack": 5,
-						"2:rally": 2,
-						"3:attack": 4,
-						"3:develop": 2,
-						"3:rally": 8
+						"3:attack": 8,
+						"3:develop": 1,
+						"3:rally": 6
 					},
 					"population": [
-						16377,
-						4846,
-						2844,
-						5407
+						13728,
+						7892,
+						3420,
+						6141
 					],
 					"tick": 3360
 				},
 				{
 					"bases": [
-						35,
-						7,
+						21,
+						31,
 						5,
-						25
+						21
 					],
 					"jobs": {
-						"1:attack": 1,
-						"1:develop": 1,
-						"1:rally": 4,
+						"1:attack": 13,
+						"1:develop": 2,
+						"1:rally": 2,
 						"2:attack": 2,
-						"2:rally": 3,
-						"3:attack": 3,
+						"2:rally": 4,
+						"3:attack": 6,
 						"3:develop": 1,
-						"3:rally": 6
+						"3:rally": 4
 					},
 					"population": [
-						17074,
-						4729,
-						2356,
-						6423
+						10886,
+						9981,
+						2956,
+						5698
 					],
 					"tick": 3480
 				}
@@ -209,35 +210,37 @@
 			}
 		},
 		{
-			"elapsed_ms": 40517,
+			"elapsed_ms": 16232,
 			"end": {
 				"bases": [
-					10,
-					57,
-					0,
-					3
+					7,
+					6,
+					6,
+					5
 				],
 				"jobs": {
-					"1:attack": 18,
-					"1:develop": 3,
-					"3:attack": 3,
-					"3:rally": 2
+					"1:attack": 1,
+					"1:develop": 1,
+					"1:rally": 1,
+					"2:attack": 2,
+					"2:rally": 2,
+					"3:attack": 2
 				},
 				"population": [
-					4024,
-					21039,
-					0,
-					2290
+					3882,
+					2302,
+					3151,
+					1997
 				],
 				"tick": 1200
 			},
-			"final_hash": "d24ede29ccc7ef585444a157a452d622b7cf93a34cbf0df8159a7b49e726308f",
+			"final_hash": "fd88f9c037f236820f21ba7dc8c642d8d0b543dc13579832f0f032208b2cff68",
 			"name": "fresh_player_housing",
 			"outcome": "playing",
 			"peak_bases": [
-				23,
-				57,
-				10,
+				12,
+				13,
+				19,
 				15
 			],
 			"samples": [
@@ -264,232 +267,235 @@
 				{
 					"bases": [
 						11,
-						9,
-						8,
-						9
+						10,
+						11,
+						11
 					],
 					"jobs": {
-						"1:attack": 1,
 						"1:develop": 1,
-						"1:rally": 1,
+						"2:attack": 1,
 						"2:develop": 1,
-						"2:rally": 1,
-						"3:develop": 1,
-						"3:rally": 1
+						"3:attack": 1,
+						"3:develop": 1
 					},
 					"population": [
-						1186,
-						1067,
-						885,
-						937
+						1237,
+						1254,
+						1376,
+						1295
 					],
 					"tick": 120
 				},
 				{
 					"bases": [
-						15,
-						14,
-						9,
-						14
+						11,
+						12,
+						16,
+						13
 					],
 					"jobs": {
-						"1:attack": 2,
+						"1:attack": 3,
 						"1:develop": 1,
-						"1:rally": 2,
-						"2:attack": 4,
-						"2:develop": 1,
+						"1:rally": 1,
+						"2:attack": 3,
+						"2:develop": 2,
+						"2:rally": 1,
 						"3:attack": 4,
-						"3:develop": 1
+						"3:develop": 1,
+						"3:rally": 1
 					},
 					"population": [
-						2377,
-						2178,
-						1505,
-						1963
+						1897,
+						1839,
+						2601,
+						2223
 					],
 					"tick": 240
 				},
 				{
 					"bases": [
+						10,
+						11,
 						16,
-						17,
-						8,
-						14
+						11
 					],
 					"jobs": {
-						"1:attack": 2,
+						"1:attack": 1,
 						"1:develop": 1,
-						"1:rally": 6,
-						"2:attack": 2,
+						"1:rally": 4,
+						"2:attack": 8,
 						"2:develop": 1,
-						"2:rally": 4,
-						"3:attack": 7,
-						"3:rally": 5
+						"3:attack": 5,
+						"3:rally": 6
 					},
 					"population": [
-						3582,
-						3180,
-						1671,
-						2653
+						2368,
+						1956,
+						3605,
+						2592
 					],
 					"tick": 360
 				},
 				{
 					"bases": [
-						16,
-						17,
-						3,
-						13
+						11,
+						8,
+						14,
+						5
 					],
 					"jobs": {
-						"1:attack": 4,
+						"1:attack": 2,
 						"1:develop": 1,
-						"1:rally": 8,
-						"2:attack": 1,
-						"2:rally": 2,
+						"2:attack": 5,
+						"2:develop": 1,
+						"2:rally": 1,
+						"3:attack": 3,
 						"3:develop": 1,
-						"3:rally": 9
+						"3:rally": 3
 					},
 					"population": [
-						4599,
-						3945,
-						1016,
-						2665
+						2913,
+						2109,
+						3580,
+						2397
 					],
 					"tick": 480
 				},
 				{
 					"bases": [
-						21,
-						24,
-						3,
-						11
+						10,
+						7,
+						11,
+						3
 					],
 					"jobs": {
 						"1:attack": 2,
 						"1:develop": 1,
-						"1:rally": 8,
-						"2:attack": 1,
-						"2:develop": 1,
-						"3:attack": 2,
+						"1:rally": 1,
+						"2:attack": 3,
+						"2:rally": 2,
+						"3:attack": 3,
 						"3:develop": 1,
-						"3:rally": 4
+						"3:rally": 2
 					},
 					"population": [
-						6125,
-						5804,
-						1104,
-						3006
+						3518,
+						2238,
+						3730,
+						2261
 					],
 					"tick": 600
 				},
 				{
 					"bases": [
-						22,
-						32,
-						3,
-						5
+						10,
+						4,
+						10,
+						4
 					],
 					"jobs": {
-						"1:attack": 11,
-						"1:rally": 3,
-						"2:attack": 1,
-						"2:develop": 1,
+						"1:attack": 1,
+						"1:rally": 1,
+						"2:attack": 4,
+						"2:rally": 1,
 						"3:attack": 2,
-						"3:rally": 6
+						"3:develop": 1,
+						"3:rally": 1
 					},
 					"population": [
-						6514,
-						7821,
-						739,
-						2353
+						3885,
+						2318,
+						3739,
+						2216
 					],
 					"tick": 720
 				},
 				{
 					"bases": [
-						19,
-						36,
-						0,
-						2
+						8,
+						5,
+						8,
+						4
 					],
 					"jobs": {
 						"1:attack": 4,
-						"1:rally": 10,
-						"3:attack": 2,
-						"3:rally": 5
+						"2:attack": 6,
+						"2:rally": 1,
+						"3:attack": 2
 					},
 					"population": [
-						5208,
-						10495,
-						0,
-						1973
+						3563,
+						2430,
+						3443,
+						2143
 					],
 					"tick": 840
 				},
 				{
 					"bases": [
-						20,
-						42,
-						0,
-						3
+						7,
+						5,
+						4,
+						5
 					],
 					"jobs": {
-						"1:attack": 21,
-						"1:develop": 3,
-						"1:rally": 1,
-						"3:attack": 1,
-						"3:develop": 1,
-						"3:rally": 2
+						"1:attack": 2,
+						"1:develop": 1,
+						"2:attack": 7,
+						"2:develop": 1,
+						"3:attack": 3,
+						"3:rally": 1
 					},
 					"population": [
-						5297,
-						12921,
-						0,
-						2259
+						3635,
+						2546,
+						3334,
+						2309
 					],
 					"tick": 960
 				},
 				{
 					"bases": [
-						16,
-						53,
-						0,
-						2
+						6,
+						4,
+						6,
+						4
 					],
 					"jobs": {
-						"1:attack": 16,
-						"1:develop": 3,
-						"1:rally": 3,
-						"3:attack": 1,
-						"3:rally": 2
+						"1:attack": 1,
+						"1:develop": 1,
+						"2:attack": 2,
+						"2:rally": 2,
+						"3:attack": 3
 					},
 					"population": [
-						5042,
-						16696,
-						0,
-						1512
+						4034,
+						1484,
+						3198,
+						2603
 					],
 					"tick": 1080
 				},
 				{
 					"bases": [
-						10,
-						57,
-						0,
-						3
+						7,
+						6,
+						6,
+						5
 					],
 					"jobs": {
-						"1:attack": 18,
-						"1:develop": 3,
-						"3:attack": 3,
-						"3:rally": 2
+						"1:attack": 1,
+						"1:develop": 1,
+						"1:rally": 1,
+						"2:attack": 2,
+						"2:rally": 2,
+						"3:attack": 2
 					},
 					"population": [
-						4024,
-						21039,
-						0,
-						2290
+						3882,
+						2302,
+						3151,
+						1997
 					],
 					"tick": 1200
 				}

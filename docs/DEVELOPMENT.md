@@ -6,6 +6,7 @@
 
 - ソース正本: https://github.com/dukutogo0101-byte/crownfield-godot の最新ブランチ。
 - ゲームの現行仕様: [GAME_SYSTEM.md](GAME_SYSTEM.md)。
+- Grokのマップ担当・JSON契約・依頼文: [MAP_DEVELOPMENT_GROK.md](MAP_DEVELOPMENT_GROK.md)。
 - ブラウザ版: https://crownfield-four-kingdoms.duketogo0101.chatgpt.site （所有者用公開）。
 - `distributions/` の元ZIP・分割APKは旧版保存用。これを最新ソースへ上書きしない。
 - `SPEC_CANONICAL_JA.md` は原作調査の基準であり、現行実装の保証ではない。原作確定A、仮説B、独自補完Cを混同しない。
@@ -131,6 +132,8 @@ UI回帰テストは `godot --headless --path . --script res://tests/ui_smoke.gd
 公開先Sitesの配信用ソースにはコンパイル済みWeb出力があり、ゲームのGDScript正本はGitHubにある。GDScriptを変更したらWebを書き出し直して配信先も更新する。旧APKを自動更新した扱いにしない。
 
 ## Grokと共同作業する手順
+
+住居オートの連続建設は `tests/test_construction_chaining.gd` で、AI周期の途中で建設→次の目的地→移動が進むこと、複数部隊の予約、資金・兵力制限、手動取消、保存再開を検証する。建設完了時の即時判断により旧goldenの32 tick以降は結果が変わるため、独立した18項目の回帰を確認後にgoldenを明示更新した。
 
 1. GitHub最新HEADとこの2文書を読む。担当範囲（例: AI、経済、UI、マップ）を明示する。
 2. 作業ブランチを分ける。同じファイルを同時に変更する場合は変更を取り込んでから次の担当が着手する。

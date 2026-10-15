@@ -1,0 +1,6 @@
+{
+	"checks": 18,
+	"failed": [],
+	"passed": 18,
+	"scope": "Godot core construction completion, periods, simultaneous reservations and save/resume"
+}
