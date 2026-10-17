@@ -17,7 +17,7 @@ func run() -> void:
 	var scene = load("res://main.tscn").instantiate()
 	root.add_child(scene)
 	for _frame in range(4): await process_frame
-	check(scene.map_selector.item_count == 7, "title offers all seven registered maps")
+	check(scene.map_selector.item_count == 8, "title offers all eight registered maps")
 	for index in range(scene.MAPS.size()):
 		var entry: Dictionary = scene.MAPS[index]
 		scene._show_title()
@@ -34,7 +34,10 @@ func run() -> void:
 		check(not scene.paused and scene.modal == null, "start button closes title and starts game " + entry.id)
 		scene.paused = true
 		check(scene.sim.state.id == entry.id and scene.sim.state.tick == 0, "selected JSON starts at tick zero " + entry.id)
-		check(scene.board.state.id == entry.id and scene.board.state.cells.size() == 1040, "board displays selected terrain " + entry.id)
+		check(scene.board.state.id == entry.id and scene.board.state.cells.size() == scene.sim.state.w * scene.sim.state.h, "board displays selected terrain " + entry.id)
+		check(scene.board._mini_texture.get_width() == scene.sim.state.w and scene.board._mini_texture.get_height() == scene.sim.state.h, "minimap uses selected map dimensions " + entry.id)
+		var corner: int = scene.sim.state.cells.size() - 1
+		check(scene.board.cell_at(scene.board.cell_point(corner)) == corner, "bottom-right cell tap uses selected map dimensions " + entry.id)
 		check(scene.pending.is_empty() and scene.command_log.is_empty(), "new map has no commands from previous game " + entry.id)
 		scene.selected = [4]
 		scene._choose_order("develop")
@@ -53,7 +56,7 @@ func run() -> void:
 		check(scene.map_selector.selected == index, "map picker remembers loaded or retried map " + entry.id)
 		scene._close_modal()
 	scene._on_game_menu(10)
-	check(scene.modal != null and scene.map_selector.item_count == 7, "game menu opens map selection")
+	check(scene.modal != null and scene.map_selector.item_count == 8, "game menu opens map selection")
 	var original: String = scene.sim.state_hash()
 	scene.map_selector.item_selected.emit(0)
 	scene._close_modal()

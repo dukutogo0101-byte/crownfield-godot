@@ -1,0 +1,230 @@
+{
+	"checks": 32,
+	"engine": "4.5.2-stable (official)",
+	"failed": [],
+	"map": {
+		"end": {
+			"alive": [
+				true,
+				true,
+				true,
+				true
+			],
+			"bases": [
+				75,
+				41,
+				101,
+				77
+			],
+			"day": 200,
+			"funds": [
+				2899,
+				147,
+				3391,
+				2346
+			],
+			"population": [
+				24689,
+				6106,
+				19639,
+				13808
+			],
+			"result": "playing",
+			"tick": 1200
+		},
+		"id": "shop_crossing",
+		"name": "店先の踏切",
+		"outcome": "playing",
+		"peak_bases": [
+			75,
+			41,
+			102,
+			77
+		],
+		"samples": [
+			{
+				"alive": [
+					true,
+					true,
+					true,
+					true
+				],
+				"bases": [
+					2,
+					2,
+					2,
+					2
+				],
+				"day": 0,
+				"funds": [
+					800,
+					800,
+					800,
+					800
+				],
+				"population": [
+					448,
+					448,
+					448,
+					448
+				],
+				"result": "playing",
+				"tick": 0
+			},
+			{
+				"alive": [
+					true,
+					true,
+					true,
+					true
+				],
+				"bases": [
+					15,
+					10,
+					15,
+					15
+				],
+				"day": 40,
+				"funds": [
+					97,
+					0,
+					214,
+					226
+				],
+				"population": [
+					2600,
+					2138,
+					2448,
+					2460
+				],
+				"result": "playing",
+				"tick": 240
+			},
+			{
+				"alive": [
+					true,
+					true,
+					true,
+					true
+				],
+				"bases": [
+					22,
+					5,
+					39,
+					19
+				],
+				"day": 80,
+				"funds": [
+					227,
+					88,
+					215,
+					28
+				],
+				"population": [
+					5657,
+					2244,
+					7000,
+					3988
+				],
+				"result": "playing",
+				"tick": 480
+			},
+			{
+				"alive": [
+					true,
+					true,
+					true,
+					true
+				],
+				"bases": [
+					36,
+					12,
+					65,
+					35
+				],
+				"day": 120,
+				"funds": [
+					325,
+					154,
+					436,
+					100
+				],
+				"population": [
+					10793,
+					1813,
+					7364,
+					8403
+				],
+				"result": "playing",
+				"tick": 720
+			},
+			{
+				"alive": [
+					true,
+					true,
+					true,
+					true
+				],
+				"bases": [
+					61,
+					23,
+					78,
+					52
+				],
+				"day": 160,
+				"funds": [
+					744,
+					227,
+					1812,
+					1228
+				],
+				"population": [
+					18640,
+					3592,
+					15651,
+					7609
+				],
+				"result": "playing",
+				"tick": 960
+			},
+			{
+				"alive": [
+					true,
+					true,
+					true,
+					true
+				],
+				"bases": [
+					75,
+					41,
+					101,
+					77
+				],
+				"day": 200,
+				"funds": [
+					2899,
+					147,
+					3391,
+					2346
+				],
+				"population": [
+					24689,
+					6106,
+					19639,
+					13808
+				],
+				"result": "playing",
+				"tick": 1200
+			}
+		],
+		"start_bases": [
+			2,
+			2,
+			2,
+			2
+		]
+	},
+	"passed": 32,
+	"scope": "Headless shop-crossing trace. Not a Falcom stage file, not a human 600-day play, UI registration is covered separately by map_selection_ui.gd.",
+	"ticks": 1200
+}

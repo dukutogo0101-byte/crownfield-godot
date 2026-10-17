@@ -1,0 +1,6 @@
+{
+	"checks": 38,
+	"failed": [],
+	"passed": 38,
+	"scope": "Native persistence, recovery, UI finish/save/load/import/replay dedup; actual browser storage not tested"
+}

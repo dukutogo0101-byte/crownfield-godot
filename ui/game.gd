@@ -2,6 +2,7 @@ extends Control
 ## UI host: wall-clock speed, input, presentation and file I/O never define rules.
 const Simulation = preload("res://core/simulation.gd")
 const Board = preload("res://ui/board.gd")
+const ClearRecords = preload("res://core/clear_records.gd")
 const COLORS = [Color("54b9f3"), Color("ee7771"), Color("e9b959"), Color("8bcfa6")]
 const MAPS = [
 	{"id": "four_rivers", "path": "res://data/maps/four_rivers.json", "name": "四つの川", "description": "従来のマップ。四方の川と橋を巡って争う標準面。"},
@@ -10,7 +11,8 @@ const MAPS = [
 	{"id": "borderlands", "path": "res://data/maps/borderlands.json", "name": "境界の半島", "description": "標準向け。半島の内政地を育て、中央の争奪地へ進もう。"},
 	{"id": "succession_isthmus", "path": "res://data/maps/succession_isthmus.json", "name": "継承の地峡", "description": "既設橋と地峡で攻防。南の桟橋へ架橋すれば、海の向こうの国にも進める。"},
 	{"id": "half_sea", "path": "res://data/maps/half_sea.json", "name": "片海", "description": "海で東西に分かれた戦場。各地峡を守り、北の桟橋から海を越えよう。"},
-	{"id": "spiral_channel", "path": "res://data/maps/spiral_channel.json", "name": "渦の水路", "description": "4国が水路で隔てられた面。敵も架橋するので、内政と渡河のタイミングが重要。"}
+	{"id": "spiral_channel", "path": "res://data/maps/spiral_channel.json", "name": "渦の水路", "description": "4国が水路で隔てられた面。敵も架橋するので、内政と渡河のタイミングが重要。"},
+	{"id": "shop_crossing", "path": "res://data/maps/shop_crossing.json", "name": "店先の踏切", "description": "48×48の広い戦場。中央の4城と四隅の村を結ぶ踏切が税路の要。紅国の切れた踏切は敵も架橋する。"}
 ]
 const ORDERS = [
 	["move", "移動", "選択した部隊を目的地へ移動。王に出せる行動命令は移動だけです。"],
@@ -30,6 +32,10 @@ const ORDERS = [
 ]
 
 var sim = Simulation.new()
+var clear_records = ClearRecords.new()
+var run_id: String = ""
+var clear_status: String = ""
+var record_eligible: bool = true
 var board: Control
 var selected: Array = []
 var pending: Array = []
@@ -70,10 +76,12 @@ var _tax_syncing: bool = false
 var web_file_callback
 var selected_map_index: int = 0
 var map_selector: OptionButton
+var map_record_label: Label
 var map_description: Label
 var map_start_button: Button
 
 func _ready() -> void:
+	clear_records.load_records()
 	_setup_theme()
 	_setup_ui()
 	audio_player = AudioStreamPlayer.new()
@@ -164,7 +172,8 @@ func _setup_ui() -> void:
 	menu.add_separator()
 	menu.add_item("保存", 6)
 	menu.add_item("読込", 7)
-	menu.add_item("記録・JSON", 8)
+	menu.add_item("保存・リプレイ・JSON", 8)
+	menu.add_item("クリア記録", 11)
 	menu.add_item("操作と説明", 9)
 	menu.add_separator()
 	menu.add_item("マップ選択・新しいゲーム", 10)
@@ -291,6 +300,7 @@ func _on_game_menu(id: int) -> void:
 		8: _show_files()
 		9: _show_help()
 		10: _show_title()
+		11: _show_clear_records()
 
 func _on_order_menu(id: int) -> void:
 	if id == 99: _cancel_order()
@@ -378,6 +388,7 @@ func _step_game() -> void:
 	if str(sim.state.get("result", "playing")) != "playing" and not end_shown:
 		paused = true
 		end_shown = true
+		_record_clear()
 		call_deferred("_show_outcome")
 
 func _unhandled_key_input(event: InputEvent) -> void:
@@ -611,7 +622,10 @@ func _inspect_cell(cell: int) -> void:
 		info += "  ·  柵耐久 " + str(data.fence)
 	_set_status("(" + str(cell % int(sim.state.w)) + ", " + str(cell / int(sim.state.w)) + ")  " + info)
 
-func _new_recording() -> void:
+func _new_recording(restored_run_id: String = "", eligible: bool = true) -> void:
+	record_eligible = eligible
+	run_id = restored_run_id if not restored_run_id.is_empty() else clear_records.new_run_id()
+	clear_status = ""
 	board.reset_motion()
 	replay_initial = sim.snapshot().duplicate(true)
 	command_log.clear()
@@ -624,7 +638,7 @@ func _save_game() -> void:
 	if file == null:
 		_set_status("保存に失敗しました。", true)
 		return
-	file.store_string(JSON.stringify({"format": 1, "snapshot": sim.snapshot(), "pending": pending, "replay_initial": replay_initial, "commands": command_log, "checkpoints": checkpoints}, "\t"))
+	file.store_string(JSON.stringify({"format": 1, "run_id": run_id, "record_eligible": record_eligible and not replay_playback, "snapshot": sim.snapshot(), "pending": pending, "replay_initial": replay_initial, "commands": command_log, "checkpoints": checkpoints}, "\t"))
 	_set_status("ゲームを保存しました。読込でこの状態へ戻れます。")
 
 func _load_game() -> bool:
@@ -635,6 +649,9 @@ func _load_game() -> bool:
 	if not data is Dictionary or not sim.restore(data.get("snapshot", {})):
 		_set_status("保存データが壊れているか、互換性がありません。", true)
 		return false
+	run_id = _run_id_from_save(data)
+	record_eligible = data.get("record_eligible", true) == true
+	clear_status = ""
 	paused = true
 	accumulator = 0.0
 	selected.clear()
@@ -645,6 +662,7 @@ func _load_game() -> bool:
 	replay_playback = false
 	end_shown = false
 	active_order = ""
+	_record_clear()
 	_set_status("保存状態を読み込みました。再開で時間が進みます。")
 	board.reset_motion()
 	_refresh()
@@ -692,6 +710,7 @@ func _start_playback(data) -> void:
 	playback_data = data
 	playback_index = 0
 	replay_playback = true
+	record_eligible = false
 	pending.clear()
 	selected.clear()
 	active_order = ""
@@ -715,7 +734,7 @@ func _file_dialog(save: bool, replay: bool) -> void:
 	paused = true
 	if OS.has_feature("web"):
 		if save:
-			var document: Dictionary = _replay_document() if replay else {"format": 1, "snapshot": sim.snapshot(), "pending": pending}
+			var document: Dictionary = _replay_document() if replay else {"format": 1, "run_id": run_id, "record_eligible": record_eligible and not replay_playback, "snapshot": sim.snapshot(), "pending": pending}
 			JavaScriptBridge.download_buffer(JSON.stringify(document, "\t").to_utf8_buffer(), "crownfield_replay.json" if replay else "crownfield_save.json", "application/json")
 			_set_status("JSONファイルをダウンロードしました。")
 		else:
@@ -733,7 +752,7 @@ func _file_dialog(save: bool, replay: bool) -> void:
 		if save:
 			var file: FileAccess = FileAccess.open(path, FileAccess.WRITE)
 			if file:
-				file.store_string(JSON.stringify(_replay_document() if replay else {"format": 1, "snapshot": sim.snapshot()}, "\t"))
+				file.store_string(JSON.stringify(_replay_document() if replay else {"format": 1, "run_id": run_id, "record_eligible": record_eligible and not replay_playback, "snapshot": sim.snapshot()}, "\t"))
 				_set_status("JSONファイルを書き出しました。")
 			else:
 				_set_status("ファイルを書き出せません。", true)
@@ -742,7 +761,8 @@ func _file_dialog(save: bool, replay: bool) -> void:
 			if data is Dictionary and data.has("initial_snapshot"):
 				_start_playback(data)
 			elif data is Dictionary and sim.restore(data.get("snapshot", data)):
-				_new_recording()
+				_new_recording(_run_id_from_save(data), data.get("record_eligible", true) == true)
+				_record_clear()
 				selected.clear()
 				pending.clear()
 				_refresh()
@@ -764,7 +784,8 @@ func _web_import_json(arguments: Array) -> void:
 	if data is Dictionary and data.has("initial_snapshot"):
 		_start_playback(data)
 	elif data is Dictionary and sim.restore(data.get("snapshot", data)):
-		_new_recording()
+		_new_recording(_run_id_from_save(data), data.get("record_eligible", true) == true)
+		_record_clear()
 		pending = data.get("pending", [])
 		selected.clear()
 		active_order = ""
@@ -848,6 +869,7 @@ func _close_modal() -> void:
 	accumulator = 0.0
 
 func _show_title() -> void:
+	clear_records.load_records()
 	paused = true
 	_refresh()
 	var column: VBoxContainer = _open_modal("CROWNFIELD  /  四国の境界")
@@ -864,15 +886,20 @@ func _show_title() -> void:
 	map_selector = OptionButton.new()
 	map_selector.custom_minimum_size.y = 48
 	map_selector.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	for entry in MAPS: map_selector.add_item(entry.name)
+	for entry in MAPS:
+		map_selector.add_item(entry.name + ("  ✓" if clear_records.summary(entry.id).count > 0 else ""))
 	map_selector.select(selected_map_index)
 	map_selector.item_selected.connect(_on_map_selected)
 	column.add_child(map_selector)
 	map_description = _label(MAPS[selected_map_index].description, 16)
 	map_description.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	column.add_child(map_description)
+	map_record_label = _label(clear_records.describe(MAPS[selected_map_index].id), 14)
+	map_record_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	map_start_button = _button("このマップで開始", _start_selected_map)
 	column.add_child(map_start_button)
+	column.add_child(map_record_label)
+	column.add_child(_button("クリア記録を見る", _show_clear_records))
 	if FileAccess.file_exists("user://crownfield_save.json"):
 		column.add_child(_button("保存したゲームを読込", func():
 			if _load_game(): _close_modal()
@@ -891,6 +918,7 @@ func _on_map_selected(index: int) -> void:
 	if index < 0 or index >= MAPS.size(): return
 	selected_map_index = index
 	map_description.text = MAPS[index].description
+	map_record_label.text = clear_records.describe(MAPS[index].id)
 
 func _start_selected_map() -> void:
 	if not _reset_game(MAPS[selected_map_index].path): return
@@ -900,14 +928,47 @@ func _start_selected_map() -> void:
 
 func _show_help() -> void:
 	var column: VBoxContainer = _open_modal("操作と勝ち方")
-	_add_modal_text(column, "目標：600日以内に敵3国の王を倒す。自国の王が倒れると敗北です。\n\n移動：部隊をタップ → 地点をタップ。移動ボタンは不要。別の味方をタップすると選び直せます。\n\n下部：待機／オート／住居オート。建設・破壊・援軍・防衛は『建設・命令』から選び、その後に目的地をタップします。住居オートは村を増やし続け、攻撃には切り替わりません。\n\n上部：▶／Ⅱで再開と停止。税率はスライダーで変更。低税率は人口、高税率は資金を重視します。☰に速度、全景、範囲選択、各国の状況、出兵時行動、保存／読込、記録をまとめています。\n\nスマホ：横持ち・全画面でプレイ。2本指でパン／ピンチ、長押しで詳細。範囲選択をONにすると1本指ドラッグで複数選択。ジェスチャの離指では移動しません。\n\nPC：左クリック選択、左ドラッグ範囲選択、Shift追加。右ドラッグでパン、ホイールでズーム。Space停止、F全景、Ctrl+A全軍、Ctrl+S保存。\n\n攻略：村で人口を増やして出兵し、援軍で兵を合流させる。自国の村で待機すると消耗を抑えられます。村は資金100で建設。王は城の防御が強く、遠征中は税収が止まります。王が敵王を倒すと残存資産を引き継ぎます。\n\n停止中にも命令を予約できます。記録→JSONファイルで保存データを端末へバックアップできます。ブラウザとAPKは自動同期しません。\n\n原作の画像・音楽・マップは使用していません。戦闘・人口・経済・AIの数値は一部独自調整を含みます。")
+	_add_modal_text(column, "目標：600日以内に敵3国の王を倒す。自国の王が倒れると敗北です。\n\n移動：部隊をタップ → 地点をタップ。移動ボタンは不要。別の味方をタップすると選び直せます。\n\n下部：待機／オート／住居オート。建設・破壊・援軍・防衛は『建設・命令』から選び、その後に目的地をタップします。住居オートは村を増やし続け、攻撃には切り替わりません。\n\n上部：▶／Ⅱで再開と停止。税率はスライダーで変更。低税率は人口、高税率は資金を重視します。☰に速度、全景、範囲選択、各国の状況、出兵時行動、保存／読込、記録をまとめています。\n\nスマホ：横持ち・全画面でプレイ。2本指でパン／ピンチ、長押しで詳細。範囲選択をONにすると1本指ドラッグで複数選択。ジェスチャの離指では移動しません。\n\nPC：左クリック選択、左ドラッグ範囲選択、Shift追加。右ドラッグでパン、ホイールでズーム。Space停止、F全景、Ctrl+A全軍、Ctrl+S保存。\n\n攻略：村で人口を増やして出兵し、援軍で兵を合流させる。自国の村で待機すると消耗を抑えられます。村は資金100で建設。王は城の防御が強く、遠征中は税収が止まります。王が敵王を倒すと残存資産を引き継ぎます。\n\n勝利するとクリア回数・最短日数・直近日時を自動保存します。☰→クリア記録で確認できます。記録はこの端末・ブラウザ内に保存され、ブラウザのサイトデータを消すと失われます。\n\n停止中にも命令を予約できます。保存・リプレイ・JSON→JSONファイルで進行を端末へバックアップできます。ブラウザとAPKは自動同期しません。\n\n原作の画像・音楽・マップは使用していません。戦闘・人口・経済・AIの数値は一部独自調整を含みます。")
 	column.add_child(_button("閉じる", _close_modal))
+
+func _run_id_from_save(data: Dictionary) -> String:
+	if data.get("run_id") is String and not data.run_id.is_empty(): return data.run_id
+	# Old saves have no session ID. Their replay origin identifies repeated loads.
+	var origin: Dictionary = sim.replay_origin if not sim.replay_origin.is_empty() else sim.snapshot(false)
+	return "legacy-" + sim.snapshot_state_hash(origin)
+
+func _record_clear() -> void:
+	var name_value: String = str(sim.state.get("id", ""))
+	for entry in MAPS:
+		if entry.id == name_value: name_value = entry.name; break
+	var result: String = clear_records.record_victory(run_id, sim.state, sim.rules, name_value, replay_playback or not record_eligible)
+	match result:
+		"added": clear_status = "クリア記録を保存しました。"
+		"duplicate":
+			if clear_status.is_empty(): clear_status = "このゲームのクリアは記録済みです。"
+		"error": clear_status = clear_records.last_error
+		"ignored":
+			if replay_playback or not record_eligible: clear_status = "リプレイ再生はクリア記録に加算しません。"
+
+func _show_clear_records() -> void:
+	clear_records.load_records()
+	var column: VBoxContainer = _open_modal("クリア記録")
+	_add_modal_text(column, "マップ別の勝利回数と最短日数。記録はこの端末・ブラウザに保存されます。リプレイ再生は含みません。")
+	if not clear_records.last_error.is_empty(): _add_modal_text(column, clear_records.last_error)
+	for entry in MAPS:
+		_add_modal_text(column, entry.name + "\n" + clear_records.describe(entry.id))
+	column.add_child(_button("マップを選ぶ", _show_title))
+	column.add_child(_button("盤面に戻る", _close_modal))
 
 func _show_outcome() -> void:
 	var won: bool = str(sim.state.result) == "victory"
+	_record_clear()
 	var column: VBoxContainer = _open_modal("VICTORY — 青国の勝利" if won else "DEFEAT — 青国の敗北")
+	if won:
+		_add_modal_text(column, clear_status + "\n" + clear_records.describe(str(sim.state.id)))
 	_add_modal_text(column, "経過 tick：" + str(sim.state.tick) + "\n最終状態ハッシュ：\n" + sim.state_hash() + "\n\n成績（丸め方など暫定Cを含む）：\n" + JSON.stringify(sim.state.get("score", {}), "\t"))
 	column.add_child(_button("リプレイを書き出す", _export_replay))
+	column.add_child(_button("クリア記録を見る", _show_clear_records))
 	column.add_child(_button("もう一度プレイ", _restart))
 	column.add_child(_button("盤面を見る", _close_modal))
 	_play_cue("victory" if won else "defeat")

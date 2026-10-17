@@ -1,6 +1,6 @@
 {
-	"checks": 95,
+	"checks": 124,
 	"failed": [],
-	"passed": 95,
+	"passed": 124,
 	"scope": "Godot headless map picker, game input, save/load/retry and landscape geometry; phone/browser not tested"
 }
