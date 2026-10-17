@@ -10,6 +10,7 @@ GODOT_BIN="${GODOT_BIN:-godot}"
 "$GODOT_BIN" --headless --path "$CROWNFIELD_ROOT" --script res://tests/ui_smoke.gd
 "$GODOT_BIN" --headless --path "$CROWNFIELD_ROOT" --script res://tests/map_selection_ui.gd
 "$GODOT_BIN" --headless --path "$CROWNFIELD_ROOT" --script res://tests/clear_records.gd
+"$GODOT_BIN" --headless --path "$CROWNFIELD_ROOT" --script res://tests/food_theme.gd
 "$GODOT_BIN" --headless --path "$CROWNFIELD_ROOT" --script res://tests/map_shop_crossing.gd
 "$GODOT_BIN" --headless --path "$CROWNFIELD_ROOT" --script res://tests/map_grok_three.gd
 "$GODOT_BIN" --headless --path "$CROWNFIELD_ROOT" --script res://tests/map_original_grammar.gd

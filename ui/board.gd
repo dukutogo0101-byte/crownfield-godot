@@ -5,6 +5,7 @@ signal range_selected(cells: Array, additive: bool)
 signal cancel_requested
 signal inspect_requested(cell: int)
 
+const Food = preload("res://ui/food_theme.gd")
 const COLORS = [Color("54b9f3"), Color("ee7771"), Color("e9b959"), Color("8bcfa6")]
 const LAND = [Color("77946c"), Color("586f53"), Color("356782"), Color("4c5759")]
 class PaintedLayer:
@@ -82,6 +83,7 @@ func _ready() -> void:
 		_load_texture(kind, "res://assets/terrain/" + kind + ".svg")
 	for kind in ["castle", "village", "unit", "leader", "bridge", "fence"]:
 		_load_texture(kind, "res://assets/entities/" + kind + ".svg")
+	Food.install(textures)
 	resized.connect(_resize_board)
 
 func _load_texture(key: String, path: String) -> void:
@@ -90,6 +92,10 @@ func _load_texture(key: String, path: String) -> void:
 
 func set_state(value: Dictionary) -> void:
 	state = value
+	if is_instance_valid(_map_layer):
+		var filtering: int = CanvasItem.TEXTURE_FILTER_NEAREST if Food.active(state) else CanvasItem.TEXTURE_FILTER_PARENT_NODE
+		_map_layer.texture_filter = filtering
+		_actor_layer.texture_filter = filtering
 	_sync_motion()
 	_update_minimap()
 	_preview_revision += 1
@@ -332,6 +338,9 @@ func _emit_range(first: Vector2, last: Vector2, additive: bool) -> void:
 			result.append(cell)
 	range_selected.emit(result, additive)
 
+func _team_color(team: int) -> Color:
+	return Food.COLORS[team] if Food.active(state) else COLORS[team]
+
 func _sprite(kind: String, rect: Rect2, tint: Color = Color.WHITE) -> void:
 	if textures.has(kind):
 		_canvas.draw_texture_rect(textures[kind], rect, false, tint)
@@ -356,6 +365,7 @@ func _paint_map(canvas: CanvasItem) -> void:
 	var last_x: int = clampi(ceili((size.x - origin.x) / cs), 0, width)
 	var first_y: int = clampi(floori(-origin.y / cs), 0, int(state.h) - 1)
 	var last_y: int = clampi(ceili((size.y - origin.y) / cs), 0, int(state.h))
+	var food: bool = Food.active(state)
 	var visible: Array = []
 	for row in range(first_y, last_y):
 		for column in range(first_x, last_x): visible.append(row * width + column)
@@ -366,18 +376,18 @@ func _paint_map(canvas: CanvasItem) -> void:
 		var rect: Rect2 = Rect2(origin + Vector2(cell % width, cell / width) * cs, Vector2(cs, cs))
 		if not rect.intersects(Rect2(Vector2.ZERO, size)):
 			continue
-		_canvas.draw_rect(rect, LAND[clampi(terrain, 0, 3)])
-		_sprite(["grass", "rough", "water", "cave"][clampi(terrain, 0, 3)], rect)
+		_canvas.draw_rect(rect, Color("918b6c") if food else LAND[clampi(terrain, 0, 3)])
+		_sprite(Food.tile_key(state, cell) if food else ["grass", "rough", "water", "cave"][clampi(terrain, 0, 3)], rect)
 		if owner >= 0 and owner < 4 and terrain != 2:
-			_canvas.draw_rect(rect, Color(COLORS[owner], 0.22))
+			if not food: _canvas.draw_rect(rect, Color(_team_color(owner), 0.22))
 			if cell % width == 0 or int(state.cells[cell - 1].get("owner", -1)) != owner:
-				_canvas.draw_line(rect.position, rect.position + Vector2(0, cs), Color(COLORS[owner], 0.7), 1.2)
+				_canvas.draw_line(rect.position, rect.position + Vector2(0, cs), Color(_team_color(owner), 0.7), 1.2)
 			if cell < width or int(state.cells[cell - width].get("owner", -1)) != owner:
-				_canvas.draw_line(rect.position, rect.position + Vector2(cs, 0), Color(COLORS[owner], 0.7), 1.2)
+				_canvas.draw_line(rect.position, rect.position + Vector2(cs, 0), Color(_team_color(owner), 0.7), 1.2)
 		if int(data.get("bridge", 0)) > 0:
-			_sprite("bridge", rect.grow(cs * 0.12))
+			_sprite(Food.crossing_key(state, cell) if food else "bridge", rect if food else rect.grow(cs * 0.12))
 		if int(data.get("fence", 0)) > 0:
-			_sprite("fence", rect)
+			_sprite("food_refuse" if food else "fence", rect)
 		if cs > 28:
 			_canvas.draw_rect(rect, Color(0, 0, 0, 0.08), false, 0.7)
 	for base in state.bases:
@@ -385,16 +395,20 @@ func _paint_map(canvas: CanvasItem) -> void:
 		var p: Vector2 = cell_point(int(base.pos))
 		if not Rect2(Vector2.ZERO, size).grow(cs * 2).has_point(p): continue
 		var rect: Rect2 = Rect2(p - Vector2(cs * 0.65, cs * 0.75), Vector2(cs * 1.3, cs * 1.3))
-		_sprite("village", rect)
-		_draw_flag(p + Vector2(cs * 0.3, -cs * 0.32), COLORS[team], cs)
+		_sprite("food_shop" + str(team) if food else "village", rect)
+		if food:
+			_canvas.draw_rect(Rect2(p + Vector2(-cs * 0.43, cs * 0.46), Vector2(cs * 0.86, cs * 0.08)), _team_color(team))
+		else: _draw_flag(p + Vector2(cs * 0.3, -cs * 0.32), _team_color(team), cs)
 		if cs >= 21:
 			_text(str(int(base.pop)), p + Vector2(0, cs * 0.5), 11, Color("f3f1df"))
 	for faction in state.factions:
 		if not bool(faction.alive):
 			continue
 		var p: Vector2 = cell_point(int(faction.home))
-		_sprite("castle", Rect2(p - Vector2(cs, cs * 1.25), Vector2(cs * 2, cs * 2)))
-		_draw_flag(p + Vector2(cs * 0.15, -cs), COLORS[int(faction.id)], cs * 1.2)
+		_sprite("food_hq" + str(int(faction.id)) if food else "castle", Rect2(p - Vector2(cs, cs * 1.25), Vector2(cs * 2, cs * 2)))
+		if food:
+			if cs >= 12: _text(Food.NAMES[int(faction.id)], p + Vector2(0, -cs * 1.35), clampi(int(cs * 0.42), 9, 14), _team_color(int(faction.id)))
+		else: _draw_flag(p + Vector2(cs * 0.15, -cs), _team_color(int(faction.id)), cs * 1.2)
 func _paint_actors(canvas: CanvasItem) -> void:
 	_canvas = canvas
 	render_stats.actor_passes += 1
@@ -432,8 +446,12 @@ func _draw_entity(entity: Dictionary, leader: bool, cs: float) -> void:
 		_canvas.draw_circle(p, radius + 3, Color(1, 0.94, 0.7, 0.14))
 	draw_ellipse_shadow(p + Vector2(0, cs * 0.27), Vector2(radius, radius * 0.36))
 	var extent: float = maxf(14.0, cs * (1.15 if leader else 0.95))
-	_sprite("leader" if leader else "unit", Rect2(p - Vector2(extent * 0.5, extent * 0.65), Vector2(extent, extent)))
-	_draw_flag(p + Vector2(extent * 0.24, -extent * 0.28), COLORS[team], maxf(cs * 0.8, 12.0))
+	var food: bool = Food.active(state)
+	var kind: String = ("food_manager" if leader else "food_courier") + str(team) if food else ("leader" if leader else "unit")
+	_sprite(kind, Rect2(p - Vector2(extent * 0.5, extent * 0.65), Vector2(extent, extent)))
+	if food:
+		_canvas.draw_circle(p + Vector2(extent * 0.4, -extent * 0.35), 2.0, _team_color(team))
+	else: _draw_flag(p + Vector2(extent * 0.24, -extent * 0.28), _team_color(team), maxf(cs * 0.8, 12.0))
 	if cs >= 17 or selected.has(int(entity.id)):
 		var text_value: String = str(power)
 		if cs < 27 and power >= 1000:
@@ -464,14 +482,17 @@ func _text(value: String, position: Vector2, font_size: int, color: Color) -> vo
 
 func _update_minimap() -> void:
 	if state.is_empty(): return
-	var signature: PackedInt32Array = PackedInt32Array([state.w, state.h])
+	var food: bool = Food.active(state)
+	var signature: PackedInt32Array = PackedInt32Array([state.w, state.h, 1 if food else 0])
 	for cell in state.cells: signature.append(cell.terrain + (cell.owner + 1) * 4)
 	if signature == _mini_signature: return
 	_mini_signature = signature
 	var image: Image = Image.create(state.w, state.h, false, Image.FORMAT_RGBA8)
 	for pos in state.cells.size():
 		var cell: Dictionary = state.cells[pos]
-		var color: Color = COLORS[cell.owner].darkened(0.2) if cell.owner in [0, 1, 2, 3] else LAND[clampi(cell.terrain, 0, 3)]
+		var color: Color = _team_color(cell.owner).darkened(0.2) if cell.owner in [0, 1, 2, 3] else LAND[clampi(cell.terrain, 0, 3)]
+		if food and cell.owner < 0: color = [Color("a29b7c"), Color("77745f"), Color("252a22"), Color("514c40")][clampi(cell.terrain, 0, 3)]
+		if food and cell.terrain == 2: color = Color("252a22")
 		image.set_pixel(pos % int(state.w), pos / int(state.w), color)
 	if _mini_texture == null or _mini_texture.get_width() != state.w or _mini_texture.get_height() != state.h: _mini_texture = ImageTexture.create_from_image(image)
 	else: _mini_texture.update(image)

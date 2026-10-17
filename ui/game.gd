@@ -2,6 +2,7 @@ extends Control
 ## UI host: wall-clock speed, input, presentation and file I/O never define rules.
 const Simulation = preload("res://core/simulation.gd")
 const Board = preload("res://ui/board.gd")
+const Food = preload("res://ui/food_theme.gd")
 const ClearRecords = preload("res://core/clear_records.gd")
 const COLORS = [Color("54b9f3"), Color("ee7771"), Color("e9b959"), Color("8bcfa6")]
 const MAPS = [
@@ -12,7 +13,7 @@ const MAPS = [
 	{"id": "succession_isthmus", "path": "res://data/maps/succession_isthmus.json", "name": "継承の地峡", "description": "既設橋と地峡で攻防。南の桟橋へ架橋すれば、海の向こうの国にも進める。"},
 	{"id": "half_sea", "path": "res://data/maps/half_sea.json", "name": "片海", "description": "海で東西に分かれた戦場。各地峡を守り、北の桟橋から海を越えよう。"},
 	{"id": "spiral_channel", "path": "res://data/maps/spiral_channel.json", "name": "渦の水路", "description": "4国が水路で隔てられた面。敵も架橋するので、内政と渡河のタイミングが重要。"},
-	{"id": "shop_crossing", "path": "res://data/maps/shop_crossing.json", "name": "店先の踏切", "description": "48×48の広い戦場。中央の4城と四隅の村を結ぶ踏切が税路の要。紅国の切れた踏切は敵も架橋する。"}
+	{"id": "shop_crossing", "path": "res://data/maps/shop_crossing.json", "name": "店先の踏切 — フーズパニック", "description": "ハンバーガー店を率いる48×48の商店街。線路で分かれた区画に出店しよう。右上の屋台連合は踏切が切れているが、自ら修理してくる。"}
 ]
 const ORDERS = [
 	["move", "移動", "選択した部隊を目的地へ移動。王に出せる行動命令は移動だけです。"],
@@ -227,7 +228,7 @@ func _setup_ui() -> void:
 	selection_label.clip_text = true
 	selection_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 	actions.add_child(selection_label)
-	actions.add_child(_compact_button("全軍", _select_all, "青国の全部隊を選択。王は個別に選択します。"))
+	actions.add_child(_compact_button("全軍", _select_all, "自分の全部隊を選択。リーダーは個別に選択します。"))
 	command_cluster = HBoxContainer.new()
 	command_cluster.add_theme_constant_override("separation", 6)
 	actions.add_child(command_cluster)
@@ -316,11 +317,17 @@ func _on_tax_changed(value: float) -> void:
 	var forecast: Dictionary = sim.economy_forecast(0, int(value))
 	_set_status(_tax_summary(forecast) + ("。再開後に適用。" if paused else "。次の更新で適用。"))
 
+func _team_color(team: int) -> Color:
+	return Food.COLORS[team] if Food.active(sim.state) else COLORS[team]
+
+func _team_name(team: int) -> String:
+	return Food.NAMES[team] if Food.active(sim.state) else str(sim.state.factions[team].name)
+
 func _show_nations() -> void:
-	var column: VBoxContainer = _open_modal("各国の状況")
+	var column: VBoxContainer = _open_modal("各店の状況" if Food.active(sim.state) else "各国の状況")
 	for i in 4:
 		var card: PanelContainer = PanelContainer.new()
-		card.add_theme_stylebox_override("panel", _style(Color("182935"), COLORS[i].darkened(0.3), 8))
+		card.add_theme_stylebox_override("panel", _style(Color("182935"), _team_color(i).darkened(0.3), 8))
 		column.add_child(card)
 		var label: Label = _label(faction_labels[i].text, 16)
 		label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
@@ -421,7 +428,8 @@ func _refresh() -> void:
 	var day_ticks: int = int(sim.rules.get("day_ticks", 2))
 	var remaining: int = int(sim.state.get("remaining_days", int(sim.rules.get("limit_days", 3000)) - int(sim.state.tick) / maxi(1, day_ticks)))
 	clock_label.text = str(remaining) + "日"
-	resource_label.text = "資金 " + str(sim.state.factions[0].funds) + "  ·  人口 " + str(sim.population(0))
+	var food: bool = Food.active(sim.state)
+	resource_label.text = "資金 " + str(sim.state.factions[0].funds) + ("  ·  従業員 " if food else "  ·  人口 ") + str(sim.population(0))
 	for i in 4:
 		var faction: Dictionary = sim.state.factions[i]
 		var population: int = 0
@@ -433,7 +441,7 @@ func _refresh() -> void:
 			if int(unit.team) == i:
 				population += int(unit.power)
 				units += 1
-		faction_labels[i].text = ("● " if bool(faction.alive) else "× ") + str(faction.name) + ("  [あなた]" if i == 0 else "") + "\n資金 " + str(faction.funds) + "  ·  人口 " + str(population) + "  ·  部隊 " + str(units)
+		faction_labels[i].text = ("● " if bool(faction.alive) else "× ") + _team_name(i) + ("  [あなた]" if i == 0 else "") + "\n資金 " + str(faction.funds) + ("  ·  従業員 " if food else "  ·  人口 ") + str(population) + ("  ·  配達隊 " if food else "  ·  部隊 ") + str(units)
 	var display_rate: int = sim.state.factions[0].tax
 	for command in pending:
 		if command.action == "tax": display_rate = int(command.extra.value)
@@ -455,12 +463,22 @@ func _refresh() -> void:
 			king_selected = king_selected or entity.get("is_leader", false)
 			if entity.get("auto_mode", "") == "develop": developers += 1
 	selected = valid_ids
-	selection_label.text = "部隊をタップ → 地点で移動" if selected.is_empty() else str(selected.size()) + "隊 · " + str(power) + (" 王" if king_selected else "")
-	if developers > 0: selection_label.text += " · 住居"
+	selection_label.text = "部隊をタップ → 地点で移動" if selected.is_empty() else str(selected.size()) + "隊 · " + str(power) + ((" 店長" if food else " 王") if king_selected else "")
+	if developers > 0: selection_label.text += " · 出店" if food else " · 住居"
 	command_cluster.visible = not selected.is_empty()
 	clear_button.visible = not selected.is_empty()
 	command_menu.text = (_order_name(active_order) + " ▾") if not active_order.is_empty() else "建設・命令 ▾"
+	var popup: PopupMenu = command_menu.get_popup()
+	for item in range(popup.item_count):
+		if popup.is_item_separator(item):
+			if popup.get_item_text(item) in ["住居・地形", "店舗・用地"]: popup.set_item_text(item, "店舗・用地" if food else "住居・地形")
+			if popup.get_item_text(item) in ["橋・柵", "踏切・生ゴミ"]: popup.set_item_text(item, "踏切・生ゴミ" if food else "橋・柵")
+	for id in order_menu_actions:
+		var item: int = command_menu.get_popup().get_item_index(id)
+		command_menu.get_popup().set_item_text(item, _order_name(order_menu_actions[id]))
+	menu_button.get_popup().set_item_text(menu_button.get_popup().get_item_index(4), "各店の状況" if food else "各国の状況")
 	for action in order_buttons:
+		order_buttons[action].text = _order_name(action)
 		order_buttons[action].disabled = replay_playback or selected.is_empty() or (king_selected and action != "wait")
 		var highlighted: bool = active_order == action or (action == "develop" and developers == selected.size() and developers > 0)
 		order_buttons[action].add_theme_stylebox_override("normal", _style(Color("65745a") if highlighted else Color("253543"), Color("ead291") if highlighted else Color("4b6068"), 8))
@@ -559,6 +577,7 @@ func _set_status(value: String, error: bool = false) -> void:
 		status_label.add_theme_color_override("font_color", Color("ffb3a2") if error else Color("f4dea3"))
 
 func _order_name(action: String) -> String:
+	if Food.active(sim.state) and Food.ORDERS.has(action): return Food.ORDERS[action]
 	if action == "tax": return "税率変更"
 	if action == "initial_order": return "出兵時の行動"
 	for order in ORDERS:
@@ -606,20 +625,21 @@ func _inspect_cell(cell: int) -> void:
 		return
 	var data: Dictionary = sim.state.cells[cell]
 	var terrain: int = int(data.get("terrain", 0))
-	var info: String = ["さら地", "荒れ地", "水面", "洞窟"][clampi(terrain, 0, 3)]
+	var food: bool = Food.active(sim.state)
+	var info: String = (["舗装地", "未整備の土地", "線路", "事務所"] if food else ["さら地", "荒れ地", "水面", "洞窟"])[clampi(terrain, 0, 3)]
 	for base in sim.state.bases:
 		if int(base.pos) == cell:
-			info += "  ·  村人口 " + str(base.pop)
+			info += ("  ·  店員 " if food else "  ·  村人口 ") + str(base.pop)
 	for unit in sim.state.units:
 		if int(unit.pos) == cell:
 			info += "  ·  強さ " + str(unit.power) + " / " + _order_name(str(unit.order))
 	for leader in sim.state.leaders:
 		if int(leader.pos) == cell and bool(leader.get("alive", true)):
-			info += "  ·  王の強さ " + str(leader.power)
+			info += ("  ·  店長の強さ " if food else "  ·  王の強さ ") + str(leader.power)
 	if int(data.get("bridge", 0)) > 0:
-		info += "  ·  橋耐久 " + str(data.bridge)
+		info += ("  ·  踏切耐久 " if food else "  ·  橋耐久 ") + str(data.bridge)
 	if int(data.get("fence", 0)) > 0:
-		info += "  ·  柵耐久 " + str(data.fence)
+		info += ("  ·  生ゴミ " if food else "  ·  柵耐久 ") + str(data.fence)
 	_set_status("(" + str(cell % int(sim.state.w)) + ", " + str(cell / int(sim.state.w)) + ")  " + info)
 
 func _new_recording(restored_run_id: String = "", eligible: bool = true) -> void:
@@ -876,12 +896,13 @@ func _show_title() -> void:
 	column.add_theme_constant_override("separation", 8)
 	if size.y >= 480 and ResourceLoader.exists("res://assets/title_landscape.svg"):
 		var illustration: TextureRect = TextureRect.new()
-		illustration.texture = load("res://assets/title_landscape.svg")
+		illustration.texture = board.textures["food_hq0"] if Food.active(sim.state) else load("res://assets/title_landscape.svg")
+		if Food.active(sim.state): illustration.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 		illustration.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 		illustration.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 		illustration.custom_minimum_size.y = 100
 		column.add_child(illustration)
-	_add_modal_text(column, "村を育て、兵を集め、敵3国の王を倒そう。")
+	_add_modal_text(column, "店を増やし、配達員を集め、ライバル3店の店長を倒そう。" if Food.active(sim.state) else "村を育て、兵を集め、敵3国の王を倒そう。")
 	selected_map_index = _map_index_from_state()
 	map_selector = OptionButton.new()
 	map_selector.custom_minimum_size.y = 48
@@ -928,7 +949,8 @@ func _start_selected_map() -> void:
 
 func _show_help() -> void:
 	var column: VBoxContainer = _open_modal("操作と勝ち方")
-	_add_modal_text(column, "目標：600日以内に敵3国の王を倒す。自国の王が倒れると敗北です。\n\n移動：部隊をタップ → 地点をタップ。移動ボタンは不要。別の味方をタップすると選び直せます。\n\n下部：待機／オート／住居オート。建設・破壊・援軍・防衛は『建設・命令』から選び、その後に目的地をタップします。住居オートは村を増やし続け、攻撃には切り替わりません。\n\n上部：▶／Ⅱで再開と停止。税率はスライダーで変更。低税率は人口、高税率は資金を重視します。☰に速度、全景、範囲選択、各国の状況、出兵時行動、保存／読込、記録をまとめています。\n\nスマホ：横持ち・全画面でプレイ。2本指でパン／ピンチ、長押しで詳細。範囲選択をONにすると1本指ドラッグで複数選択。ジェスチャの離指では移動しません。\n\nPC：左クリック選択、左ドラッグ範囲選択、Shift追加。右ドラッグでパン、ホイールでズーム。Space停止、F全景、Ctrl+A全軍、Ctrl+S保存。\n\n攻略：村で人口を増やして出兵し、援軍で兵を合流させる。自国の村で待機すると消耗を抑えられます。村は資金100で建設。王は城の防御が強く、遠征中は税収が止まります。王が敵王を倒すと残存資産を引き継ぎます。\n\n勝利するとクリア回数・最短日数・直近日時を自動保存します。☰→クリア記録で確認できます。記録はこの端末・ブラウザ内に保存され、ブラウザのサイトデータを消すと失われます。\n\n停止中にも命令を予約できます。保存・リプレイ・JSON→JSONファイルで進行を端末へバックアップできます。ブラウザとAPKは自動同期しません。\n\n原作の画像・音楽・マップは使用していません。戦闘・人口・経済・AIの数値は一部独自調整を含みます。")
+	if Food.active(sim.state): _add_modal_text(column, "フーズパニック：赤いハンバーガー店があなたです。村→店舗、王→店長、兵→配達員、水面→線路、橋→踏切として表示します。線路は踏切がある場所だけ通れます。『新装開店』『出店オート』で店を増やそう。以下は共通ルールです。")
+	_add_modal_text(column, "目標：600日以内に敵3国の王を倒す。自国の王が倒れると敗北です。\n\n移動：部隊をタップ → 地点をタップ。移動ボタンは不要。別の味方をタップすると選び直せます。\n\n下部：待機／オート／住居オート。建設・破壊・援軍・防衛は『建設・命令』から選び、その後に目的地をタップします。住居オートは村を増やし続け、攻撃には切り替わりません。\n\n上部：▶／Ⅱで再開と停止。税率はスライダーで変更。低税率は人口、高税率は資金を重視します。☰に速度、全景、範囲選択、各国の状況、出兵時行動、保存／読込、記録をまとめています。\n\nスマホ：横持ち・全画面でプレイ。2本指でパン／ピンチ、長押しで詳細。範囲選択をONにすると1本指ドラッグで複数選択。ジェスチャの離指では移動しません。\n\nPC：左クリック選択、左ドラッグ範囲選択、Shift追加。右ドラッグでパン、ホイールでズーム。Space停止、F全景、Ctrl+A全軍、Ctrl+S保存。\n\n攻略：村で人口を増やして出兵し、援軍で兵を合流させる。自国の村で待機すると消耗を抑えられます。村は資金100で建設。王は城の防御が強く、遠征中は税収が止まります。王が敵王を倒すと残存資産を引き継ぎます。\n\n勝利するとクリア回数・最短日数・直近日時を自動保存します。☰→クリア記録で確認できます。記録はこの端末・ブラウザ内に保存され、ブラウザのサイトデータを消すと失われます。\n\n停止中にも命令を予約できます。保存・リプレイ・JSON→JSONファイルで進行を端末へバックアップできます。ブラウザとAPKは自動同期しません。\n\nフーズパニックの表示素材は参照画面を基に新規作成しています。原作の画像・音楽ファイルは同梱していません。戦闘・人口・経済・AIの数値は一部独自調整を含みます。")
 	column.add_child(_button("閉じる", _close_modal))
 
 func _run_id_from_save(data: Dictionary) -> String:
@@ -962,8 +984,9 @@ func _show_clear_records() -> void:
 
 func _show_outcome() -> void:
 	var won: bool = str(sim.state.result) == "victory"
+	var food: bool = Food.active(sim.state)
 	_record_clear()
-	var column: VBoxContainer = _open_modal("VICTORY — 青国の勝利" if won else "DEFEAT — 青国の敗北")
+	var column: VBoxContainer = _open_modal(("VICTORY — ウィバーガーの勝利" if food else "VICTORY — 青国の勝利") if won else ("DEFEAT — 閉店" if food else "DEFEAT — 青国の敗北"))
 	if won:
 		_add_modal_text(column, clear_status + "\n" + clear_records.describe(str(sim.state.id)))
 	_add_modal_text(column, "経過 tick：" + str(sim.state.tick) + "\n最終状態ハッシュ：\n" + sim.state_hash() + "\n\n成績（丸め方など暫定Cを含む）：\n" + JSON.stringify(sim.state.get("score", {}), "\t"))

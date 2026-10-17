@@ -23,6 +23,7 @@
 | core/pathfinder.gd | 4方向BFSと安定ヒープDijkstra。乱数なし、同距離では既定の上/左/右/下順 |
 | core/combat_resolver.gd | 純粋関数による戦闘損害 |
 | ui/game.gd | 入力、選択、命令予約、HUD、モーダル、実時間速度、保存、UI形式のリプレイ |
+| ui/food_theme.gd / assets/foods/atlas.svg | 店先の踏切専用の46タイル、配色・名称対応。表示専用で論理状態は変更しない。tools/build_food_art.pyで再生成 |
 | ui/board.gd | 地形・部隊・ミニマップを独立描画。表示専用の移動補間とヒット判定。論理状態は変更しない |
 | data/maps/*.json | 全8面の地形と初期状態。UIのMAPSで選択肢に登録 |
 | data/rulesets/playable_experimental.json | 実行する周期・費用・閾値と確度・出典区分 |
@@ -175,3 +176,5 @@ AI停滞修正では7村の開発上限を撤去し、内政担当・共同集�
 `tests/performance_regression.gd` は補間・休止・表示位置の選択・キャッシュ無効化・長フレームの負荷制限を検査する。`tests/performance_benchmark.gd` はネイティブヘッドレスのCPU時間を計測する。結果を実機FPSとして報告しない。
 
 今回の統合検証: クリア記録38/38、8面の選択UI124/124、店先の踏切32/32（1200 tick）、既存UI66/66、コア200/200、性能回帰70/70。Web寸法はNodeモック67/67。ブラウザとスマホ実機の操作は未検証。
+
+マップ専用スキンは `Food.active(state)` でIDを判定する。新しいフーズ系マップで使う場合はここへ対応を追加し、クリア記録を維持するためマップIDの変更は避ける。描画・表示名の都合でsnapshot内のowner/terrain/faction名を書き換えない。`tests/food_theme.gd` は専用素材と通常面への復帰、命令・保存互換性を検証する。
