@@ -46,20 +46,21 @@ func _country(country: int) -> void:
 	_economic_policy(count)
 	# Resume an engineering project before assigning ordinary economic roles.
 	for u in units:
+		if u.get("auto_mode", "") == "develop": continue
 		if engineer.is_empty() and _resume_engineering(u): engineer = u; used[u.id] = true
 	var builders: Dictionary = sim._builder_ids(team, threats, count)
 	for u in units:
 		if used.has(u.id): continue
+		if u.get("auto_mode", "") == "develop" or u.get("ai_job", "") == "develop" or builders.has(u.id):
+			var distances: Dictionary = sim._reachable(u.pos, threats, 0, sim._builder_blockers(u))
+			var continuing: bool = u.order in ["build_base", "build_village"] and sim._can_build(u.target, team) and sim.get_base(u.target).is_empty() and distances.has(u.target) and int(threats.get(u.target, 0)) == 0 and sim.state.factions[team].funds >= sim.rules.build_cost and u.power > sim.rules.build_population
+			continuing = continuing or (u.order == "reclaim" and sim.state.cells[u.target].terrain == 1 and distances.has(u.target) and int(threats.get(u.target, 0)) == 0 and sim.state.factions[team].funds >= sim.rules.build_cost and u.power > sim.rules.build_population)
+			if continuing or sim._assign_development(u, sites, distances, reservations): used[u.id] = true
+			else: sim._wait_for_development(u); used[u.id] = true
+			continue
 		if int(threats.get(u.pos, 0)) > 0 and not sim._advantage(u.power, threats[u.pos]):
 			_retreat(u); used[u.id] = true
 			continue
-		if u.get("auto_mode", "") == "develop" or builders.has(u.id):
-			var distances: Dictionary = sim._reachable(u.pos, threats, 0, sim._builder_blockers(u))
-			var continuing: bool = u.order in ["build_base", "build_village"] and sim._can_build(u.target, team) and sim.get_base(u.target).is_empty() and distances.has(u.target) and int(threats.get(u.target, 0)) == 0 and sim.state.factions[team].funds >= sim.rules.build_cost and u.power > sim.rules.build_population
-			continuing = continuing or (u.order == "reclaim" and sim.state.cells[u.target].terrain == 1 and distances.has(u.target) and int(threats.get(u.target, 0)) == 0)
-			if continuing or sim._assign_development(u, sites, distances, reservations): used[u.id] = true
-			elif u.get("auto_mode", "") == "develop":
-				sim._rally(u, _safe_region(u.pos), threats); used[u.id] = true
 	var soldiers: Array = []
 	for u in units:
 		if not used.has(u.id): soldiers.append(u)

@@ -19,7 +19,7 @@ const ORDERS = [
 	["move", "移動", "選択した部隊を目的地へ移動。王に出せる行動命令は移動だけです。"],
 	["wait", "待機", "現在地で停止。自国の村に待機すると自然減少を抑えられます。"],
 	["auto", "オート", "住居建設を優先。戦力を集め、城の防御も含めて十分有利なときに攻撃します。"],
-	["develop", "住居オート", "住居を繰り返し建設。必要な開墾も行い、兵力や資金が足りないときは自国の村で待機します。攻撃は行いません。"],
+	["develop", "住居オート", "住居を繰り返し建設。必要な開墾も行い、兵力や資金が足りないときは、その場で待機して建設命令を保ちます。攻撃は行いません。"],
 	["defend", "拠点防衛", "目的の自国拠点を防衛。"],
 	["reinforce", "援軍", "目的地の味方へ合流。合流先の命令を維持します。"],
 	["build_base", "村建設", "さら地に村を建設。資金100。人口移転量は暫定値です。"],
@@ -175,6 +175,7 @@ func _setup_ui() -> void:
 	menu.add_item("読込", 7)
 	menu.add_item("保存・リプレイ・JSON", 8)
 	menu.add_item("クリア記録", 11)
+	if OS.has_feature("web"): menu.add_item("アプリをインストール", 12)
 	menu.add_item("操作と説明", 9)
 	menu.add_separator()
 	menu.add_item("マップ選択・新しいゲーム", 10)
@@ -302,6 +303,14 @@ func _on_game_menu(id: int) -> void:
 		9: _show_help()
 		10: _show_title()
 		11: _show_clear_records()
+		12: _show_install()
+
+func _show_install() -> void:
+	paused = true
+	board.clear_gestures()
+	_refresh()
+	if OS.has_feature("web"):
+		JavaScriptBridge.get_interface("window").CrownfieldInstall.open()
 
 func _on_order_menu(id: int) -> void:
 	if id == 99: _cancel_order()

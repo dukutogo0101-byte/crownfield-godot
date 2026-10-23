@@ -368,6 +368,15 @@ func _movement() -> void:
 	for group in [state.units,state.leaders]:
 		for u in group.duplicate():
 			if u.power<=0 or u.order in ["wait","auto","develop"]:continue
+			if not u.manual and (u.get("auto_mode", "") == "develop" or u.get("ai_job", "") == "develop") and (state.factions[u.team].funds < rules.build_cost or u.power <= rules.build_population):
+				_wait_for_development(u)
+				continue
+			if u.get("auto_mode", "") == "develop" and u.get("ai_job", "") == "rally":
+				_wait_for_development(u)
+				continue
+			# Retain a manual construction destination while its resources are missing.
+			# Walking toward it can otherwise create an unintended enemy contact.
+			if u.order in ["build_base", "build_village"] and (state.factions[u.team].funds < rules.build_cost or u.power <= rules.build_population): continue
 			if u.pos==u.target and u.order not in BANK_WORK:continue
 			var goal: int=u.target
 			var automatic: bool = not u.manual and u.get("ai_job", "") != ""
@@ -748,6 +757,7 @@ func _builder_ids(team: int, threats: Dictionary, base_count: int) -> Dictionary
 	return selected
 
 func _assign_development(u: Dictionary, sites: Dictionary, distances: Dictionary, reservations: Array) -> bool:
+	if state.factions[u.team].funds < rules.build_cost or u.power <= rules.build_population: return false
 	var available: Array = []
 	var reserved: Dictionary = {}
 	for entry in reservations:
@@ -772,6 +782,12 @@ func _assign_development(u: Dictionary, sites: Dictionary, distances: Dictionary
 			return true
 	return false
 
+func _wait_for_development(u: Dictionary) -> void:
+	# Waiting is still a construction assignment, not an idle combat role.
+	u.order = "wait"
+	u.target = u.pos
+	u["ai_job"] = "develop"
+
 func _continue_development(workers: Array) -> void:
 	var threats_by_team: Dictionary = {}
 	var sites_by_team: Dictionary = {}
@@ -789,7 +805,7 @@ func _continue_development(workers: Array) -> void:
 		var threats: Dictionary = threats_by_team[u.team]
 		var distances: Dictionary = _reachable(u.pos, threats, 0, _builder_blockers(u))
 		if (int(threats.get(u.pos, 0)) == 0 or _advantage(u.power, threats[u.pos])) and _assign_development(u, sites_by_team[u.team], distances, reservations): continue
-		_rally(u, _reachable(u.pos, threats, 0), threats)
+		_wait_for_development(u)
 
 func _ai() -> void:
 	Strategy.new(self).think()

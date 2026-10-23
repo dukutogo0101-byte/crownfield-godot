@@ -60,15 +60,16 @@ func query_tests() -> void:
 	var full: Dictionary = Paths.cost_tree(0, 12, 12, cost)
 	check(calls.n <= 144, "weighted cost is evaluated once per cell rather than once per incoming edge")
 	check(Paths.route(full, 137) == Paths.route(Paths.cost_tree(0, 12, 12, cost, ["up", "left", "right", "down"], 137), 137), "targeted retreat search keeps the same chosen route")
-	# Frozen independent pre-optimization states, not regenerated on test runs.
+	# Frozen states updated for the intentional development-wait fix (2026-10-23).
+	# Original optimization parity measurements remain in performance_parity_results.json.
 	sim = Core.new(); sim.new_game()
 	for _tick in range(120): sim.step()
-	check(sim.state_hash() == "c0cf784419194b7eb7d593f7197c6c3279184f90bfda6d6a4d4dfd5a458919a2", "fresh game matches pre-optimization state at tick 120")
+	check(sim.state_hash() == "0e58a6a0d439605fcaec4aefc92497a15ee688ebe9f96de85e7dd3d0d3d0246d", "fresh game matches frozen development-wait state at tick 120")
 	sim = Core.new()
 	var saved = JSON.parse_string(FileAccess.get_file_as_string("res://tests/fixtures/pre_ai_fix_stalemate.json"))
 	check(sim.restore(saved), "late fixture loads")
 	for _tick in range(120): sim.step()
-	check(sim.state_hash() == "57ce12068d9fa832317ee831fdc4ee37587dacab4945f3d3124ff7677621b1b4", "late game matches pre-optimization future state")
+	check(sim.state_hash() == "54f4aa0b3abcb2782f5015cd5d5e991e20cc67e4b5435cc459186a2447286a27", "late game matches frozen development-wait future state")
 
 func presentation_tests() -> void:
 	var sim = Core.new(); sim.new_game()

@@ -433,8 +433,8 @@ func test_development_ai() -> void:
 	u["auto_mode"] = "develop"
 	sim.state.factions[0].funds = 0
 	sim._ai()
-	equal(u.target, 40, "resource-starved housing unit returns to own village")
-	equal(u.ai_job, "rally", "resource-starved builder gathers rather than attacks")
+	equal(u.target, u.pos, "resource-starved housing unit waits at its current position")
+	equal(u.ai_job, "develop", "resource-starved builder retains its construction assignment")
 
 func test_ai_stalemate() -> void:
 	# A developed enemy must keep founding villages, while retaining a field army.
