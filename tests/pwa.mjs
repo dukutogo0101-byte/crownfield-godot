@@ -6,7 +6,7 @@ const root = path.resolve(import.meta.dirname, '..');
 const output = path.join(root, 'builds/web');
 const manifest = JSON.parse(fs.readFileSync(path.join(output, 'index.manifest.json'), 'utf8'));
 assert.equal(manifest.id, './index.html');
-assert.equal(manifest.start_url, './index.html');
+assert.equal(manifest.start_url, './');
 assert.equal(manifest.display, 'standalone');
 assert.equal(manifest.orientation, 'landscape');
 assert.ok(manifest.icons.some(i => i.sizes === '192x192'));

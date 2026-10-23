@@ -43,6 +43,8 @@
 | web/viewport.js | CSSとWebGLの寸法を同時更新。回転、全画面、DPR、ブラウザのサイズ変更に追従 |
 | web/compressed_wasm.js | `.wasm`要求を`.wasm.gz`へ送り、gzipを復元してエンジンに渡す |
 | web/prepare_web.py | Web出力の圧縮、PWAキャッシュ・横向きマニフェスト・版識別クエリの調整、サイズ・SHA-256確認 |
+| web/service_worker.js | 正式入口 `/` のキャッシュと既存アプリの `/index.html` 起動互換。認証画面をキャッシュしない |
+| tests/pwa.mjs / tests/pwa_worker.mjs | インストール設定・案内と、実HTTP転送を使ったワーカー起動・通信失敗の検証 |
 | tools/run_tests.sh / tools/build_web.sh | 再現可能な検証とブラウザ版の書き出し |
 
 ## 状態モデル

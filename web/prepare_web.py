@@ -26,7 +26,7 @@ shutil.copy2(root / 'web/viewport.js', destination / 'viewport.js')
 shutil.copy2(root / 'web/pwa.js', destination / 'pwa.js')
 with Image.open(destination / 'index.512x512.png') as icon:
     icon.resize((192, 192), Image.Resampling.LANCZOS).save(destination / 'index.192x192.png')
-build_version = hashlib.sha256((destination / 'index.pck').read_bytes() + (root / 'web/shell.html').read_bytes() + (root / 'web/viewport.js').read_bytes() + (root / 'web/compressed_wasm.js').read_bytes() + (root / 'web/pwa.js').read_bytes() + pathlib.Path(__file__).read_bytes()).hexdigest()[:16]
+build_version = hashlib.sha256((destination / 'index.pck').read_bytes() + (root / 'web/shell.html').read_bytes() + (root / 'web/viewport.js').read_bytes() + (root / 'web/compressed_wasm.js').read_bytes() + (root / 'web/pwa.js').read_bytes() + (root / 'web/service_worker.js').read_bytes() + pathlib.Path(__file__).read_bytes()).hexdigest()[:16]
 html = destination / 'index.html'
 old_html = html.read_text()
 config = re.search(r'const GODOT_CONFIG=(.*?);\n', old_html).group(1)
@@ -44,23 +44,22 @@ s = re.sub(r'src="viewport.js[^"\s]*"', f'src="viewport.js?v={build_version}"', 
 s = s.replace('<script src="compressed_wasm.js', f'<script>window.CROWNFIELD_BUILD_VERSION="{build_version}";</script>\n<script src="compressed_wasm.js')
 html.write_text(s)
 worker = destination / 'index.service.worker.js'
-s = worker.read_text().replace('"index.wasm"', '"index.wasm.gz"')
-# Web-only fixes must receive their own cache instead of reusing the PCK cache.
-# Activation remains browser-controlled so an ongoing game is never reloaded.
-s = re.sub(r'const CACHE_VERSION = .*?;', f'const CACHE_VERSION = "{build_version}";', s)
+s = (root / 'web/service_worker.js').read_text().replace('__CACHE_VERSION__', json.dumps(build_version))
+export_worker = worker.read_text().replace('"index.wasm"', '"index.wasm.gz"')
 for array in ['CACHED_FILES', 'CACHEABLE_FILES']:
     pattern = r'const ' + array + r' = (\[.*?\]);'
-    match = re.search(pattern, s)
+    match = re.search(pattern, export_worker)
     names = [name.split('?')[0] for name in json.loads(match.group(1))]
     if array == 'CACHED_FILES':
+        names = ['./' if name == 'index.html' else name for name in names]
         for extra in ['compressed_wasm.js', 'viewport.js', 'pwa.js', 'index.manifest.json', 'index.192x192.png', 'index.512x512.png']:
             if extra not in names: names.append(extra)
     names = [name + '?v=' + build_version if name in ['index.js', 'compressed_wasm.js', 'viewport.js', 'pwa.js', 'index.pck', 'index.wasm.gz', 'index.manifest.json'] else name for name in names]
-    s = re.sub(pattern, 'const ' + array + ' = ' + json.dumps(names) + ';', s)
+    s = s.replace('__' + array + '__', json.dumps(names))
 worker.write_text(s)
 manifest_path = destination / 'index.manifest.json'
 manifest = json.loads(manifest_path.read_text())
-manifest.update({'short_name': 'CROWNFIELD', 'theme_color': '#0c1722', 'background_color': '#0c1722', 'scope': './', 'orientation': 'landscape', 'id': './index.html', 'start_url': './index.html', 'display': 'standalone', 'prefer_related_applications': False, 'icons': [{'src': 'index.192x192.png', 'sizes': '192x192', 'type': 'image/png', 'purpose': 'any'}, {'src': 'index.512x512.png', 'sizes': '512x512', 'type': 'image/png', 'purpose': 'any'}]})
+manifest.update({'short_name': 'CROWNFIELD', 'theme_color': '#0c1722', 'background_color': '#0c1722', 'scope': './', 'orientation': 'landscape', 'id': './index.html', 'start_url': './', 'display': 'standalone', 'prefer_related_applications': False, 'icons': [{'src': 'index.192x192.png', 'sizes': '192x192', 'type': 'image/png', 'purpose': 'any'}, {'src': 'index.512x512.png', 'sizes': '512x512', 'type': 'image/png', 'purpose': 'any'}]})
 manifest_path.write_text(json.dumps(manifest, ensure_ascii=False))
 assert gzip.decompress((destination / 'index.wasm.gz').read_bytes()) == raw
 for item in destination.iterdir():
