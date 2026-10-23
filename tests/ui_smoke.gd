@@ -12,9 +12,34 @@ func run() -> void:
 	await process_frame
 	await process_frame
 	scene._close_modal()
+	check(scene.command_cluster.get_child_count() == 3, "command controls contain exactly three dropdowns")
+	check(scene.initial_menu.text == "初期 ▾" and scene.auto_menu.text == "オート ▾" and scene.command_menu.text == "単発 ▾", "dropdown names stay short and identify the scope")
+	check(not scene.initial_menu.disabled and scene.auto_menu.disabled and scene.command_menu.disabled, "only future-unit defaults can change without a selection")
+	scene.initial_menu.get_popup().id_pressed.emit(2)
+	check(scene.pending.size() == 1 and scene.pending[0].action == "initial_order" and scene.pending[0].actors.is_empty(), "initial dropdown targets future recruits, not existing troops")
+	check(scene.initial_menu.get_popup().is_item_checked(2), "paused initial-order change is reflected immediately")
+	scene._step_game()
+	check(scene.sim.state.factions[0].initial_order == "wait", "initial dropdown applies the future-unit default")
 	scene.selected = [4]
-	scene._choose_order("develop")
+	scene._refresh()
+	var wait_id: int = scene.order_menu_actions.find_key("wait")
+	scene.command_menu.get_popup().id_pressed.emit(wait_id)
+	check(scene.pending.size() == 1 and scene.pending[0].action == "wait" and scene.pending[0].actors == [4], "single wait command immediately targets selected troops only")
+	scene.pending.clear()
+	scene.selected = [scene.sim.state.leaders[0].id]
+	scene._refresh()
+	check(scene.auto_menu.disabled and not scene.command_menu.disabled, "leader can use single commands but never auto")
+	for id in scene.order_menu_actions:
+		var action: String = scene.order_menu_actions[id]
+		var item: int = scene.command_menu.get_popup().get_item_index(id)
+		check(scene.command_menu.get_popup().is_item_disabled(item) == (action not in ["move", "wait"]), "leader restrictions match core rule: " + action)
+	scene._restart()
+	scene._close_modal()
+	scene.selected = [4]
+	scene._refresh()
+	scene.auto_menu.get_popup().id_pressed.emit(1)
 	check(scene.pending.size() == 1, "housing button queues exactly one core command")
+	check(scene.pending[0].actors == [4] and scene.auto_menu.get_popup().is_item_checked(1), "auto dropdown reserves and displays the selected-unit setting")
 	check(scene.sim.state.tick == 0, "paused UI does not advance simulation")
 	scene._step_game()
 	check(scene.sim.get_unit(4).get("auto_mode", "") == "develop", "queued housing button command is applied")
@@ -43,7 +68,8 @@ func run() -> void:
 	check(scene.replay_playback, "UI replay initial hash matches the restored initial state")
 	while scene.sim.state.tick < replay.final_tick and scene.replay_playback: scene._step_game()
 	check(scene.sim.state_hash() == replay.final_hash, "UI replay reproduces the final hash")
-	check(scene.order_buttons.has("develop"), "continuous housing command is visible")
+	scene._refresh()
+	check(scene.initial_menu.disabled and scene.auto_menu.disabled and scene.command_menu.disabled, "replay locks all three command dropdowns")
 	# Landscape dimensions include common phone/browser and desktop sizes.
 	scene._restart()
 	scene._close_modal()
@@ -55,7 +81,7 @@ func run() -> void:
 		for _frame in range(4): await process_frame
 		check(scene.board.size.is_equal_approx(scene.size), "board fills landscape viewport " + str(dimensions))
 		check(scene.top_bar.size.y <= 64, "top HUD remains one compact row " + str(dimensions))
-		check(not scene.command_cluster.visible, "no command clutter without selection " + str(dimensions))
+		check(scene.command_cluster.visible and not scene.initial_menu.disabled and scene.auto_menu.disabled and scene.command_menu.disabled, "stable three-menu layout without selection " + str(dimensions))
 		scene.selected = [4]
 		scene._refresh()
 		for _frame in range(4): await process_frame

@@ -59,13 +59,14 @@ var status_label: Label
 var selection_label: Label
 var clock_label: Label
 var faction_labels: Array = []
-var order_buttons: Dictionary = {}
 var pause_button: Button
 var audio_player: AudioStreamPlayer
 var _last_status_ms: int = 0
 var _manual_status: String = ""
 var top_bar: PanelContainer
 var menu_button: MenuButton
+var initial_menu: MenuButton
+var auto_menu: MenuButton
 var command_menu: MenuButton
 var command_cluster: HBoxContainer
 var order_menu_actions: Dictionary = {}
@@ -169,7 +170,6 @@ func _setup_ui() -> void:
 	menu.add_item("全画面表示／解除", 3)
 	menu.add_separator()
 	menu.add_item("各国の状況", 4)
-	menu.add_item("出兵時の行動", 5)
 	menu.add_separator()
 	menu.add_item("保存", 6)
 	menu.add_item("読込", 7)
@@ -233,30 +233,53 @@ func _setup_ui() -> void:
 	command_cluster = HBoxContainer.new()
 	command_cluster.add_theme_constant_override("separation", 6)
 	actions.add_child(command_cluster)
-	for action in ["wait", "auto", "develop"]:
-		var label: String = "住居オート" if action == "develop" else _order_name(action)
-		var button: Button = _compact_button(label, func(): _choose_order(action))
-		command_cluster.add_child(button)
-		order_buttons[action] = button
-	command_menu = MenuButton.new()
-	command_menu.text = "建設・命令 ▾"
-	command_menu.custom_minimum_size = Vector2(116, 42)
-	command_cluster.add_child(command_menu)
+	initial_menu = _command_dropdown("初期 ▾", "新しく出兵する部隊の行動")
+	for action in ["auto", "develop", "wait"]:
+		initial_menu.get_popup().add_radio_check_item(_automatic_order_name(action), initial_menu.get_popup().item_count)
+	initial_menu.get_popup().id_pressed.connect(_on_initial_menu)
+	auto_menu = _command_dropdown("オート ▾", "選択した部隊の自動行動")
+	for action in ["auto", "develop"]:
+		auto_menu.get_popup().add_radio_check_item(_automatic_order_name(action), auto_menu.get_popup().item_count)
+	auto_menu.get_popup().id_pressed.connect(_on_auto_menu)
+	command_menu = _command_dropdown("単発 ▾", "選択した部隊に一度だけ指示。待機は即時、それ以外は目的地をタップ")
 	var orders_popup: PopupMenu = command_menu.get_popup()
 	for entry in ORDERS:
-		if entry[0] in ["move", "wait", "auto", "develop"]: continue
-		if entry[0] == "defend": orders_popup.add_separator("部隊")
+		if entry[0] in ["auto", "develop"]: continue
 		if entry[0] == "build_base": orders_popup.add_separator("住居・地形")
 		if entry[0] == "build_bridge": orders_popup.add_separator("橋・柵")
 		var id: int = order_menu_actions.size()
 		order_menu_actions[id] = entry[0]
-		orders_popup.add_item(entry[1], id)
+		orders_popup.add_radio_check_item(entry[1], id)
 	orders_popup.add_separator()
-	orders_popup.add_item("移動に戻す／命令取消", 99)
+	orders_popup.add_item("目的地指定を取消", 99)
 	orders_popup.id_pressed.connect(_on_order_menu)
 	clear_button = _compact_button("✕", _clear_selection, "選択と目的地指定を解除")
 	actions.add_child(clear_button)
 	bottom.resized.connect(_position_hud)
+
+func _command_dropdown(label: String, tip: String) -> MenuButton:
+	var button: MenuButton = MenuButton.new()
+	button.text = label
+	button.tooltip_text = tip
+	button.custom_minimum_size = Vector2(72, 42)
+	button.get_popup().add_theme_constant_override("v_separation", 12)
+	command_cluster.add_child(button)
+	return button
+
+func _automatic_order_name(action: String) -> String:
+	if action == "auto": return "おまかせ"
+	if action == "develop": return "出店を続ける" if Food.active(sim.state) else "住居を増やす"
+	return _order_name(action)
+
+func _on_initial_menu(id: int) -> void:
+	var actions: Array = ["auto", "develop", "wait"]
+	if id < 0 or id >= actions.size(): return
+	_submit("initial_order", [], -1, {"team": 0, "order": actions[id]})
+	_refresh()
+
+func _on_auto_menu(id: int) -> void:
+	if id == 0: _choose_order("auto")
+	elif id == 1: _choose_order("develop")
 
 func _hud_style() -> StyleBoxFlat:
 	var style: StyleBoxFlat = _style(Color(0.05, 0.09, 0.13, 0.94), Color("3c5662"), 10)
@@ -276,7 +299,8 @@ func _adaptive_layout() -> void:
 	var logical_size: Vector2 = get_viewport_rect().size
 	portrait = logical_size.y > logical_size.x
 	menu_button.get_popup().max_size = Vector2i(0, maxi(160, int(logical_size.y) - 24))
-	command_menu.get_popup().max_size = menu_button.get_popup().max_size
+	for dropdown in [initial_menu, auto_menu, command_menu]:
+		dropdown.get_popup().max_size = menu_button.get_popup().max_size
 	tax_slider.custom_minimum_size.x = 100 if logical_size.x < 850 else 120
 	call_deferred("_position_hud")
 
@@ -296,7 +320,6 @@ func _on_game_menu(id: int) -> void:
 		2: _toggle_range()
 		3: _toggle_fullscreen()
 		4: _show_nations()
-		5: _show_initial_order()
 		6: _save_game()
 		7: _load_game()
 		8: _show_files()
@@ -474,29 +497,56 @@ func _refresh() -> void:
 	selected = valid_ids
 	selection_label.text = "部隊をタップ → 地点で移動" if selected.is_empty() else str(selected.size()) + "隊 · " + str(power) + ((" 店長" if food else " 王") if king_selected else "")
 	if developers > 0: selection_label.text += " · 出店" if food else " · 住居"
-	command_cluster.visible = not selected.is_empty()
 	clear_button.visible = not selected.is_empty()
-	command_menu.text = (_order_name(active_order) + " ▾") if not active_order.is_empty() else "建設・命令 ▾"
-	var popup: PopupMenu = command_menu.get_popup()
-	for item in range(popup.item_count):
-		if popup.is_item_separator(item):
-			if popup.get_item_text(item) in ["住居・地形", "店舗・用地"]: popup.set_item_text(item, "店舗・用地" if food else "住居・地形")
-			if popup.get_item_text(item) in ["橋・柵", "踏切・生ゴミ"]: popup.set_item_text(item, "踏切・生ゴミ" if food else "橋・柵")
-	for id in order_menu_actions:
-		var item: int = command_menu.get_popup().get_item_index(id)
-		command_menu.get_popup().set_item_text(item, _order_name(order_menu_actions[id]))
+	_refresh_command_menus(king_selected)
 	menu_button.get_popup().set_item_text(menu_button.get_popup().get_item_index(4), "各店の状況" if food else "各国の状況")
-	for action in order_buttons:
-		order_buttons[action].text = _order_name(action)
-		order_buttons[action].disabled = replay_playback or selected.is_empty() or (king_selected and action != "wait")
-		var highlighted: bool = active_order == action or (action == "develop" and developers == selected.size() and developers > 0)
-		order_buttons[action].add_theme_stylebox_override("normal", _style(Color("65745a") if highlighted else Color("253543"), Color("ead291") if highlighted else Color("4b6068"), 8))
-	command_menu.disabled = replay_playback or selected.is_empty() or king_selected
 	status_label.visible = not _manual_status.is_empty() and Time.get_ticks_msec() - _last_status_ms < 5000
 	if portrait:
 		status_label.text = "スマホを横向きにすると、盤面を広く使えます"
 		status_label.show()
 	call_deferred("_position_hud")
+
+func _refresh_command_menus(king_selected: bool) -> void:
+	var locked: bool = replay_playback or sim.state.result != "playing"
+	var initial: String = str(sim.state.factions[0].initial_order)
+	for command in pending:
+		if command.action == "initial_order": initial = str(command.extra.order)
+	initial_menu.disabled = locked
+	initial_menu.tooltip_text = "新しく出兵する部隊：" + _automatic_order_name(initial)
+	var initial_actions: Array = ["auto", "develop", "wait"]
+	for id in initial_actions.size():
+		initial_menu.get_popup().set_item_text(id, _automatic_order_name(initial_actions[id]))
+		initial_menu.get_popup().set_item_checked(id, initial == initial_actions[id])
+	auto_menu.disabled = locked or selected.is_empty() or king_selected
+	var shared_mode: String = ""
+	for index in selected.size():
+		var actor: Dictionary = _actor(int(selected[index]))
+		var mode: String = str(actor.get("auto_mode", ""))
+		if mode.is_empty() and actor.get("order", "") in ["auto", "develop"]: mode = str(actor.order)
+		for command in pending:
+			if command.actors.has(selected[index]): mode = str(command.action) if command.action in ["auto", "develop"] else ""
+		if index == 0: shared_mode = mode
+		elif mode != shared_mode: shared_mode = "mixed"
+	for id in 2:
+		var action: String = "auto" if id == 0 else "develop"
+		auto_menu.get_popup().set_item_text(id, _automatic_order_name(action))
+		auto_menu.get_popup().set_item_checked(id, shared_mode == action)
+	auto_menu.tooltip_text = "選択した部隊の自動行動" + ("：" + _automatic_order_name(shared_mode) if shared_mode in ["auto", "develop"] else "")
+	command_menu.disabled = locked or selected.is_empty()
+	var popup: PopupMenu = command_menu.get_popup()
+	for item in range(popup.item_count):
+		if popup.is_item_separator(item):
+			if popup.get_item_text(item) in ["住居・地形", "店舗・用地"]: popup.set_item_text(item, "店舗・用地" if Food.active(sim.state) else "住居・地形")
+			if popup.get_item_text(item) in ["橋・柵", "踏切・生ゴミ"]: popup.set_item_text(item, "踏切・生ゴミ" if Food.active(sim.state) else "橋・柵")
+	for id in order_menu_actions:
+		var action: String = str(order_menu_actions[id])
+		var item: int = popup.get_item_index(id)
+		popup.set_item_text(item, _order_name(action))
+		popup.set_item_checked(item, active_order == action)
+		popup.set_item_disabled(item, king_selected and action not in ["move", "wait"])
+	popup.set_item_disabled(popup.get_item_index(99), active_order.is_empty())
+	command_menu.tooltip_text = "目的地を指定中：" + _order_name(active_order) if not active_order.is_empty() else "選択した部隊へ一度だけ指示。待機は即時、ほかは目的地をタップ"
+	command_menu.add_theme_stylebox_override("normal", _style(Color("65745a") if not active_order.is_empty() else Color("253543"), Color("ead291") if not active_order.is_empty() else Color("4b6068"), 8))
 
 func _actor(id: int) -> Dictionary:
 	for unit in sim.state.units:
@@ -841,16 +891,6 @@ func _show_tax() -> void:
 		))
 	column.add_child(_button("閉じる", _close_modal))
 
-func _show_initial_order() -> void:
-	var column: VBoxContainer = _open_modal("出兵直後の行動")
-	_add_modal_text(column, "村から新しく出た部隊へ自動的に与える行動です。")
-	for action in ["auto", "develop", "wait"]:
-		column.add_child(_button(_order_name(action), func():
-			_submit("initial_order", [], -1, {"team": 0, "order": action})
-			_close_modal()
-		))
-	column.add_child(_button("閉じる", _close_modal))
-
 func _open_modal(title: String) -> VBoxContainer:
 	if is_instance_valid(modal):
 		_close_modal()
@@ -959,7 +999,7 @@ func _start_selected_map() -> void:
 func _show_help() -> void:
 	var column: VBoxContainer = _open_modal("操作と勝ち方")
 	if Food.active(sim.state): _add_modal_text(column, "フーズパニック：赤いハンバーガー店があなたです。村→店舗、王→店長、兵→配達員、水面→線路、橋→踏切として表示します。線路は踏切がある場所だけ通れます。『新装開店』『出店オート』で店を増やそう。以下は共通ルールです。")
-	_add_modal_text(column, "目標：600日以内に敵3国の王を倒す。自国の王が倒れると敗北です。\n\n移動：部隊をタップ → 地点をタップ。移動ボタンは不要。別の味方をタップすると選び直せます。\n\n下部：待機／オート／住居オート。建設・破壊・援軍・防衛は『建設・命令』から選び、その後に目的地をタップします。住居オートは村を増やし続け、攻撃には切り替わりません。\n\n上部：▶／Ⅱで再開と停止。税率はスライダーで変更。低税率は人口、高税率は資金を重視します。☰に速度、全景、範囲選択、各国の状況、出兵時行動、保存／読込、記録をまとめています。\n\nスマホ：横持ち・全画面でプレイ。2本指でパン／ピンチ、長押しで詳細。範囲選択をONにすると1本指ドラッグで複数選択。ジェスチャの離指では移動しません。\n\nPC：左クリック選択、左ドラッグ範囲選択、Shift追加。右ドラッグでパン、ホイールでズーム。Space停止、F全景、Ctrl+A全軍、Ctrl+S保存。\n\n攻略：村で人口を増やして出兵し、援軍で兵を合流させる。自国の村で待機すると消耗を抑えられます。村は資金100で建設。王は城の防御が強く、遠征中は税収が止まります。王が敵王を倒すと残存資産を引き継ぎます。\n\n勝利するとクリア回数・最短日数・直近日時を自動保存します。☰→クリア記録で確認できます。記録はこの端末・ブラウザ内に保存され、ブラウザのサイトデータを消すと失われます。\n\n停止中にも命令を予約できます。保存・リプレイ・JSON→JSONファイルで進行を端末へバックアップできます。ブラウザとAPKは自動同期しません。\n\nフーズパニックの表示素材は参照画面を基に新規作成しています。原作の画像・音楽ファイルは同梱していません。戦闘・人口・経済・AIの数値は一部独自調整を含みます。")
+	_add_modal_text(column, "目標：600日以内に敵3国の王を倒す。自国の王が倒れると敗北です。\n\n移動：部隊をタップ → 地点をタップ。移動ボタンは不要。別の味方をタップすると選び直せます。\n\n下部：『初期』は新しく出兵する部隊の行動。『オート』は選択部隊のおまかせ／住居を増やす。『単発』は移動・待機・建設・破壊・援軍・防衛です。待機は選ぶと即指示、ほかの単発命令は選んでから目的地をタップ。住居を増やすオートは攻撃へ切り替わりません。\n\n上部：▶／Ⅱで再開と停止。税率はスライダーで変更。低税率は人口、高税率は資金を重視します。☰に速度、全景、範囲選択、各国の状況、保存／読込、記録をまとめています。\n\nスマホ：横持ち・全画面でプレイ。2本指でパン／ピンチ、長押しで詳細。範囲選択をONにすると1本指ドラッグで複数選択。ジェスチャの離指では移動しません。\n\nPC：左クリック選択、左ドラッグ範囲選択、Shift追加。右ドラッグでパン、ホイールでズーム。Space停止、F全景、Ctrl+A全軍、Ctrl+S保存。\n\n攻略：村で人口を増やして出兵し、援軍で兵を合流させる。自国の村で待機すると消耗を抑えられます。村は資金100で建設。王は城の防御が強く、遠征中は税収が止まります。王が敵王を倒すと残存資産を引き継ぎます。\n\n勝利するとクリア回数・最短日数・直近日時を自動保存します。☰→クリア記録で確認できます。記録はこの端末・ブラウザ内に保存され、ブラウザのサイトデータを消すと失われます。\n\n停止中にも命令を予約できます。保存・リプレイ・JSON→JSONファイルで進行を端末へバックアップできます。ブラウザとAPKは自動同期しません。\n\nフーズパニックの表示素材は参照画面を基に新規作成しています。原作の画像・音楽ファイルは同梱していません。戦闘・人口・経済・AIの数値は一部独自調整を含みます。")
 	column.add_child(_button("閉じる", _close_modal))
 
 func _run_id_from_save(data: Dictionary) -> String:

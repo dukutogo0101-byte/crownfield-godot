@@ -23,7 +23,7 @@ func run() -> void:
 		check(scene._order_name(action) == Food.ORDERS[action], "context command label: " + action)
 	for id in scene.order_menu_actions:
 		check(scene.command_menu.get_popup().get_item_text(scene.command_menu.get_popup().get_item_index(id)) == scene._order_name(scene.order_menu_actions[id]), "dropdown label follows its actual command ID")
-	check(scene.order_buttons.develop.text == "出店オート", "persistent development button uses store language")
+	check(scene.auto_menu.get_popup().get_item_text(1) == "出店を続ける" and scene.initial_menu.get_popup().get_item_text(1) == "出店を続ける", "initial and selected-unit auto menus use store language")
 	check(scene.faction_labels[0].text.contains("ウィバーガー") and scene.resource_label.text.contains("従業員"), "HUD identifies restaurant setting")
 	check(scene.board._map_layer.texture_filter == CanvasItem.TEXTURE_FILTER_NEAREST, "pixel art uses nearest sampling")
 	check(scene.board.textures.has("food_shop0") and scene.board.textures.has("food_manager3") and scene.board.textures.has("food_rail15"), "atlas covers shops, managers and rail junctions")

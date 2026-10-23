@@ -1,6 +1,6 @@
 {
-	"checks": 36,
+	"checks": 38,
 	"failed": [],
-	"passed": 36,
+	"passed": 38,
 	"scope": "Godot native/headless food skin, labels, pixel resources, minimap, input, save/load and state isolation; actual phone/browser not tested"
 }
