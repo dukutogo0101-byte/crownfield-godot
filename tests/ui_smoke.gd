@@ -13,8 +13,18 @@ func run() -> void:
 	await process_frame
 	scene._close_modal()
 	check(scene.command_cluster.get_child_count() == 3, "command controls contain exactly three dropdowns")
+	check(scene.initial_menu.get_popup().item_count == scene.sim.Automation.INITIAL.size() and scene.auto_menu.get_popup().item_count == scene.sim.Automation.MODES.size(), "initial and auto dropdowns expose every persistent mode")
 	check(scene.initial_menu.text == "初期 ▾" and scene.auto_menu.text == "オート ▾" and scene.command_menu.text == "単発 ▾", "dropdown names stay short and identify the scope")
 	check(not scene.initial_menu.disabled and scene.auto_menu.disabled and scene.command_menu.disabled, "only future-unit defaults can change without a selection")
+	for id in [2, 3]:
+		scene.selected = [4]; scene._refresh()
+		scene.auto_menu.get_popup().id_pressed.emit(id)
+		check(scene.pending.size() == 1 and scene.pending[0].action == scene.sim.Automation.MODES[id] and scene.pending[0].actors == [4] and scene.active_order.is_empty(), "engineering auto menu targets selected troops without a destination: " + str(id))
+		scene.pending.clear(); scene.selected.clear(); scene._refresh()
+		scene.initial_menu.get_popup().id_pressed.emit(id + 1)
+		check(scene.pending.size() == 1 and scene.pending[0].action == "initial_order" and scene.pending[0].extra.order == scene.sim.Automation.MODES[id] and scene.pending[0].actors.is_empty(), "engineering initial menu targets future recruits: " + str(id))
+		scene.pending.clear()
+	scene._refresh()
 	scene.initial_menu.get_popup().id_pressed.emit(2)
 	check(scene.pending.size() == 1 and scene.pending[0].action == "initial_order" and scene.pending[0].actors.is_empty(), "initial dropdown targets future recruits, not existing troops")
 	check(scene.initial_menu.get_popup().is_item_checked(2), "paused initial-order change is reflected immediately")

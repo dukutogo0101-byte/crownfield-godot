@@ -1,8 +1,9 @@
 extends RefCounted
+const Automation = preload("res://core/automatic_work.gd")
 const Path = preload("res://core/pathfinder.gd")
 const Strategy = preload("res://core/strategic_ai.gd")
 const Combat = preload("res://core/combat_resolver.gd")
-const ACTIONS := ["move", "wait", "auto", "develop", "defend", "reinforce", "destroy_base", "build_base", "destroy_village", "build_village", "build_fence", "build_bridge", "reclaim", "destroy_fence", "destroy_bridge", "seal_cave", "tax", "initial_order"]
+const ACTIONS := ["move", "wait", "auto", "develop", "defend", "reinforce", "destroy_base", "build_base", "destroy_village", "build_village", "build_fence", "build_bridge", "reclaim", "destroy_fence", "destroy_bridge", "seal_cave", "tax", "initial_order", "auto_build_bridge", "auto_destroy_base", "auto_destroy_bridge", "auto_build_fence", "auto_destroy_fence", "auto_reclaim", "auto_seal_cave"]
 const BANK_WORK := ["build_bridge", "destroy_bridge", "build_fence", "destroy_fence", "seal_cave"]
 var state: Dictionary = {}
 var rules: Dictionary = {}
@@ -190,15 +191,15 @@ func path_to(start: int,target: int) -> Array: return Path.path(start,target,sta
 func _land(pos: int) -> bool:
 	return state.cells[pos].terrain in [0, 1] and _passable(pos)
 
-func _work_route(start: int, target: int, threats: Dictionary = {}, power: int = -1) -> Dictionary:
+func _work_route(start: int, target: int, threats: Dictionary = {}, power: int = -1, blocked: Dictionary = {}) -> Dictionary:
 	var banks: Array = []
 	for bank in neighbors(target):
-		if not _land(bank) or (power >= 0 and not _safe_step(bank, threats, power)): continue
+		if not _land(bank) or (bank != start and blocked.has(bank)) or (power >= 0 and not _safe_step(bank, threats, power)): continue
 		if bank == start: return {"goal": bank, "route": []}
 		banks.append(bank)
 	var best: int = -1; var length: int = 2147483647
 	if not banks.is_empty():
-		var tree: Dictionary = Path.flood(start, state.w, state.h, func(p): return p != target and _passable(p) and (power < 0 or _safe_step(p, threats, power)), rules.path_neighbor_order)
+		var tree: Dictionary = Path.flood(start, state.w, state.h, func(p): return p != target and not blocked.has(p) and _passable(p) and (power < 0 or _safe_step(p, threats, power)), rules.path_neighbor_order)
 		for bank in banks:
 			if tree.distance.has(bank) and int(tree.distance[bank]) < length: best = bank; length = tree.distance[bank]
 		return {"goal": best, "route": Path.route(tree, best) if best >= 0 else []}
@@ -270,7 +271,7 @@ func economy_forecast(team: int, rate: int = -1) -> Dictionary:
 func can_order(team: int, action: String, actor_ids: Array, target: int = -1) -> bool:
 	if action not in ACTIONS or target < -1 or target >= state.cells.size(): return false
 	if action in ["tax", "initial_order"]: return state.factions[team].alive
-	if actor_ids.is_empty() or (action not in ["wait", "auto", "develop"] and target < 0): return false
+	if actor_ids.is_empty() or (action not in (["wait"] + Automation.MODES) and target < 0): return false
 	for id in actor_ids:
 		var actor: Dictionary = get_unit(int(id))
 		if actor.is_empty() or actor.team != team or actor.power <= 0: return false
@@ -296,7 +297,7 @@ func issue(action: String, actor_ids: Array, target: int = -1, extra: Dictionary
 		for id in actor_ids:
 			var u: Dictionary=get_unit(int(id))
 			if u.is_empty() or u.team!=0 or (u.get("king",false) and action not in ["move","wait"]):return {"accepted":false,"reason":"Invalid actor / leader may only move"}
-		if action not in ["wait","auto","develop"] and target<0:return {"accepted":false,"reason":"Choose destination"}
+		if action not in (["wait"] + Automation.MODES) and target<0:return {"accepted":false,"reason":"Choose destination"}
 		if action in BANK_WORK:
 			for id in actor_ids:
 				if _work_route(get_unit(int(id)).pos, target).goal < 0:
@@ -337,6 +338,7 @@ func step(commands: Array = []) -> void:
 			"outcome":_outcome()
 func _commands() -> void:
 	var immediate_development: Dictionary = {}
+	var immediate_work: Array = []
 	pending.sort_custom(func(a,b):return a.sequence<b.sequence)
 	var keep: Array=[]
 	for c in pending:
@@ -344,18 +346,20 @@ func _commands() -> void:
 		if c.action=="tax":state.factions[0].tax=clampi(int(c.extra.get("value",c.target)),0,rules.tax_max);continue
 		if c.action=="initial_order":
 			var order: String=c.extra.get("order","auto")
-			if order in ["auto","develop","wait","defend"]:state.factions[0].initial_order=order
+			if order in Automation.INITIAL or order == "defend":state.factions[0].initial_order=order
 			continue
 		for id in c.actors:
 			var u: Dictionary=get_unit(int(id))
 			if not u.is_empty() and u.team==0:
-					u.order=c.action;u.target=u.pos if c.target<0 else c.target;u.manual=c.action not in ["auto", "develop"]
-					u["auto_mode"] = c.action if c.action in ["auto", "develop"] else ""
+					u.order=c.action;u.target=u.pos if c.target<0 else c.target;u.manual=c.action not in Automation.MODES
+					u["auto_mode"] = c.action if c.action in Automation.MODES else ""
 					u.erase("ai_job")
 					u.erase("ai_task")
 					if c.action == "develop": immediate_development[u.id] = u
+					if Automation.WORK.has(c.action): immediate_work.append(u)
 	pending=keep
 	_continue_development(immediate_development.values())
+	if not immediate_work.is_empty(): Automation.plan(self, immediate_work)
 func _movement() -> void:
 	var actors: Array = _actors()
 	var rally_fields: Dictionary = {}
@@ -377,13 +381,16 @@ func _movement() -> void:
 			# Retain a manual construction destination while its resources are missing.
 			# Walking toward it can otherwise create an unintended enemy contact.
 			if u.order in ["build_base", "build_village"] and (state.factions[u.team].funds < rules.build_cost or u.power <= rules.build_population): continue
+			if Automation.WORK.has(u.get("auto_mode", "")):
+				if not Automation.target_valid(self, u, u.order, u.target) or not Automation.affordable(self, u, u.order, u.target):
+					Automation.wait_here(u); continue
 			if u.pos==u.target and u.order not in BANK_WORK:continue
 			var goal: int=u.target
 			var automatic: bool = not u.manual and u.get("ai_job", "") != ""
 			if automatic and not threats_by_team.has(u.team): threats_by_team[u.team] = _threat_map(u.team)
 			var work_route: Dictionary = {}
 			if u.order in BANK_WORK:
-				work_route = _work_route(u.pos, goal, threats_by_team.get(u.team, {}), u.power if automatic else -1)
+				work_route = _work_route(u.pos, goal, threats_by_team.get(u.team, {}), u.power if automatic and u.get("ai_job", "") != "work" else (0 if automatic else -1), Automation.blockers(self, u) if u.get("ai_job", "") == "work" else {})
 				goal = work_route.goal
 				if goal < 0 or goal == u.pos: continue
 			elif not _passable(goal):
@@ -409,17 +416,17 @@ func _movement() -> void:
 					for next in neighbors(u.pos):
 						if field.has(next) and int(field[next]) < distance: best = next; distance = field[next]
 					if best >= 0: route = [best]
-			elif automatic and u.get("ai_job", "") in ["attack", "defend", "escort", "develop"]:
+			elif automatic and u.get("ai_job", "") in ["attack", "defend", "escort", "develop", "work"]:
 				if not threats_by_team.has(u.team): threats_by_team[u.team] = _threat_map(u.team)
 				var threats: Dictionary = threats_by_team[u.team]
-				var power: int = u.power if u.get("ai_job", "") in ["attack", "defend", "escort"] else 0
-				var blockers: Dictionary = _builder_blockers(u) if u.get("ai_job", "") == "develop" else {}
+				var power: int = u.power if u.get("ai_job", "") in ["attack", "defend", "escort"] or (u.get("ai_job", "") == "work" and u.order == "destroy_base") else 0
+				var blockers: Dictionary = Automation.blockers(self, u) if u.get("ai_job", "") == "work" else (_builder_blockers(u) if u.get("ai_job", "") == "develop" else {})
 				route = Path.path(u.pos, goal, state.w, state.h, func(p): return _passable(p) and not blockers.has(p) and _safe_step(p, threats, power), rules.path_neighbor_order)
 			else: route = path_to(u.pos, goal)
 			if route.is_empty():continue
 			var next: int=route[0];var occupied:=false
 			var resistance: int = _enemy_strength(next, u.team, actors) if automatic else 0
-			if automatic and u.get("ai_job", "") in ["attack", "defend", "escort", "engineer"] and resistance > 0 and not _advantage(u.power, resistance):
+			if automatic and u.get("ai_job", "") in ["attack", "defend", "escort", "engineer", "work"] and resistance > 0 and not _advantage(u.power, resistance):
 				continue
 			for enemy in actors:
 				if enemy.team!=u.team and enemy.pos==next and enemy.power>0:occupied=true;break
@@ -428,6 +435,7 @@ func _movement() -> void:
 				var b: Dictionary=get_base(next)
 				if not b.is_empty() and b.team!=u.team:
 					state.bases.erase(b);_event("Enemy village destroyed")
+					if u.get("auto_mode", "") == "auto_destroy_base": Automation.plan(self, [u])
 				if state.cells[next].terrain==0:state.cells[next].owner=u.team
 func _actors() -> Array:
 	var out: Array=state.units.duplicate()
@@ -492,6 +500,7 @@ func _can_build(pos: int,team: int) -> bool:
 	return existing.is_empty() or existing.team!=team
 func _work() -> void:
 	var completed_development: Array = []
+	var completed_work: Array = []
 	for u in state.units.duplicate():
 		var previous_order: String = u.order
 		var pos: int=u.target
@@ -533,6 +542,9 @@ func _work() -> void:
 				if not b.is_empty():state.bases.erase(b);done=true
 			"reinforce","move":done=u.pos==pos
 		if done:
+			if Automation.WORK.has(u.get("auto_mode", "")):
+				completed_work.append(u)
+				continue
 			u.order="wait" if u.manual else ("develop" if u.get("auto_mode", "") == "develop" else "auto")
 			if not u.manual:
 				Strategy.work_completed(self, u, previous_order)
@@ -540,7 +552,9 @@ func _work() -> void:
 	# Select a destination now; movement/work still obey their normal periods.
 	# Planning after all work also sees every village founded in this phase.
 	_continue_development(completed_development)
+	if not completed_work.is_empty(): Automation.plan(self, completed_work)
 func _population() -> void:
+	var new_workers: Array = []
 	for b in state.bases.duplicate():
 		var cap: int=population_limit(b)
 		if b.pop<=cap:
@@ -552,7 +566,9 @@ func _population() -> void:
 			if expansion>=0:state.cells[expansion].owner=b.team
 			elif state.units.size()<rules.max_units:
 				var initial: String = state.factions[b.team].initial_order
-				state.units.append({"id":state.next_id,"team":b.team,"pos":b.pos,"power":b.pop-1,"order":initial,"target":b.pos,"manual":false,"king":false,"auto_mode":initial if initial in ["auto", "develop"] else ""});state.next_id+=1;b.pop=1
+				state.units.append({"id":state.next_id,"team":b.team,"pos":b.pos,"power":b.pop-1,"order":initial,"target":b.pos,"manual":false,"king":false,"auto_mode":initial if initial in Automation.MODES else ""});state.next_id+=1;b.pop=1
+				if Automation.WORK.has(initial): new_workers.append(state.units.back())
+	if not new_workers.is_empty(): Automation.plan(self, new_workers)
 func _economy_networks() -> Dictionary:
 	# Exact topology comparison (no hash collisions). Population and bridge
 	# durability above zero do not change connectivity. Direct state edits in
@@ -808,6 +824,7 @@ func _continue_development(workers: Array) -> void:
 		_wait_for_development(u)
 
 func _ai() -> void:
+	Automation.plan(self)
 	Strategy.new(self).think()
 func _leaders() -> void:
 	for king in state.leaders:

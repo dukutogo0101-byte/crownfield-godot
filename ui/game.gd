@@ -234,11 +234,11 @@ func _setup_ui() -> void:
 	command_cluster.add_theme_constant_override("separation", 6)
 	actions.add_child(command_cluster)
 	initial_menu = _command_dropdown("初期 ▾", "新しく出兵する部隊の行動")
-	for action in ["auto", "develop", "wait"]:
+	for action in Simulation.Automation.INITIAL:
 		initial_menu.get_popup().add_radio_check_item(_automatic_order_name(action), initial_menu.get_popup().item_count)
 	initial_menu.get_popup().id_pressed.connect(_on_initial_menu)
 	auto_menu = _command_dropdown("オート ▾", "選択した部隊の自動行動")
-	for action in ["auto", "develop"]:
+	for action in Simulation.Automation.MODES:
 		auto_menu.get_popup().add_radio_check_item(_automatic_order_name(action), auto_menu.get_popup().item_count)
 	auto_menu.get_popup().id_pressed.connect(_on_auto_menu)
 	command_menu = _command_dropdown("単発 ▾", "選択した部隊に一度だけ指示。待機は即時、それ以外は目的地をタップ")
@@ -269,17 +269,18 @@ func _command_dropdown(label: String, tip: String) -> MenuButton:
 func _automatic_order_name(action: String) -> String:
 	if action == "auto": return "おまかせ"
 	if action == "develop": return "出店を続ける" if Food.active(sim.state) else "住居を増やす"
-	return _order_name(action)
+	var names: Dictionary = {"auto_build_bridge": "橋を架ける", "auto_destroy_base": "敵村を壊す", "auto_destroy_bridge": "敵側の橋を壊す", "auto_build_fence": "国境に柵を作る", "auto_destroy_fence": "敵柵を壊す", "auto_reclaim": "開墾を続ける", "auto_seal_cave": "洞窟を封鎖"}
+	if Food.active(sim.state): names.merge({"auto_build_bridge": "踏切を作る", "auto_destroy_base": "敵店を閉める", "auto_destroy_bridge": "敵側の踏切を壊す", "auto_build_fence": "境界に生ゴミを置く", "auto_destroy_fence": "他店の生ゴミを片す", "auto_reclaim": "宅地造成を続ける", "auto_seal_cave": "暴力追放を続ける"}, true)
+	return str(names[action]) if names.has(action) else _order_name(action)
 
 func _on_initial_menu(id: int) -> void:
-	var actions: Array = ["auto", "develop", "wait"]
+	var actions: Array = Simulation.Automation.INITIAL
 	if id < 0 or id >= actions.size(): return
 	_submit("initial_order", [], -1, {"team": 0, "order": actions[id]})
 	_refresh()
 
 func _on_auto_menu(id: int) -> void:
-	if id == 0: _choose_order("auto")
-	elif id == 1: _choose_order("develop")
+	if id >= 0 and id < Simulation.Automation.MODES.size(): _choose_order(Simulation.Automation.MODES[id])
 
 func _hud_style() -> StyleBoxFlat:
 	var style: StyleBoxFlat = _style(Color(0.05, 0.09, 0.13, 0.94), Color("3c5662"), 10)
@@ -513,7 +514,7 @@ func _refresh_command_menus(king_selected: bool) -> void:
 		if command.action == "initial_order": initial = str(command.extra.order)
 	initial_menu.disabled = locked
 	initial_menu.tooltip_text = "新しく出兵する部隊：" + _automatic_order_name(initial)
-	var initial_actions: Array = ["auto", "develop", "wait"]
+	var initial_actions: Array = Simulation.Automation.INITIAL
 	for id in initial_actions.size():
 		initial_menu.get_popup().set_item_text(id, _automatic_order_name(initial_actions[id]))
 		initial_menu.get_popup().set_item_checked(id, initial == initial_actions[id])
@@ -522,16 +523,16 @@ func _refresh_command_menus(king_selected: bool) -> void:
 	for index in selected.size():
 		var actor: Dictionary = _actor(int(selected[index]))
 		var mode: String = str(actor.get("auto_mode", ""))
-		if mode.is_empty() and actor.get("order", "") in ["auto", "develop"]: mode = str(actor.order)
+		if mode.is_empty() and actor.get("order", "") in Simulation.Automation.MODES: mode = str(actor.order)
 		for command in pending:
-			if command.actors.has(selected[index]): mode = str(command.action) if command.action in ["auto", "develop"] else ""
+			if command.actors.has(selected[index]): mode = str(command.action) if command.action in Simulation.Automation.MODES else ""
 		if index == 0: shared_mode = mode
 		elif mode != shared_mode: shared_mode = "mixed"
-	for id in 2:
-		var action: String = "auto" if id == 0 else "develop"
+	for id in Simulation.Automation.MODES.size():
+		var action: String = Simulation.Automation.MODES[id]
 		auto_menu.get_popup().set_item_text(id, _automatic_order_name(action))
 		auto_menu.get_popup().set_item_checked(id, shared_mode == action)
-	auto_menu.tooltip_text = "選択した部隊の自動行動" + ("：" + _automatic_order_name(shared_mode) if shared_mode in ["auto", "develop"] else "")
+	auto_menu.tooltip_text = "選択した部隊の自動行動" + ("：" + _automatic_order_name(shared_mode) if shared_mode in Simulation.Automation.MODES else "")
 	command_menu.disabled = locked or selected.is_empty()
 	var popup: PopupMenu = command_menu.get_popup()
 	for item in range(popup.item_count):
@@ -604,7 +605,7 @@ func _on_range_selected(cells: Array, additive: bool) -> void:
 func _choose_order(action: String) -> void:
 	if selected.is_empty():
 		return
-	if action in ["wait", "auto", "develop"]:
+	if action == "wait" or action in Simulation.Automation.MODES:
 		_submit(action, selected, -1)
 		active_order = ""
 	else:
@@ -636,6 +637,7 @@ func _set_status(value: String, error: bool = false) -> void:
 		status_label.add_theme_color_override("font_color", Color("ffb3a2") if error else Color("f4dea3"))
 
 func _order_name(action: String) -> String:
+	if Simulation.Automation.WORK.has(action): return _automatic_order_name(action)
 	if Food.active(sim.state) and Food.ORDERS.has(action): return Food.ORDERS[action]
 	if action == "tax": return "税率変更"
 	if action == "initial_order": return "出兵時の行動"
@@ -999,7 +1001,7 @@ func _start_selected_map() -> void:
 func _show_help() -> void:
 	var column: VBoxContainer = _open_modal("操作と勝ち方")
 	if Food.active(sim.state): _add_modal_text(column, "フーズパニック：赤いハンバーガー店があなたです。村→店舗、王→店長、兵→配達員、水面→線路、橋→踏切として表示します。線路は踏切がある場所だけ通れます。『新装開店』『出店オート』で店を増やそう。以下は共通ルールです。")
-	_add_modal_text(column, "目標：600日以内に敵3国の王を倒す。自国の王が倒れると敗北です。\n\n移動：部隊をタップ → 地点をタップ。移動ボタンは不要。別の味方をタップすると選び直せます。\n\n下部：『初期』は新しく出兵する部隊の行動。『オート』は選択部隊のおまかせ／住居を増やす。『単発』は移動・待機・建設・破壊・援軍・防衛です。待機は選ぶと即指示、ほかの単発命令は選んでから目的地をタップ。住居を増やすオートは攻撃へ切り替わりません。\n\n上部：▶／Ⅱで再開と停止。税率はスライダーで変更。低税率は人口、高税率は資金を重視します。☰に速度、全景、範囲選択、各国の状況、保存／読込、記録をまとめています。\n\nスマホ：横持ち・全画面でプレイ。2本指でパン／ピンチ、長押しで詳細。範囲選択をONにすると1本指ドラッグで複数選択。ジェスチャの離指では移動しません。\n\nPC：左クリック選択、左ドラッグ範囲選択、Shift追加。右ドラッグでパン、ホイールでズーム。Space停止、F全景、Ctrl+A全軍、Ctrl+S保存。\n\n攻略：村で人口を増やして出兵し、援軍で兵を合流させる。自国の村で待機すると消耗を抑えられます。村は資金100で建設。王は城の防御が強く、遠征中は税収が止まります。王が敵王を倒すと残存資産を引き継ぎます。\n\n勝利するとクリア回数・最短日数・直近日時を自動保存します。☰→クリア記録で確認できます。記録はこの端末・ブラウザ内に保存され、ブラウザのサイトデータを消すと失われます。\n\n停止中にも命令を予約できます。保存・リプレイ・JSON→JSONファイルで進行を端末へバックアップできます。ブラウザとAPKは自動同期しません。\n\nフーズパニックの表示素材は参照画面を基に新規作成しています。原作の画像・音楽ファイルは同梱していません。戦闘・人口・経済・AIの数値は一部独自調整を含みます。")
+	_add_modal_text(column, "目標：600日以内に敵3国の王を倒す。自国の王が倒れると敗北です。\n\n移動：部隊をタップ → 地点をタップ。移動ボタンは不要。別の味方をタップすると選び直せます。\n\n下部：『初期』は新しく出兵する部隊の行動。『オート』は選択部隊のおまかせ、住居・橋・国境の柵の建設、敵村・敵側の橋・敵柵の破壊、開墾、洞窟封鎖を継続します。初期にも同じ継続命令を設定できます。対象や資金が足りなければ、その場で待機します。『単発』は移動・待機・建設・破壊・援軍・防衛です。待機は選ぶと即指示、ほかの単発命令は選んでから目的地をタップ。住居を増やすオートは攻撃へ切り替わりません。\n\n上部：▶／Ⅱで再開と停止。税率はスライダーで変更。低税率は人口、高税率は資金を重視します。☰に速度、全景、範囲選択、各国の状況、保存／読込、記録をまとめています。\n\nスマホ：横持ち・全画面でプレイ。2本指でパン／ピンチ、長押しで詳細。範囲選択をONにすると1本指ドラッグで複数選択。ジェスチャの離指では移動しません。\n\nPC：左クリック選択、左ドラッグ範囲選択、Shift追加。右ドラッグでパン、ホイールでズーム。Space停止、F全景、Ctrl+A全軍、Ctrl+S保存。\n\n攻略：村で人口を増やして出兵し、援軍で兵を合流させる。自国の村で待機すると消耗を抑えられます。村は資金100で建設。王は城の防御が強く、遠征中は税収が止まります。王が敵王を倒すと残存資産を引き継ぎます。\n\n勝利するとクリア回数・最短日数・直近日時を自動保存します。☰→クリア記録で確認できます。記録はこの端末・ブラウザ内に保存され、ブラウザのサイトデータを消すと失われます。\n\n停止中にも命令を予約できます。保存・リプレイ・JSON→JSONファイルで進行を端末へバックアップできます。ブラウザとAPKは自動同期しません。\n\nフーズパニックの表示素材は参照画面を基に新規作成しています。原作の画像・音楽ファイルは同梱していません。戦闘・人口・経済・AIの数値は一部独自調整を含みます。")
 	column.add_child(_button("閉じる", _close_modal))
 
 func _run_id_from_save(data: Dictionary) -> String:
