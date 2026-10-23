@@ -18,7 +18,15 @@ for (const icon of manifest.icons) {
   assert.equal(bytes.readUInt32BE(20), height);
 }
 const html = fs.readFileSync(path.join(output, 'index.html'), 'utf8');
-assert.ok(html.includes('rel="manifest"'));
+// Private Sites requires the browser's authenticated cookies on its manifest
+// request. A valid JSON file alone does not make that request succeed.
+const manifestLink = html.match(/<link\b[^>]*rel="manifest"[^>]*>/g) || [];
+assert.equal(manifestLink.length, 1);
+assert.match(manifestLink[0], /crossorigin="use-credentials"/);
+const manifestURL = new URL(manifestLink[0].match(/href="([^"]+)"/)[1], 'https://example.test/');
+assert.equal(manifestURL.pathname, '/index.manifest.json');
+const buildVersion = html.match(/window.CROWNFIELD_BUILD_VERSION="([^"]+)"/)[1];
+assert.equal(manifestURL.searchParams.get('v'), buildVersion);
 assert.ok(html.includes('id="app-dialog"') && html.includes('id="app-open"'));
 const events = {}, elements = {}, registered = [];
 let installed = false, focused = false;
@@ -54,5 +62,7 @@ assert.equal(registered.length, 1);
 assert.equal(registered[0][0], './index.service.worker.js');
 assert.equal(registered[0][1].scope, './');
 const worker = fs.readFileSync(path.join(output, 'index.service.worker.js'), 'utf8');
+assert.ok(worker.includes(`const CACHE_VERSION = "${buildVersion}";`));
+assert.ok(worker.includes(`"index.manifest.json?v=${buildVersion}"`));
 for (const asset of ['pwa.js?v=', 'index.manifest.json', 'index.192x192.png', 'index.512x512.png']) assert.ok(worker.includes(asset), asset);
 console.log('PWA manifest, real PNG sizes, install dialog/prompt/standalone and worker registration passed (Node mock).');

@@ -26,11 +26,13 @@ shutil.copy2(root / 'web/viewport.js', destination / 'viewport.js')
 shutil.copy2(root / 'web/pwa.js', destination / 'pwa.js')
 with Image.open(destination / 'index.512x512.png') as icon:
     icon.resize((192, 192), Image.Resampling.LANCZOS).save(destination / 'index.192x192.png')
-build_version = hashlib.sha256((destination / 'index.pck').read_bytes() + (root / 'web/shell.html').read_bytes() + (root / 'web/viewport.js').read_bytes() + (root / 'web/compressed_wasm.js').read_bytes() + (root / 'web/pwa.js').read_bytes()).hexdigest()[:16]
+build_version = hashlib.sha256((destination / 'index.pck').read_bytes() + (root / 'web/shell.html').read_bytes() + (root / 'web/viewport.js').read_bytes() + (root / 'web/compressed_wasm.js').read_bytes() + (root / 'web/pwa.js').read_bytes() + pathlib.Path(__file__).read_bytes()).hexdigest()[:16]
 html = destination / 'index.html'
 old_html = html.read_text()
 config = re.search(r'const GODOT_CONFIG=(.*?);\n', old_html).group(1)
-head = '<link rel="icon" href="index.icon.png">\n<link rel="apple-touch-icon" href="index.apple-touch-icon.png">\n<link rel="manifest" href="index.manifest.json">'
+# The owner-private host authenticates the manifest too. Chrome omits cookies
+# for manifest requests unless use-credentials is explicit, even on this origin.
+head = '<link rel="icon" href="index.icon.png">\n<link rel="apple-touch-icon" href="index.apple-touch-icon.png">\n' + f'<link rel="manifest" href="index.manifest.json?v={build_version}" crossorigin="use-credentials">'
 s = (root / 'web/shell.html').read_text().replace('$GODOT_HEAD_INCLUDE', head).replace('$GODOT_CONFIG', config).replace('$GODOT_URL', 'index.js')
 s = re.sub(r'<script>window.CROWNFIELD_BUILD_VERSION=.*?</script>\n?', '', s)
 s = re.sub(r'src="index.js[^"\s]*"', f'src="index.js?v={build_version}"', s)
@@ -43,6 +45,9 @@ s = s.replace('<script src="compressed_wasm.js', f'<script>window.CROWNFIELD_BUI
 html.write_text(s)
 worker = destination / 'index.service.worker.js'
 s = worker.read_text().replace('"index.wasm"', '"index.wasm.gz"')
+# Web-only fixes must receive their own cache instead of reusing the PCK cache.
+# Activation remains browser-controlled so an ongoing game is never reloaded.
+s = re.sub(r'const CACHE_VERSION = .*?;', f'const CACHE_VERSION = "{build_version}";', s)
 for array in ['CACHED_FILES', 'CACHEABLE_FILES']:
     pattern = r'const ' + array + r' = (\[.*?\]);'
     match = re.search(pattern, s)
@@ -50,7 +55,7 @@ for array in ['CACHED_FILES', 'CACHEABLE_FILES']:
     if array == 'CACHED_FILES':
         for extra in ['compressed_wasm.js', 'viewport.js', 'pwa.js', 'index.manifest.json', 'index.192x192.png', 'index.512x512.png']:
             if extra not in names: names.append(extra)
-    names = [name + '?v=' + build_version if name in ['index.js', 'compressed_wasm.js', 'viewport.js', 'pwa.js', 'index.pck', 'index.wasm.gz'] else name for name in names]
+    names = [name + '?v=' + build_version if name in ['index.js', 'compressed_wasm.js', 'viewport.js', 'pwa.js', 'index.pck', 'index.wasm.gz', 'index.manifest.json'] else name for name in names]
     s = re.sub(pattern, 'const ' + array + ' = ' + json.dumps(names) + ';', s)
 worker.write_text(s)
 manifest_path = destination / 'index.manifest.json'
