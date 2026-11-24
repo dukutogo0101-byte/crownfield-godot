@@ -26,7 +26,7 @@ func run() -> void:
 	check(scene.auto_menu.get_popup().get_item_text(1) == "出店を続ける" and scene.initial_menu.get_popup().get_item_text(1) == "出店を続ける", "initial and selected-unit auto menus use store language")
 	check(scene.auto_menu.get_popup().get_item_text(2) == "踏切を作る" and scene.auto_menu.get_popup().get_item_text(3) == "敵店を閉める", "new continuous work follows the restaurant setting")
 	check(scene.faction_labels[0].text.contains("ウィバーガー") and scene.resource_label.text.contains("従業員"), "HUD identifies restaurant setting")
-	check(scene.board._map_layer.texture_filter == CanvasItem.TEXTURE_FILTER_NEAREST, "pixel art uses nearest sampling")
+	check(scene.board._map_layer.texture_filter == CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS, "food illustration uses filtered mip levels")
 	check(scene.board.textures.has("food_shop0") and scene.board.textures.has("food_manager3") and scene.board.textures.has("food_rail15"), "atlas covers shops, managers and rail junctions")
 	var ford: int = 20 * 48 + 41
 	check(Food.tile_key(scene.sim.state, scene.sim.state.factions[0].home) == "food_owned_pavement0", "player lot uses the original-style red paving palette")
@@ -40,7 +40,7 @@ func run() -> void:
 	scene._save_game()
 	scene._reset_game(scene.MAPS[0].path)
 	check(not Food.active(scene.sim.state) and scene._order_name("build_base") == "村建設", "normal map restores medieval labels")
-	check(scene.board._map_layer.texture_filter == CanvasItem.TEXTURE_FILTER_PARENT_NODE, "normal map restores its original filtering")
+	check(scene.board._map_layer.texture_filter == CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS, "regular terrain uses filtered mip levels")
 	check(scene._load_game() and Food.active(scene.sim.state) and scene.sim.state_hash() == hash_before, "save restores both the original state and food presentation")
 	check(scene._order_name("build_bridge") == "踏切を作る", "loaded map restores themed command menu")
 	scene.selected = [4]
@@ -54,7 +54,7 @@ func run() -> void:
 	check(scene.board.cell_at(scene.board.cell_point(2303)) == 2303, "48x48 corner remains tappable")
 	# Rasterize the actual imported atlas for visual inspection without a browser.
 	var atlas: Image = Food.ATLAS.get_image()
-	check(atlas != null and atlas.get_width() == 256 and atlas.get_height() == 192, "all 46 pixel tiles imported")
+	check(atlas != null and atlas.get_width() == 2048 and atlas.get_height() == 1536 and atlas.has_mipmaps(), "all illustrated regions imported with mips")
 	atlas.save_png("/tmp/crownfield-food-atlas.png")
 	var document: Dictionary = {"checks": checks, "passed": checks - failures.size(), "failed": failures, "scope": "Godot native/headless food skin, labels, pixel resources, minimap, input, save/load and state isolation; actual phone/browser not tested"}
 	var file = FileAccess.open("res://tests/food_theme_results.json", FileAccess.WRITE)

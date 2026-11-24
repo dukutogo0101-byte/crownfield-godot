@@ -1,161 +1,241 @@
 #!/usr/bin/env python3
-"""Hand-drawn pixel geometry for the Foods Panic presentation; no ripped tiles.
+"""Draw the Foods Panic miniature diner set. Run from any directory.
 
-32px cells, 8 columns. See ui/food_theme.gd for the matching atlas order.
+The live square in each 256px slot is 192px, with a 32px gutter for
+filtered minification. Names/order are shared with ui/food_theme.gd.
+All coordinates below are in a 64-unit working square, not source pixels.
 """
 from pathlib import Path
 
-tiles = []
-ink = '#272820'
-cream = '#fff1c3'
-colors = ['#ce4739', '#e6e5ce', '#edb52e', '#3e75c4']
-dark = ['#852d2d', '#8c998e', '#a96925', '#294b83']
+INK, GLASS, IVORY, METAL = '#293b3e', '#3c6168', '#fff2c8', '#bbc8ba'
+TEAMS = [('#d84d3d', '#933b35', '#fa8366'), ('#f2eaca', '#748d83', '#fff9e1'),
+         ('#e9b73d', '#906529', '#ffe388'), ('#34769b', '#264e6b', '#7eb9c5')]
+PAVERS = [('#adbcaa','#8e9e91','#c3cfb6'), ('#c99176','#ad7666','#dba78b'),
+          ('#d3d7ba','#afbda8','#e2e5cb'), ('#d3bb77','#b49e69','#e0ce96'),
+          ('#84a9ab','#71908e','#a3bcb6')]
 
-def rect(x, y, w, h, c):
-    return f'<rect x="{x}" y="{y}" width="{w}" height="{h}" fill="{c}"/>'
+def p(d, c, line=None, w=1):
+    stroke = f' stroke="{line}" stroke-width="{w}" stroke-linejoin="round" stroke-linecap="round"' if line else ''
+    return f'<path d="{d}" fill="{c}"{stroke}/>'
 
-def poly(points, c):
-    return f'<path d="{points}" fill="{c}"/>'
+def s(d, c, w=1): return p(d, 'none', c, w)
+def r(x,y,w,h,c,rad=0):
+    return f'<rect x="{x}" y="{y}" width="{w}" height="{h}" rx="{rad}" fill="{c}"/>'
+def e(x,y,rx,ry,c):
+    return f'<ellipse cx="{x}" cy="{y}" rx="{rx}" ry="{ry}" fill="{c}"/>'
+def g(tr, art): return f'<g transform="{tr}">{art}</g>'
+def use(key): return f'<use xlink:href="#{key}"/>'
+def sym(name, art):
+    defs.append(f'<g id="{name}">{art}</g>')
+    return use(name)
+def gradient(key, values):
+    defs.append(f'<linearGradient id="{key}" x1="0%" y1="0%" x2="14%" y2="100%">'+
+                ''.join(f'<stop offset="{i/(len(values)-1):.2f}" stop-color="{v}"/>' for i,v in enumerate(values))+'</linearGradient>')
+    return f'url(#{key})'
 
-def burger(x, y, scale=1):
-    art = rect(1, 5, 18, 8, '#6f3929')
-    art += poly('M2 5V3H4V1H15V2H18V5Z', '#f5be62')
-    art += rect(3, 2, 13, 1, '#ffe0a0')
-    art += rect(1, 6, 18, 2, '#87b54a') + rect(3, 8, 14, 2, '#e94d37')
-    art += rect(2, 10, 16, 2, '#f0a735') + rect(4, 12, 12, 2, '#d08238')
-    for sx, sy in [(5, 3), (10, 2), (14, 4)]: art += rect(sx, sy, 2, 1, '#fff0c1')
-    return f'<g transform="translate({x},{y}) scale({scale})">{art}</g>'
+defs = []
+bun = gradient('bun',['#fff0a6','#f1b558','#c87a3f'])
+cream = gradient('cream',['#fffae1','#f4e6bb','#cbbf9b'])
+aqua = gradient('aqua',['#b9dfd3','#77a6a4','#4a727d'])
+silver = gradient('silver',['#f2efcd','#c4d5ce','#729394'])
+slate = gradient('slate',['#566b68','#344747'])
+salmon = gradient('salmon',['#ffb18a','#e77863','#bc514c'])
+for i,(light, shade, shine) in enumerate(TEAMS):
+    gradient(f'color{i}',[shine,light,shade])
 
-def emblem(team, x, y, scale=1):
-    if team == 0: return burger(x, y, scale)
-    if team == 1:
-        art = rect(2, 2, 14, 8, '#e34c40') + rect(4, 0, 10, 3, cream)
-        art += rect(0, 10, 18, 2, cream) + rect(3, 12, 2, 2, ink) + rect(13, 12, 2, 2, ink)
-        art += rect(7, 3, 4, 6, '#ffe7a3')
-    elif team == 2:
-        art = poly('M4 2H14V4H16V10H13V13H10V11H7V14H4V11H1V9H3V5Z', '#ce4c39')
-        art += rect(5, 1, 8, 2, '#ef8060') + rect(6, 5, 2, 2, cream) + rect(11, 5, 2, 2, cream)
-        art += rect(7, 6, 1, 1, ink) + rect(11, 6, 1, 1, ink)
-    else:
-        art = poly('M0 5L5 0H16L19 5V10H0Z', '#e9ead3')
-        art += poly('M1 4L6 1H15L18 4Z', '#f18a73')
-        art += rect(6, 3, 6, 7, '#293b37') + rect(7, 4, 4, 1, '#4e6b5c')
-        art += rect(1, 10, 18, 2, '#8e6952')
-    return f'<g transform="translate({x},{y}) scale({scale})">{art}</g>'
+# Each emblem has the same center and baseline, giving roofs matching sign mounts.
+def emblem(i):
+    if i==0: # split-seed brioche, bright lettuce, folded cheddar and a charred patty
+        a=p('M9 28Q11 37 31 37Q51 37 55 28L54 22H10Z',bun,INK,1.9)
+        a+=p('M10 26Q19 30 30 29Q44 31 54 26L54 23Q42 20 32 23Q19 20 10 23Z','#713f34',INK,1.2)
+        a+=p('M10 23Q15 18 21 22Q27 19 31 21Q37 18 42 21L53 19L54 22Q49 27 44 24L40 28L32 24Q24 26 19 23Q13 26 10 23Z','#92a94b')
+        a+=p('M9 20C10 8 20 2 32 2C44 2 53 9 55 19Q48 23 32 23Q16 23 9 20Z',bun,INK,1.7)
+        a+=s('M14 15Q19 6 30 6','#ffedbb',1.3)
+        for x,y in [(22,12),(33,8),(40,14),(29,17),(47,16)]:
+            a+=s(f'M{x} {y}l1.6 -.9','#fff1bf',1.5)
+    elif i==1: # street stall: red lacquer noodle bowl with chopsticks and steam
+        a=s('M32 19L51 3M36 20L56 7','#8d6749',1.6)
+        a+=s('M19 16Q24 12 21 9Q18 6 22 3M28 15Q32 12 30 8','#f7ebd5',2.8)
+        a+=p('M9 19Q14 36 31 36Q48 36 55 19Z','#b95143',INK,1.9)
+        a+=p('M10 19Q32 14 54 19Q48 25 32 25Q17 25 10 19Z',cream,INK,1)
+        a+=e(32,20,17,2.2,'#95603c')+s('M21 20q3 -3 7 -.5t7 -.5t8 .3','#edbd6c',1.5)
+        a+=s('M17 26Q32 33 47 26','#f5d8a2',2.1)+r(24,34,15,3,INK,1.5)
+    elif i==2: # playful octopus on the takoyaki marquee
+        a=p('M15 24C11 11 17 3 30 2C42 1 51 11 48 24C54 26 56 22 55 20C63 27 54 36 47 31Q45 38 38 34Q33 41 27 34Q18 39 16 32C9 35 3 27 8 22Q9 28 15 24Z',salmon,INK,1.8)
+        a+=s('M19 14Q23 7 30 7','#ffcb9e',2.1)+e(26,20,1.8,2.5,INK)+e(39,20,1.8,2.5,INK)
+        a+=e(33,25,4.0,2.8,'#ffd19c')+e(33,25,2.0,1.1,'#90493f')
+        a+=s('M12 28q3 3 5 1m5 3q2 2 4 0m12 0q2 2 4 -1m8 -2q3 0 4 -3','#ffc39a',1.3)
+    else: # salmon nigiri; neither type nor a logo is needed at map scale
+        a=p('M7 24Q8 14 20 13L48 11Q57 10 58 20Q58 29 50 31L19 35Q8 37 7 29Z',cream,INK,1.7)
+        a+=p('M6 23Q7 13 18 10L46 5Q56 5 59 15L56 21L17 28Q9 30 6 23Z',salmon,INK,1.7)
+        a+=s('M14 19q4 0 10 5m-2 -11q5 2 10 8m8 -12q5 2 10 8','#ffd2ab',2)
+        a+=p('M25 10L34 8L41 13L41 29L32 31L31 17Z',INK)+s('M33 16l5 -1','#668075',1.2)
+    return sym('em'+str(i),a)
+emblems = [emblem(i) for i in range(4)]
 
-def pavement(rough=False):
-    # Original view: olive-grey square paving, raised L relief and fine dithering.
-    s = rect(0,0,32,32,'#656b51') + rect(1,1,30,30,'#c3c5a3')
-    s += rect(3,3,27,27,'#878e6e') + rect(4,4,24,24,'#a1a582')
-    s += rect(6,6,3,19,'#d0d0ab') + rect(9,23,15,3,'#c1c29c')
-    s += rect(9,7,2,16,'#6a7355') + rect(11,21,13,2,'#707b5a')
-    for y in range(6,21,3):
-        s += rect(13,y,11,1,'#bfc29c') + rect(14,y+1,10,1,'#7c8763')
-    for y in range(3,30,3):
-        for x in range(3+(y%2),30,4): s += rect(x,y,1,1,'#969d78')
-    s += rect(30,2,2,30,'#4e583f')+rect(2,30,28,2,'#4e583f')
+def pavement(i, rough=False):
+    base, joint, hi = PAVERS[i]
+    # Continuous running-bond paving. Avoid strongly contrasted tile frames.
+    a=r(-11,-11,86,86,base)
     if rough:
-        s += poly('M0 0H32V32H0Z','#77795f')
-        for x,y in [(2,3),(19,13),(7,24),(25,27)]:
-            s += rect(x,y,5,2,'#535b46') + rect(x+2,y+2,2,3,'#636b50')
-        s += rect(11,10,9,10,'#969879') + rect(13,12,3,5,'#60694e')
-    return s
-
-tiles += [pavement(), pavement(True)]
-# Shuttered trouble office (cave), refuse bins (fence).
-tiles += [rect(2,7,28,23,ink)+rect(4,9,24,19,'#696354')+rect(2,4,28,6,'#80624c')+rect(5,3,22,2,'#aa835e')+rect(8,13,16,15,'#30332f')+rect(9,15,14,1,'#b5a584')+rect(9,19,14,1,'#93886f')+rect(9,23,14,1,'#93886f')+rect(5,7,3,3,'#e3a23e')]
-tiles += [rect(3,8,12,20,ink)+rect(5,10,8,16,'#6a795d')+rect(2,7,14,3,'#a7ae8b')+rect(7,4,5,3,'#596549')+rect(6,12,2,11,'#91a17d')+rect(19,14,10,14,ink)+rect(20,15,8,12,'#b59d68')+rect(18,12,12,3,'#d7bd7d')]
-# Crossings are overlays on rails. Slats and chevrons make passability visible.
-for horizontal in [True,False]:
-    s = rect(0,10,32,13,'#ddd4af') + rect(0,11,32,2,'#fff2c5') + rect(0,22,32,2,'#645a43')
-    for x in range(1,32,5): s += rect(x,13,1,8,'#9b8a64')
-    s += rect(2,4,3,8,ink)+rect(0,2,7,3,'#f6cc53')+rect(27,22,3,8,ink)+rect(25,28,7,3,'#f6cc53')
-    if not horizontal: s=f'<g transform="translate(32,0) rotate(90)">{s}</g>'
-    tiles.append(s)
-
-def shop(team, hq=False):
-    s = rect(2,27,29,4,'#595740')
-    if team == 1: # white-roof food cart
-        s += rect(4,14,24,13,ink)+rect(6,17,20,9,'#d8cfab')+rect(9,18,14,6,'#68766b')
-        s += poly('M2 13L6 6H25L30 13V17H2Z', colors[team])
-        for x in range(3,29,6): s+=rect(x,13,3,4,'#9da99a')
-        s += rect(7,26,4,4,ink)+rect(23,26,4,4,ink)
+        a+=p('M-2 12L13 7L23 8L30 3L34 5L20 13L11 11Z M33 40L55 35L65 36L65 41L48 40L40 44Z',joint)
+        a+=s('M-1 44l9 -4l7 2l5 -4l9 2m12 -24l5 5l7 1l5 6m-41 23l6 2l3 5',joint,1.2)
+        a+=s('M10 42l4 1l5 -4m19 4l8 -4l6 1',hi,.9)
+        for x,y in [(8,15),(34,26),(54,52),(19,33),(41,59),(57,10)]:
+            a+=e(x,y,1.4,.8,joint)+s(f'M{x-1} {y-.8}h1.5',hi,.7)
     else:
-        s += rect(4,12,25,16,ink)+rect(5,14,23,13,'#eee0b5')
-        s += poly('M2 12L7 5H25L31 12V16H2Z', dark[team])
-        s += poly('M3 11L8 5H24L29 11Z', colors[team])
-        s += rect(7,6,17,1,'#f6c48c' if team==0 else '#e4dba6')
-        s += rect(5,14,24,3,colors[team])
-        for x in range(6,28,6): s += rect(x,14,3,3,cream)
-        s += rect(7,19,7,7,'#526863')+rect(19,19,6,8,'#524a3d')
-        s += rect(8,20,5,2,'#a2d3ca')+rect(22,23,1,1,'#edbd60')
-        s += rect(16,19,1,7,'#c1b58a')+rect(4,27,25,2,'#817457')
-    if hq:
-        s += rect(10,0,2,9,'#5c5645')
-        s += rect(3,1,25,12,ink)+rect(4,2,23,10,cream)
-        s += emblem(team,6,2,0.85)
-        s += rect(29,18,2,10,colors[team])+rect(28,18,4,2,cream)
-    else:
-        s += emblem(team,9,7,0.6)
-    return s
+        a+=s('M-11 12H75M-11 44H75M20 -11V12M52 12V44M20 44V75',joint,.85)
+        a+=s('M-11 13H75M-11 45H75M21 -11V12M53 13V43M21 45V75',hi,.55)
+        # A couple of porcelain flecks are quiet at overview, readable when close.
+        a+=p('M8 25l2 -.8l2 .6l-2 .7zM35 52l2 -.6l2 .6l-2 .5z',hi)
+    return a
 
-tiles += [shop(t) for t in range(4)]
-tiles += [shop(t,True) for t in range(4)]
+def office():
+    a=pavement(0,True)
+    a+=e(33,55,27,5,'#788b7e')+p('M8 23L48 20L55 26V52L48 56H8Z','#b2ae91',INK,1.7)
+    a+=p('M49 22L55 26V52L49 55Z','#897e69')
+    a+=p('M6 20L45 17L58 22L51 28H6Z',slate,INK,1.5)
+    a+=r(13,31,25,23,INK,1)+r(15,33,21,19,'#768787')
+    a+=s('M16 36h19m-19 4h19m-19 4h19m-19 4h19','#455854',1.3)
+    a+=r(42,30,5,10,'#ded3a6',1)+r(43,32,3,2,'#9d563c')+r(10,25,5,3,'#f2b954',1)
+    return a
 
-def worker(team, manager=False):
-    s = rect(5,28,23,3,'#625e48')
-    if not manager: # delivery scooter with insulated food box
-        s += rect(2,22,7,7,ink)+rect(24,22,7,7,ink)
-        s += rect(4,24,3,3,'#c2c7b6')+rect(26,24,3,3,'#c2c7b6')
-        s += poly('M7 23L12 16H23L28 23H23L20 20H14L11 25H7Z',colors[team])
-        s += rect(4,13,11,8,dark[team])+rect(5,13,9,2,cream)
-        s += rect(17,11,7,9,colors[team])+rect(20,18,8,2,'#e7d8a5')
-        s += rect(25,14,2,6,ink)+rect(26,12,4,2,'#e2d9b6')
-        s += rect(17,5,7,7,'#e9b582')+rect(16,4,9,3,cream)+rect(18,2,6,3,cream)
-        s += rect(22,8,2,1,ink)
-    else: # chef / manager: tall toque and apron; distinct from delivery staff
-        s += rect(9,24,5,6,ink)+rect(19,24,5,6,ink)
-        s += rect(8,12,17,14,colors[team])+rect(12,14,10,12,cream)
-        s += rect(5,15,4,8,'#e9b582')+rect(25,15,4,8,'#e9b582')
-        s += rect(12,6,11,8,'#e9b582')+rect(20,9,2,1,ink)
-        s += rect(10,2,15,5,cream)+rect(12,0,5,3,cream)+rect(19,0,5,3,cream)
-        s += rect(11,6,13,2,'#cbd1ba')+rect(13,14,8,2,dark[team])
-        s += rect(15,20,2,2,dark[team])+rect(19,20,2,2,dark[team])
-    return s
+def refuse():
+    a=e(32,53,27,5,'#374948')
+    for x,y,z in [(32,19,.77),(10,14,1)]:
+        b=p('M1 7H27L25 38Q14 42 4 38Z','#647f76',INK,1.8)
+        b+=r(0,5,28,6,'#a2ada0',2)+s('M4 7h21','#d3d5b6',1.1)
+        b+=s('M8 15l1 19m6 -20v20m7 -21l-1 19','#344e4a',1.5)+p('M8 5V2h10v3','#778a7c',INK,1.4)
+        a+=g(f'translate({x} {y}) scale({z})',b)
+    return a
 
-tiles += [worker(t) for t in range(4)] + [worker(t,True) for t in range(4)]
-for mask in range(16): # bits: north east south west; branches join without seams
-    s = rect(0,0,32,32,'#323328')
-    for x,y in [(2,4),(12,2),(26,6),(4,27),(27,26),(17,16)]: s += rect(x,y,2,2,'#50503d')
-    s += rect(10,10,12,12,'#191e1b')
-    for bit in range(4):
-        if not mask & (1<<bit): continue
-        branch = rect(9,0,14,17,'#242a24')
-        for y in range(1,17,5): branch += rect(6,y,20,3,'#6b5c3d')+rect(7,y,18,1,'#9f8a56')
-        branch += rect(9,0,2,18,'#c7bea0')+rect(11,0,1,18,'#6b715e')+rect(21,0,2,18,'#c7bea0')
-        s += f'<g transform="rotate({bit*90},16,16)">{branch}</g>'
-    tiles.append(s)
+def crossing(vertical=False):
+    a=r(-0,21,64,24,INK)+r(0,22,64,19,'#c7ba98')+r(0,24,64,2,'#f5dba4')
+    a+=s('M5 27v12m9 -12v12m9 -12v12m9 -12v12m9 -12v12m9 -12v12m9 -12v12','#9a896d',1.4)
+    for x,y in [(3,18),(43,46)]:
+        a+=r(x,y,18,4,INK,1.1)
+        for xx in (x+2,x+8,x+14): a+=p(f'M{xx} {y+.4}h3l-2 3h-3z','#edbe57')
+    return g('rotate(90 32 32)',a) if vertical else a
 
-# Original owned lots use strong red / ivory / gold / blue relief, not grass tint.
-old = ['#656b51','#c3c5a3','#878e6e','#a1a582','#d0d0ab','#c1c29c','#6a7355','#707b5a','#bfc29c','#7c8763','#969d78','#4e583f']
-palettes = [
- ['#30271e','#e8a059','#6d3426','#a34a32','#ffbf73','#e88c43','#572f24','#653323','#eaa265','#6f3929','#a94e31','#38271d'],
- ['#6c7a71','#f8f2d9','#a5b9ac','#d6e1cc','#ffffe9','#f1efce','#8baba0','#91b4a4','#f1f2d9','#9eada0','#c6d9c8','#637e75'],
- ['#514522','#ffe274','#967129','#d0a235','#ffe97f','#ffcc4b','#77562a','#876329','#ffe06b','#a87d29','#c39731','#554521'],
- ['#192a47','#8cb8e4','#36598a','#477bb8','#add4f4','#73b0ea','#213f69','#254674','#8bbfed','#365f91','#4779ae','#182c48'],
-]
-for rough in [False,True]:
-    for palette in palettes:
-        tile = pavement(rough)
-        for a,b in zip(old,palette): tile = tile.replace(a,b)
-        tiles.append(tile)
+def shop(i, flagship):
+    light,shade,shine=TEAMS[i]
+    trim=f'url(#color{i})'
+    base=e(33,55,28,5,'#475c56')
+    if i==1: # wheeled yatai, canvas noren, red lantern
+        a=r(9,26,3,24,'#765b46')+r(48,25,3,25,'#765b46')
+        a+=r(11,42,40,11,'#b28962',1.5)+r(8,40,46,4,cream,1.5)
+        a+=r(12,48,38,3,'#785b43',1)
+        for x in (16,46): a+=e(x,54,4.4,4.4,INK)+e(x,54,2,2,'#b7b7a1')
+        a+=p('M4 25L13 15L43 13L58 24L55 29H7Z',cream,INK,1.6)
+        a+=p('M5 24L56 23L54 29L8 31Z','#d1c39c')
+        for x in (10,21,32): a+=r(x,27,10,8,'#ece2c2',1.4)+s(f'M{x+2} 28v4','#c9bda0',.9)
+        a+=p('M45 30q4 -4 8 -1q4 8 -1 11q-4 2 -7 -1q-2 -5 0 -9Z',salmon,INK,1.1)
+        a+=s('M46 32h6m-7 3h7','#e6a784',1)+r(18,36,14,4,'#a14f40',2)
+    elif i==2: # compact octagonal brass kiosk with a scalloped hotplate roof
+        a=p('M9 28L48 26L54 32L51 51L42 56H15L9 51Z',cream,INK,1.7)
+        a+=p('M43 33L54 29L51 51L43 55Z','#b18544')
+        a+=r(15,32,26,13,GLASS,1.6)+r(17,34,22,9,'#473d36',1.4)
+        for x in (20,27,34): a+=e(x,40,2.8,2.2,'#e9a15c')+e(x-.5,39.3,1.2,.7,'#f5cf87')
+        a+=p('M6 28Q9 13 24 11Q45 6 56 26L54 31H8Z',trim,INK,1.7)
+        a+=s('M9 26Q32 17 54 25',shine,1.8)+r(9,28,44,5,shade,2)
+        a+=r(13,44,31,4,'#f9d17b',1.5)+s('M18 51h18','#b77542',1.2)
+    elif i==3: # blue sushi bar, gabled roof and indigo split curtain
+        a=p('M9 26H52V54H9Z',cream,INK,1.6)+r(9,30,43,3,'#866d51')
+        a+=r(13,33,33,15,'#39555a',.8)+r(16,35,26,11,'#769290')
+        a+=p('M3 27Q11 24 14 17L40 13L57 24L61 25L57 29Q43 29 34 25Q18 31 4 31Z',slate,INK,1.5)
+        a+=s('M8 27q15 -2 25 -7l22 6','#799795',1.1)
+        for x in (12,23,34): a+=p(f'M{x} 31h10v10q-5 2 -10 1Z',trim)+s(f'M{x+4} 33l1 4',shine,1)
+        a+=r(9,48,43,5,'#866c48',1)+s('M11 49h38','#c7ae7f')
+        a+=r(48,32,5,15,'#f2dcc2',2)+s('M50 35v7','#ae4740',1.5)
+    else: # Streamline diner: rounded corner window, enamel fascia and checker kickplate
+        a=p('M7 25Q7 20 15 20L46 18Q54 18 56 25V48Q55 55 47 55H14Q7 54 7 49Z',cream,INK,1.7)
+        a+=p('M10 31H51V42Q50 47 44 47H10Z',aqua,INK,1.2)
+        a+=s('M15 33l-3 7m10 -7l-7 11','#c8e4d6',1.3)+s('M33 32v14m10 -14v13',INK,1.6)
+        a+=p('M4 24Q6 19 12 18L46 16Q55 16 59 22L57 27L12 30Q4 30 4 24Z',trim,INK,1.7)
+        a+=s('M8 24l45 -3',shine,1.4)+s('M10 28l42 -3','#f6d6a4',1.2)
+        a+=r(11,48,39,4,shade,1)
+        for x in range(13,49,8): a+=r(x,48,4,2,IVORY)+r(x-3,50,3.5,2,IVORY)
+    if flagship:
+        # Headquarters have a monumental projecting menu sign on two brass posts.
+        body=g('translate(0 7) scale(1 .91)',a)
+        m=s('M20 32V17M44 32V17',INK,3.2)+s('M20 31V18M44 31V18','#d8b776',1.45)
+        m+=p('M11 8Q30 0 48 6Q57 9 56 17Q55 24 47 26Q28 32 11 26Q5 24 6 17Q6 11 11 8Z',shade,INK,1.8)
+        m+=p('M11 9Q32 2 49 8Q55 10 53 17Q52 23 46 24Q28 29 12 24Q7 23 8 17Q8 12 11 9Z',cream)
+        m+=g('translate(11 3) scale(.65 .64)',emblems[i])
+        return base+body+m
+    return base+a+g('translate(16 9) scale(.49 .45)',emblems[i])
 
-height = (len(tiles)+7)//8*32
-svg = f'<svg xmlns="http://www.w3.org/2000/svg" width="256" height="{height}" viewBox="0 0 256 {height}" shape-rendering="crispEdges">' 
-for index, tile in enumerate(tiles):
-    svg += f'<g transform="translate({index%8*32},{index//8*32})">{tile}</g>'
-svg += '</svg>\n'
-destination = Path(__file__).resolve().parents[1]/'assets/foods/atlas.svg'
-destination.parent.mkdir(parents=True, exist_ok=True)
-destination.write_text(svg)
-print(f'{len(tiles)} hand-drawn pixel tiles: {destination}')
+def wheel(x):
+    return e(x,49,6.9,7.5,INK)+e(x,49,4.2,4.8,'#8b9b94')+e(x,49,2,2.4,'#e5dbb5')
+
+def courier(i):
+    light,shade,shine=TEAMS[i]
+    a=e(32,56,29,3,'#4e635f')+wheel(13)+wheel(50)
+    a+=p('M7 44Q10 36 20 36L28 40L40 40L43 29L41 26L45 24Q51 30 53 40L57 44Q53 46 47 44L43 48Q41 51 35 51H25Q21 51 20 47L18 44Z',f'url(#color{i})',INK,1.7)
+    a+=p('M20 35Q25 32 33 34L35 37L23 39Z',INK)+s('M26 47h10q4 0 6 -4',shine,1.5)
+    a+=r(4.5,24,17,12,shade,2)+r(4,22,18,4,cream,1.3)+s('M8 29h10',shine,1.8)
+    a+=p('M28 22Q32 19 36 22L39 31L44 30L45 33Q38 37 35 34L32 30L31 35L37 38L35 46H31L32 40L24 37Q22 35 24 29Z',f'url(#color{i})',INK,1.6)
+    a+=p('M26 15Q27 8 33 9Q39 8 40 15L38 17L38 22L34 24L29 21Z','#e9ae7b',INK,1.5)
+    a+=p('M25 15Q25 6 32 6Q40 5 41 14L44 15L43 17H33L31 20L28 19Z',cream,INK,1.4)
+    a+=s('M27 14q6 -3 12 -2',light,2)+s('M44 27l4 -3h4',INK,1.7)+e(50,34,2.5,3,IVORY)
+    return a
+
+def manager(i):
+    light,shade,shine=TEAMS[i]
+    a=e(32,56,19,3,'#465b58')
+    a+=p('M20 42H41L39 54L34 56L31 47L28 55H20Z',slate,INK,1.6)
+    a+=e(23,55,6,2.4,INK)+e(38,55,5,2.4,INK)
+    a+=p('M22 28Q29 24 38 27Q44 30 46 37L51 35L54 38Q49 45 42 43L40 40L41 48Q30 53 18 46L19 40L16 46L12 44Q16 30 22 28Z',cream,INK,1.6)
+    a+=p('M22 30L27 32L34 32L38 29L38 36L40 47Q31 51 21 46L23 37Z',f'url(#color{i})',INK,1)
+    a+=s('M26 41q5 2 9 0',shine,1.5)
+    a+=p('M22 17Q24 10 32 11Q39 12 39 19L41 23L38 24Q37 30 32 30Q24 30 22 23Z','#e9ad79',INK,1.4)
+    a+=p('M21 17Q14 14 17 9Q18 6 23 7Q23 2 28 2Q32 1 35 5Q40 2 44 6Q48 11 41 15L40 21L23 22Z',cream,INK,1.6)
+    a+=s('M24 18l14 -2','#b0bbae',1.4)+e(35.5,22.5,1,1.2,INK)
+    a+=p('M12 45Q13 42 17 43L17 47Q14 49 12 47Z','#eab07a')
+    a+=p('M43 35Q44 29 51 29Q56 29 58 35Z',silver,INK,1.15)+r(42,35,17.5,2.2,IVORY,.8)+e(51,28.8,1.3,1.1,INK)
+    return a
+
+def rails(mask):
+    # Rail contours are drawn continuously through bends. Branches line up at
+    # every tile edge; material under gutters is extended to support mipmaps.
+    a=r(-11,-11,86,86,'#485854')
+    for x,y,k in [(5,7,2),(44,5,2),(7,42,2),(55,51,2.5),(22,56,1.8),(9,28,1.5),(37,13,1.3),(46,46,1.7),(55,22,1.3),(28,25,2),(34,60,1.6)]:
+        a+=p(f'M{x} {y}l{k} -.8l1.3 1.2l-2.2 1Z','#6a7469')
+    arms=[f for f in range(4) if mask & (1<<f)]
+    bends={3:0,6:90,12:180,9:270}
+    if mask in bends:
+        b=s('M32 -11V0Q32 32 64 32H75','#394744',22)
+        for tr in ['translate(32 6)','translate(34 15) rotate(-15)','translate(39 23) rotate(-37)','translate(47 28) rotate(-62)','translate(57 31) rotate(-82)']:
+            b+=g(tr,r(-13,-1.7,26,3.4,'#98836b',.8))
+        for side in (-1,1):
+            x=32+side*7;y=32-side*7
+            b+=s(f'M{x} -11V0Q{x} {y} 64 {y}H75','#253a3b',3.6)+s(f'M{x} -11V0Q{x} {y} 64 {y}H75','#c0c5b2',1.7)
+        return a+g(f'rotate({bends[mask]} 32 32)',b)
+    if not arms: return a+e(32,32,11,11,'#2c403e')+e(32,32,6,6,'#8d998b')
+    # Individual ties stop short of the center so rail junctions remain legible.
+    for k in arms:
+        b=r(19,-11,26,42,'#394744')
+        for y in (-7,3,13,23):
+            b+=r(19,y,26,3.5,'#94806a',.6)+s(f'M20 {y+.5}h24','#ac9d80',.8)
+        a+=g(f'rotate({k*90} 32 32)',b)
+    for k in arms:
+        b=''
+        for x in (25,39):
+            b+=s(f'M{x} -11V38','#263e3d',3.6)+s(f'M{x} -11V38','#c0c5b2',1.7)
+        a+=g(f'rotate({k*90} 32 32)',b)
+    if len(arms)==1: a+=g(f'rotate({arms[0]*90} 32 32)',r(20,36,24,5,'#caac74',.8)+s('M21 38h22','#eed097',1))
+    return a
+
+tiles=[pavement(0),pavement(0,True),office(),refuse(),crossing(),crossing(True)]
+tiles += [shop(i,hq) for hq in (False,True) for i in range(4)]
+tiles += [f(i) for f in (courier,manager) for i in range(4)]
+tiles += [rails(mask) for mask in range(16)]
+tiles += [pavement(i,rough) for rough in (False,True) for i in range(1,5)]
+assert len(tiles)==46
+# Clip each slot (including its gutter), so rail ends cannot enter other slots.
+defs.append('<clipPath id="slot"><rect x="0" y="0" width="256" height="256"/></clipPath>')
+contents = ''.join(g(f'translate({i%8*256} {i//8*256})','<g clip-path="url(#slot)">'+g('translate(32 32) scale(3)',art)+'</g>') for i,art in enumerate(tiles))
+svg='<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="2048" height="1536" viewBox="0 0 2048 1536"><defs>'+''.join(defs)+'</defs>'+contents+'</svg>\n'
+dest=Path(__file__).resolve().parents[1]/'assets/foods/atlas.svg'
+dest.write_text(svg,encoding='utf-8')
+print(f'{len(tiles)} illustrated 192px tiles: {dest}')

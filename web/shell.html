@@ -11,11 +11,25 @@ $GODOT_HEAD_INCLUDE
 <style>
 html,body{margin:0;width:100%;height:100%;height:100dvh;overflow:hidden;background:#0c1722;color:#e7ecea;font-family:system-ui,sans-serif;overscroll-behavior:none}
 canvas{position:fixed;left:0;top:0;display:block;touch-action:none;outline:none}
-#loading{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:radial-gradient(ellipse at center,#253c45,#0c1722 70%);z-index:5;padding:24px;box-sizing:border-box}
-.card{text-align:center;max-width:440px;width:100%}.crown{font-size:50px;color:#f0d399}h1{letter-spacing:.13em;font-size:30px;margin:12px 0 6px}p{line-height:1.8;color:#b6c7c8;font-size:14px}progress{width:100%;height:8px;margin:20px 0;accent-color:#f0d399}#status{white-space:pre-wrap;overflow-wrap:anywhere}button{border:1px solid #ead291;background:#344b58;color:#fff4c9;border-radius:8px;padding:12px 22px;font-size:16px;cursor:pointer}#retry{display:none}
+
+#loading{position:fixed;inset:0;display:grid;grid-template-columns:minmax(0,43fr) minmax(0,57fr);background:#102b30;z-index:5;overflow:auto}
+.art{background:#416b65 url("title_chart.svg") center/cover no-repeat}
+.card{padding:clamp(18px,5vw,70px);align-self:center;box-sizing:border-box;max-width:620px;width:100%}
+h1{margin:0;width:100%;line-height:1}h1 img{width:min(100%,460px);height:auto;display:block}
+.subtitle{font-size:clamp(14px,2.5vh,19px);letter-spacing:.3em;margin:10px 0 20px;color:#c4cfc0}
+p{line-height:1.55;color:#c4cfc0;font-size:14px}progress{display:block;width:100%;height:5px;accent-color:#ecbf77;margin:12px 0}
+progress[hidden]{display:none}#status{white-space:pre-wrap;overflow-wrap:anywhere}button{border:1px solid #69877d;background:#214447;color:#faf1d8;border-radius:6px;padding:9px 16px;font-size:15px;min-height:42px;cursor:pointer}button:focus-visible{outline:2px solid #f2cb82;outline-offset:2px}#retry{display:none}
+@media(orientation:portrait){#loading{grid-template:38% auto / 1fr}.card{margin:0 auto;align-self:start;padding-top:24px}}
+#safe-inset{position:fixed;visibility:hidden;pointer-events:none;padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}
 #app-dialog{width:min(390px,calc(100vw - 48px));max-height:calc(100dvh - 32px);overflow:auto;box-sizing:border-box;border:1px solid #ead291;border-radius:12px;background:#15232f;color:#e7ecea;padding:24px}#app-dialog::backdrop{background:#06111bc9}#app-dialog h2{margin-top:0;font-size:22px}#app-dialog button{display:block;width:100%;min-height:46px;margin-top:12px}#app-dialog [hidden]{display:none!important}#app-dialog p{color:#d9e4df}#app-open{margin:10px auto 0}
 </style>
 <script>
+window.crownfieldSafeArea = () => {
+  const el=document.getElementById('safe-inset');
+  if(!el) return '';
+  const s=getComputedStyle(el), w=Math.max(1,innerWidth), h=Math.max(1,innerHeight);
+  return [parseFloat(s.paddingLeft)/w,parseFloat(s.paddingTop)/h,parseFloat(s.paddingRight)/w,parseFloat(s.paddingBottom)/h].join(',');
+};
 window.crownfieldFullscreen = async function(toggle) {
   try {
     if (toggle && document.fullscreenElement) {
@@ -43,7 +57,8 @@ window.crownfieldPickJSON = function(callback) {
 </head>
 <body>
 <canvas id="canvas" tabindex="0">WebGL 2に対応したブラウザで開いてください。</canvas>
-<div id="loading"><div class="card"><div class="crown">♛</div><h1>CROWNFIELD</h1><p>四国の境界</p><progress id="progress"></progress><p id="status">ゲームを準備しています…</p><p>住居を増やし、兵を集め、敵の王を倒そう。<br>初回はデータの読み込みに少し時間がかかります。</p><button id="retry" onclick="location.reload()">もう一度読み込む</button><button id="launch" style="display:none">横画面・全画面で開始</button><button id="app-open">ホーム画面に追加</button></div></div>
+<div id="safe-inset" aria-hidden="true"></div>
+<div id="loading"><div class="art" aria-hidden="true"></div><div class="card"><h1><img src="wordmark.svg" alt="CROWNFIELD"></h1><p class="subtitle">四国の境界</p><progress id="progress"></progress><p id="status" role="status">ゲームを準備しています…</p><button id="retry" onclick="location.reload()">もう一度読み込む</button><button id="app-open">ホーム画面に追加</button></div></div>
 <dialog id="app-dialog" aria-labelledby="app-title" aria-describedby="app-description">
 <h2 id="app-title">CROWNFIELDをホーム画面に</h2>
 <p id="app-description"></p><button id="app-install" hidden>アプリをインストール</button>
@@ -61,9 +76,7 @@ const loading=document.getElementById('loading'), status=document.getElementById
 const missing=Engine.getMissingFeatures({threads:false});
 function fail(error){status.textContent='読み込みに失敗しました。Chrome等の対応ブラウザで開き直してください。\n'+String(error);document.getElementById('retry').style.display='inline-block';progress.hidden=true;}
 if(missing.length){fail('未対応の機能：'+missing.join(', '));}
-else engine.startGame({onProgress(current,total){if(total>0){progress.value=current;progress.max=total;status.textContent='読み込み中… '+Math.min(100,Math.round(current/total*100))+'%';}}}).then(()=>{progress.hidden=true;status.textContent='準備ができました。スマホは横向きで遊べます。';
-const launch=document.getElementById('launch');launch.style.display='inline-block';
-launch.onclick=()=>{window.crownfieldFullscreen(false);loading.remove();document.getElementById('canvas').focus();};}).catch(fail);
+else engine.startGame({onProgress(current,total){if(total>0){progress.value=current;progress.max=total;status.textContent='読み込み中… '+Math.min(100,Math.round(current/total*100))+'%';}}}).then(()=>{loading.remove();document.getElementById('canvas').focus();}).catch(fail);
 </script>
 </body>
 </html>

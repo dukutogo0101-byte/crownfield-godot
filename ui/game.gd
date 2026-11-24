@@ -1,6 +1,7 @@
 extends Control
 ## UI host: wall-clock speed, input, presentation and file I/O never define rules.
 const Simulation = preload("res://core/simulation.gd")
+const Field = preload("res://ui/field_theme.gd")
 const Board = preload("res://ui/board.gd")
 const Food = preload("res://ui/food_theme.gd")
 const ClearRecords = preload("res://core/clear_records.gd")
@@ -63,6 +64,15 @@ var pause_button: Button
 var audio_player: AudioStreamPlayer
 var _last_status_ms: int = 0
 var _manual_status: String = ""
+var selection_bar: PanelContainer
+var overview_button: Button
+var top_row: HBoxContainer
+var ui_inset := Vector4.ZERO
+var modal_panel: PanelContainer
+var modal_scroll: ScrollContainer
+var title_art: Control
+var title_scroll: ScrollContainer
+var title_content: VBoxContainer
 var top_bar: PanelContainer
 var menu_button: MenuButton
 var initial_menu: MenuButton
@@ -98,20 +108,7 @@ func _ready() -> void:
 	_show_title()
 
 func _setup_theme() -> void:
-	var ui_theme: Theme = Theme.new()
-	if ResourceLoader.exists("res://assets/fonts/ja.ttf"):
-		ui_theme.default_font = load("res://assets/fonts/ja.ttf")
-	ui_theme.default_font_size = 14
-	ui_theme.set_color("font_color", "Label", Color("e7ecea"))
-	ui_theme.set_color("font_color", "Button", Color("e7ecea"))
-	ui_theme.set_color("font_hover_color", "Button", Color("fff4c9"))
-	ui_theme.set_stylebox("normal", "Button", _style(Color("253543"), Color("4b6068"), 8))
-	ui_theme.set_stylebox("hover", "Button", _style(Color("344b58"), Color("b0ba98"), 8))
-	ui_theme.set_stylebox("pressed", "Button", _style(Color("65745a"), Color("ead291"), 8))
-	ui_theme.set_stylebox("disabled", "Button", _style(Color("1b2833"), Color("34434b"), 8))
-	ui_theme.set_stylebox("focus", "Button", _style(Color(0, 0, 0, 0), Color("f2d88e"), 8))
-	ui_theme.set_stylebox("panel", "PanelContainer", _style(Color("15232f"), Color("3c4b52"), 10))
-	theme = ui_theme
+	theme = Field.setup(load("res://assets/fonts/ja.ttf"))
 
 func _style(bg: Color, border: Color, radius: int) -> StyleBoxFlat:
 	var box: StyleBoxFlat = StyleBoxFlat.new()
@@ -156,11 +153,13 @@ func _setup_ui() -> void:
 	top_bar.add_theme_stylebox_override("panel", _hud_style())
 	add_child(top_bar)
 	var row: HBoxContainer = HBoxContainer.new()
+	top_row = row
 	row.add_theme_constant_override("separation", 8)
 	top_bar.add_child(row)
 	menu_button = MenuButton.new()
-	menu_button.text = "☰"
-	menu_button.custom_minimum_size = Vector2(44, 42)
+	menu_button.flat = false
+	Field.icon_on(menu_button, "menu", 19)
+	menu_button.custom_minimum_size = Vector2(44, 44)
 	menu_button.tooltip_text = "ゲームメニュー"
 	row.add_child(menu_button)
 	var menu: PopupMenu = menu_button.get_popup()
@@ -180,15 +179,24 @@ func _setup_ui() -> void:
 	menu.add_separator()
 	menu.add_item("マップ選択・新しいゲーム", 10)
 	menu.id_pressed.connect(_on_game_menu)
-	pause_button = _compact_button("▶", _toggle_pause, "再開／一時停止：ワンタッチ")
-	pause_button.custom_minimum_size.x = 48
+	pause_button = _compact_button("", _toggle_pause, "再開／一時停止：ワンタッチ")
+	pause_button.custom_minimum_size.x = 46
+	Field.gild(pause_button)
 	row.add_child(pause_button)
-	resource_label = _label("", 14)
+	var coin := TextureRect.new()
+	coin.texture = Field.glyph("coin")
+	coin.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	coin.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	coin.custom_minimum_size.x = 19
+	coin.modulate = Field.GOLD
+	row.add_child(coin)
+	resource_label = _label("", 15)
 	resource_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	resource_label.clip_text = true
 	resource_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 	row.add_child(resource_label)
 	clock_label = _label("", 14)
+	clock_label.add_theme_color_override("font_color", Field.MUTED)
 	row.add_child(clock_label)
 	var tax_row: HBoxContainer = HBoxContainer.new()
 	tax_row.add_theme_constant_override("separation", 6)
@@ -203,6 +211,8 @@ func _setup_ui() -> void:
 	tax_slider.tooltip_text = "税率：左で人口重視、右で資金重視"
 	tax_slider.value_changed.connect(_on_tax_changed)
 	tax_row.add_child(tax_slider)
+	row.move_child(menu_button, -1)
+	row.move_child(pause_button, row.get_child_count()-2)
 	# Detailed country cards are available only inside the menu modal.
 	faction_grid = GridContainer.new()
 	faction_grid.hide()
@@ -216,20 +226,33 @@ func _setup_ui() -> void:
 	status_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	status_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	status_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	status_label.add_theme_color_override("font_outline_color", Field.INK)
+	status_label.add_theme_constant_override("outline_size", 4)
 	status_label.hide()
 	add_child(status_label)
 	bottom = PanelContainer.new()
 	bottom.add_theme_stylebox_override("panel", _hud_style())
 	add_child(bottom)
+	selection_bar = PanelContainer.new()
+	selection_bar.add_theme_stylebox_override("panel", _hud_style())
+	add_child(selection_bar)
+	var roster := HBoxContainer.new()
+	roster.add_theme_constant_override("separation", 4)
+	selection_bar.add_child(roster)
+	overview_button = _compact_button("", _toggle_view, "全景／自陣")
+	Field.icon_on(overview_button, "map", 20)
+	roster.add_child(overview_button)
+	var army := _compact_button("全軍", _select_all, "自国の全部隊を選択")
+	Field.icon_on(army, "troops", 17)
+	roster.add_child(army)
 	var actions: HBoxContainer = HBoxContainer.new()
 	actions.add_theme_constant_override("separation", 6)
 	bottom.add_child(actions)
-	selection_label = _label("部隊をタップ → 地点で移動", 14)
-	selection_label.custom_minimum_size.x = 130
+	selection_label = _label("", 14)
+	selection_label.custom_minimum_size.x = 88
 	selection_label.clip_text = true
 	selection_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
-	actions.add_child(selection_label)
-	actions.add_child(_compact_button("全軍", _select_all, "自分の全部隊を選択。リーダーは個別に選択します。"))
+	roster.add_child(selection_label)
 	command_cluster = HBoxContainer.new()
 	command_cluster.add_theme_constant_override("separation", 6)
 	actions.add_child(command_cluster)
@@ -253,15 +276,20 @@ func _setup_ui() -> void:
 	orders_popup.add_separator()
 	orders_popup.add_item("目的地指定を取消", 99)
 	orders_popup.id_pressed.connect(_on_order_menu)
-	clear_button = _compact_button("✕", _clear_selection, "選択と目的地指定を解除")
-	actions.add_child(clear_button)
+	clear_button = _compact_button("", _clear_selection, "選択と目的地指定を解除")
+	Field.icon_on(clear_button, "close", 15)
+	roster.add_child(clear_button)
+	for pair in [[initial_menu, "flag"], [auto_menu, "loop"], [command_menu, "cursor"]]:
+		Field.icon_on(pair[0], pair[1], 16)
+	selection_bar.resized.connect(_position_hud)
 	bottom.resized.connect(_position_hud)
 
 func _command_dropdown(label: String, tip: String) -> MenuButton:
 	var button: MenuButton = MenuButton.new()
 	button.text = label
+	button.flat = false
 	button.tooltip_text = tip
-	button.custom_minimum_size = Vector2(72, 42)
+	button.custom_minimum_size = Vector2(76, 44)
 	button.get_popup().add_theme_constant_override("v_separation", 12)
 	command_cluster.add_child(button)
 	return button
@@ -283,14 +311,11 @@ func _on_auto_menu(id: int) -> void:
 	if id >= 0 and id < Simulation.Automation.MODES.size(): _choose_order(Simulation.Automation.MODES[id])
 
 func _hud_style() -> StyleBoxFlat:
-	var style: StyleBoxFlat = _style(Color(0.05, 0.09, 0.13, 0.94), Color("3c5662"), 10)
-	style.content_margin_left = 8; style.content_margin_right = 8
-	style.content_margin_top = 5; style.content_margin_bottom = 5
-	return style
+	return Field.panel()
 
 func _compact_button(value: String, callback: Callable, tip: String = "") -> Button:
 	var button: Button = _button(value, callback, tip)
-	button.custom_minimum_size = Vector2(42, 42)
+	button.custom_minimum_size = Vector2(44, 44)
 	button.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	return button
 
@@ -303,16 +328,36 @@ func _adaptive_layout() -> void:
 	for dropdown in [initial_menu, auto_menu, command_menu]:
 		dropdown.get_popup().max_size = menu_button.get_popup().max_size
 	tax_slider.custom_minimum_size.x = 100 if logical_size.x < 850 else 120
+	ui_inset = Vector4.ZERO
+	if OS.has_feature("web"):
+		var safe = JavaScriptBridge.eval("typeof crownfieldSafeArea==='function' ? crownfieldSafeArea() : ''")
+		if safe is String:
+			var f: PackedFloat32Array = safe.split_floats(",")
+			if f.size() == 4: ui_inset = Vector4(f[0]*logical_size.x, f[1]*logical_size.y, f[2]*logical_size.x, f[3]*logical_size.y)
+	elif OS.has_feature("mobile") and DisplayServer.get_name() != "headless":
+		var sr := DisplayServer.get_display_safe_area()
+		var screen := Vector2(DisplayServer.screen_get_size())
+		if screen.x > 0 and screen.y > 0 and sr.has_area():
+			ui_inset = Vector4(sr.position.x/screen.x*logical_size.x, sr.position.y/screen.y*logical_size.y, (screen.x-sr.end.x)/screen.x*logical_size.x, (screen.y-sr.end.y)/screen.y*logical_size.y)
+	top_bar.offset_left = 8 + ui_inset.x
+	top_bar.offset_right = -8 - ui_inset.z
+	top_bar.offset_top = 5 + ui_inset.y
+	top_bar.offset_bottom = top_bar.offset_top + top_bar.get_combined_minimum_size().y
 	call_deferred("_position_hud")
+	if is_instance_valid(title_art): call_deferred("_title_layout")
+	elif is_instance_valid(modal_panel): call_deferred("_modal_layout")
 
 func _position_hud() -> void:
 	if not is_instance_valid(bottom): return
 	var minimum: Vector2 = bottom.get_combined_minimum_size()
 	bottom.size = minimum
-	bottom.position = Vector2(maxf(8, (size.x - minimum.x) * 0.5), maxf(68, size.y - minimum.y - 8))
-	status_label.position = Vector2(16, bottom.position.y - 28)
-	status_label.size = Vector2(maxf(0, size.x - 32), 24)
-	board.view_padding = Vector4(8, 68, 8, minimum.y + 20)
+	bottom.position = Vector2(size.x - minimum.x - 8 - ui_inset.z, size.y - minimum.y - 6 - ui_inset.w)
+	selection_label.visible = not selected.is_empty() and size.x - ui_inset.x - ui_inset.z >= 600
+	selection_bar.size = selection_bar.get_combined_minimum_size()
+	selection_bar.position = Vector2(8 + ui_inset.x, bottom.position.y)
+	status_label.position = Vector2(10 + ui_inset.x, bottom.position.y - 28)
+	status_label.size = Vector2(maxf(0, size.x - 20 - ui_inset.x - ui_inset.z), 24)
+	board.pad_view(Vector4(8 + ui_inset.x, top_bar.offset_bottom + 4, 8 + ui_inset.z, minimum.y + 12 + ui_inset.w))
 
 func _on_game_menu(id: int) -> void:
 	match id:
@@ -454,7 +499,7 @@ func _refresh() -> void:
 	board.movement_duration = float(sim.rules.move_period) * 0.2 / float(speed)
 	board.prefer_actor_taps = active_order.is_empty()
 	board.set_state(sim.state)
-	pause_button.text = "▶" if paused else "Ⅱ"
+	Field.icon_on(pause_button, "play" if paused else "pause", 18)
 	pause_button.tooltip_text = "再開" if paused else "一時停止"
 	menu_button.get_popup().set_item_text(0, "速度 " + str(speed) + "×")
 	menu_button.get_popup().set_item_checked(2, board.range_mode)
@@ -496,7 +541,7 @@ func _refresh() -> void:
 			king_selected = king_selected or entity.get("is_leader", false)
 			if entity.get("auto_mode", "") == "develop": developers += 1
 	selected = valid_ids
-	selection_label.text = "部隊をタップ → 地点で移動" if selected.is_empty() else str(selected.size()) + "隊 · " + str(power) + ((" 店長" if food else " 王") if king_selected else "")
+	selection_label.text = "" if selected.is_empty() else str(selected.size()) + "隊 · " + str(power) + ((" 店長" if food else " 王") if king_selected else "")
 	if developers > 0: selection_label.text += " · 出店" if food else " · 住居"
 	clear_button.visible = not selected.is_empty()
 	_refresh_command_menus(king_selected)
@@ -547,7 +592,10 @@ func _refresh_command_menus(king_selected: bool) -> void:
 		popup.set_item_disabled(item, king_selected and action not in ["move", "wait"])
 	popup.set_item_disabled(popup.get_item_index(99), active_order.is_empty())
 	command_menu.tooltip_text = "目的地を指定中：" + _order_name(active_order) if not active_order.is_empty() else "選択した部隊へ一度だけ指示。待機は即時、ほかは目的地をタップ"
-	command_menu.add_theme_stylebox_override("normal", _style(Color("65745a") if not active_order.is_empty() else Color("253543"), Color("ead291") if not active_order.is_empty() else Color("4b6068"), 8))
+	if not active_order.is_empty():
+		command_menu.add_theme_stylebox_override("normal", theme.get_stylebox("pressed","Button"))
+	elif command_menu.has_theme_stylebox_override("normal"):
+		command_menu.remove_theme_stylebox_override("normal")
 
 func _actor(id: int) -> Dictionary:
 	for unit in sim.state.units:
@@ -657,6 +705,10 @@ func _cycle_speed() -> void:
 
 func _fit_map() -> void:
 	board.fit_map()
+
+func _toggle_view() -> void:
+	if board.is_overview(): board.focus_home()
+	else: board.fit_map()
 
 func _toggle_range() -> void:
 	board.range_mode = not board.range_mode
@@ -908,10 +960,11 @@ func _open_modal(title: String) -> VBoxContainer:
 	center.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	overlay.add_child(center)
 	var panel: PanelContainer = PanelContainer.new()
-	panel.custom_minimum_size = Vector2(minf(size.x - 32, 640), 0)
+	modal_panel = panel
 	center.add_child(panel)
 	var scroll: ScrollContainer = ScrollContainer.new()
-	scroll.custom_minimum_size = Vector2(0, maxf(120, minf(size.y - 32, 650)))
+	modal_scroll = scroll
+	_modal_layout()
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	panel.add_child(scroll)
 	var column: VBoxContainer = VBoxContainer.new()
@@ -924,12 +977,22 @@ func _open_modal(title: String) -> VBoxContainer:
 	column.add_child(heading)
 	return column
 
+func _modal_layout() -> void:
+	if not is_instance_valid(modal_panel) or not is_instance_valid(modal_scroll): return
+	# Centered reference frame leaves room on both sides even with a one-sided notch.
+	modal_panel.custom_minimum_size.x = minf(640, size.x - 32 - 2*maxf(ui_inset.x,ui_inset.z))
+	modal_scroll.custom_minimum_size.y = maxf(100, minf(size.y - 42 - 2*maxf(ui_inset.y,ui_inset.w),650))
+
 func _add_modal_text(column: VBoxContainer, value: String) -> void:
 	var label: Label = _label(value, 16)
 	label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	column.add_child(label)
 
 func _close_modal() -> void:
+	modal_panel = null
+	modal_scroll = null
+	title_art = null
+	title_scroll = null
 	if is_instance_valid(modal):
 		modal.hide()
 		modal.queue_free()
@@ -943,43 +1006,107 @@ func _show_title() -> void:
 	clear_records.load_records()
 	paused = true
 	_refresh()
-	var column: VBoxContainer = _open_modal("CROWNFIELD  /  四国の境界")
-	column.add_theme_constant_override("separation", 8)
-	if size.y >= 480 and ResourceLoader.exists("res://assets/title_landscape.svg"):
-		var illustration: TextureRect = TextureRect.new()
-		illustration.texture = board.textures["food_hq0"] if Food.active(sim.state) else load("res://assets/title_landscape.svg")
-		if Food.active(sim.state): illustration.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
-		illustration.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-		illustration.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-		illustration.custom_minimum_size.y = 100
-		column.add_child(illustration)
-	_add_modal_text(column, "店を増やし、配達員を集め、ライバル3店の店長を倒そう。" if Food.active(sim.state) else "村を育て、兵を集め、敵3国の王を倒そう。")
+	_close_modal()
+	board.input_enabled = false
+	board.animation_enabled = false
+	board.clear_gestures()
+	var overlay := Panel.new()
+	overlay.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	overlay.add_theme_stylebox_override("panel", Field.box(Field.INK, Field.INK, 0, 0, 0))
+	add_child(overlay)
+	modal = overlay
+	title_art = Control.new()
+	title_art.clip_contents = true
+	overlay.add_child(title_art)
+	var picture := TextureRect.new()
+	picture.texture = load("res://assets/title_chart.svg")
+	picture.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	picture.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
+	picture.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
+	picture.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	title_art.add_child(picture)
+	var mast := PanelContainer.new()
+	mast.add_theme_stylebox_override("panel", Field.box(Color("#112c30ec"),Color("#8c9a7c"),0,12,7))
+	mast.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_WIDE)
+	mast.grow_vertical = Control.GROW_DIRECTION_BEGIN
+	title_art.add_child(mast)
+	var lockup := VBoxContainer.new()
+	lockup.add_theme_constant_override("separation",2)
+	mast.add_child(lockup)
+	var logo := TextureRect.new()
+	logo.texture = load("res://assets/interface/wordmark.svg")
+	logo.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
+	logo.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	logo.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	logo.custom_minimum_size.y = 27
+	lockup.add_child(logo)
+	var sub := _label("四 国 の 境 界",14)
+	sub.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	sub.add_theme_color_override("font_color",Field.MUTED)
+	lockup.add_child(sub)
+	title_scroll = ScrollContainer.new()
+	title_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	overlay.add_child(title_scroll)
+	var center := CenterContainer.new()
+	center.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	center.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	title_scroll.add_child(center)
+	title_content = VBoxContainer.new()
+	title_content.add_theme_constant_override("separation", 7)
+	center.add_child(title_content)
+	var column := title_content
+	var heading := _label("戦場を選択", 21)
+	heading.add_theme_color_override("font_color", Field.GOLD)
+	column.add_child(heading)
 	selected_map_index = _map_index_from_state()
 	map_selector = OptionButton.new()
-	map_selector.custom_minimum_size.y = 48
-	map_selector.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	map_selector.custom_minimum_size.y = 42
 	for entry in MAPS:
 		map_selector.add_item(entry.name + ("  ✓" if clear_records.summary(entry.id).count > 0 else ""))
 	map_selector.select(selected_map_index)
 	map_selector.item_selected.connect(_on_map_selected)
 	column.add_child(map_selector)
-	map_description = _label(MAPS[selected_map_index].description, 16)
+	map_description = _label(MAPS[selected_map_index].description, 14)
 	map_description.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	map_description.add_theme_color_override("font_color", Field.MUTED)
 	column.add_child(map_description)
-	map_record_label = _label(clear_records.describe(MAPS[selected_map_index].id), 14)
-	map_record_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	map_start_button = _button("このマップで開始", _start_selected_map)
+	Field.icon_on(map_start_button, "flag")
+	Field.gild(map_start_button)
 	column.add_child(map_start_button)
+	map_record_label = _label(clear_records.describe(MAPS[selected_map_index].id), 13)
+	map_record_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	map_record_label.add_theme_color_override("font_color", Field.MUTED)
 	column.add_child(map_record_label)
-	column.add_child(_button("クリア記録を見る", _show_clear_records))
+	var links := HBoxContainer.new()
+	column.add_child(links)
+	var records := _button("クリア記録", _show_clear_records)
+	var help := _button("操作説明", _show_help)
+	for pair in [[records,"record"],[help,"help"]]:
+		Field.icon_on(pair[0],pair[1],15)
+		pair[0].custom_minimum_size.y = 40
+		links.add_child(pair[0])
 	if FileAccess.file_exists("user://crownfield_save.json"):
 		column.add_child(_button("保存したゲームを読込", func():
 			if _load_game(): _close_modal()
 		))
 	if sim.state.tick > 0:
-		_add_modal_text(column, "開始すると新しいゲームになります。現在の進行を残すには、盤面に戻って保存してください。")
 		column.add_child(_button("今の盤面へ戻る", _close_modal))
-	column.add_child(_button("操作・勝ち方を見る", _show_help))
+		_add_modal_text(column,"開始すると新しいゲームになります。")
+	_title_layout()
+
+func _title_layout() -> void:
+	if not is_instance_valid(title_art): return
+	var tall := size.y > size.x
+	var frame := Rect2(Vector2(ui_inset.x,ui_inset.y),size - Vector2(ui_inset.x + ui_inset.z,ui_inset.y + ui_inset.w))
+	var art_size := Vector2(frame.size.x, frame.size.y * 0.37) if tall else Vector2(floorf(frame.size.x * 0.43),frame.size.y)
+	title_art.position = frame.position
+	title_art.size = art_size
+	var offset := Vector2(0,art_size.y) if tall else Vector2(art_size.x,0)
+	title_scroll.position = frame.position + offset + Vector2(12,6)
+	title_scroll.size = frame.size - offset - Vector2(24,12)
+	title_content.custom_minimum_size.x = minf(415, maxf(100,title_scroll.size.x - 24))
+	map_selector.get_popup().max_size = Vector2i(0, maxi(130,int(frame.size.y)-18))
 
 func _map_index_from_state() -> int:
 	for index in range(MAPS.size()):
@@ -1001,7 +1128,7 @@ func _start_selected_map() -> void:
 func _show_help() -> void:
 	var column: VBoxContainer = _open_modal("操作と勝ち方")
 	if Food.active(sim.state): _add_modal_text(column, "フーズパニック：赤いハンバーガー店があなたです。村→店舗、王→店長、兵→配達員、水面→線路、橋→踏切として表示します。線路は踏切がある場所だけ通れます。『新装開店』『出店オート』で店を増やそう。以下は共通ルールです。")
-	_add_modal_text(column, "目標：600日以内に敵3国の王を倒す。自国の王が倒れると敗北です。\n\n移動：部隊をタップ → 地点をタップ。移動ボタンは不要。別の味方をタップすると選び直せます。\n\n下部：『初期』は新しく出兵する部隊の行動。『オート』は選択部隊のおまかせ、住居・橋・国境の柵の建設、敵村・敵側の橋・敵柵の破壊、開墾、洞窟封鎖を継続します。初期にも同じ継続命令を設定できます。対象や資金が足りなければ、その場で待機します。『単発』は移動・待機・建設・破壊・援軍・防衛です。待機は選ぶと即指示、ほかの単発命令は選んでから目的地をタップ。住居を増やすオートは攻撃へ切り替わりません。\n\n上部：▶／Ⅱで再開と停止。税率はスライダーで変更。低税率は人口、高税率は資金を重視します。☰に速度、全景、範囲選択、各国の状況、保存／読込、記録をまとめています。\n\nスマホ：横持ち・全画面でプレイ。2本指でパン／ピンチ、長押しで詳細。範囲選択をONにすると1本指ドラッグで複数選択。ジェスチャの離指では移動しません。\n\nPC：左クリック選択、左ドラッグ範囲選択、Shift追加。右ドラッグでパン、ホイールでズーム。Space停止、F全景、Ctrl+A全軍、Ctrl+S保存。\n\n攻略：村で人口を増やして出兵し、援軍で兵を合流させる。自国の村で待機すると消耗を抑えられます。村は資金100で建設。王は城の防御が強く、遠征中は税収が止まります。王が敵王を倒すと残存資産を引き継ぎます。\n\n勝利するとクリア回数・最短日数・直近日時を自動保存します。☰→クリア記録で確認できます。記録はこの端末・ブラウザ内に保存され、ブラウザのサイトデータを消すと失われます。\n\n停止中にも命令を予約できます。保存・リプレイ・JSON→JSONファイルで進行を端末へバックアップできます。ブラウザとAPKは自動同期しません。\n\nフーズパニックの表示素材は参照画面を基に新規作成しています。原作の画像・音楽ファイルは同梱していません。戦闘・人口・経済・AIの数値は一部独自調整を含みます。")
+	_add_modal_text(column, "目標：600日以内に敵3国の王を倒す。自国の王が倒れると敗北です。\n\n移動：部隊をタップ → 地点をタップ。移動ボタンは不要。別の味方をタップすると選び直せます。\n\n下部：『初期』は新しく出兵する部隊の行動。『オート』は選択部隊のおまかせ、住居・橋・国境の柵の建設、敵村・敵側の橋・敵柵の破壊、開墾、洞窟封鎖を継続します。初期にも同じ継続命令を設定できます。対象や資金が足りなければ、その場で待機します。『単発』は移動・待機・建設・破壊・援軍・防衛です。待機は選ぶと即指示、ほかの単発命令は選んでから目的地をタップ。住居を増やすオートは攻撃へ切り替わりません。\n\n上部：▶／Ⅱで再開と停止。税率はスライダーで変更。低税率は人口、高税率は資金を重視します。☰に速度、全景、範囲選択、各国の状況、保存／読込、記録をまとめています。\n\nスマホ：横持ち・全画面でプレイ。1本指で地図をドラッグ、2本指でピンチ、長押しで詳細。左下の地図ボタンで全景と自陣を切り替え、小地図をタップして移動。範囲選択をONにすると1本指ドラッグで複数選択。ジェスチャの離指では移動しません。\n\nPC：左クリック選択、左ドラッグ範囲選択、Shift追加。右ドラッグでパン、ホイールでズーム。Space停止、F全景、Ctrl+A全軍、Ctrl+S保存。\n\n攻略：村で人口を増やして出兵し、援軍で兵を合流させる。自国の村で待機すると消耗を抑えられます。村は資金100で建設。王は城の防御が強く、遠征中は税収が止まります。王が敵王を倒すと残存資産を引き継ぎます。\n\n勝利するとクリア回数・最短日数・直近日時を自動保存します。☰→クリア記録で確認できます。記録はこの端末・ブラウザ内に保存され、ブラウザのサイトデータを消すと失われます。\n\n停止中にも命令を予約できます。保存・リプレイ・JSON→JSONファイルで進行を端末へバックアップできます。ブラウザとAPKは自動同期しません。\n\nフーズパニックの表示素材は参照画面を基に新規作成しています。原作の画像・音楽ファイルは同梱していません。戦闘・人口・経済・AIの数値は一部独自調整を含みます。")
 	column.add_child(_button("閉じる", _close_modal))
 
 func _run_id_from_save(data: Dictionary) -> String:
@@ -1059,7 +1186,7 @@ func _reset_game(map_path: String) -> bool:
 	paused = true
 	_new_recording()
 	board.set_state(sim.state)
-	board.fit_map()
+	board.focus_home()
 	_refresh()
 	return true
 

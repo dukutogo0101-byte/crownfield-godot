@@ -3,6 +3,9 @@ extends RefCounted
 const COLORS = [Color("e65b45"), Color("f4f0d8"), Color("f4c345"), Color("5796ed")]
 const NAMES = ["ウィバーガー", "全国屋台連合", "タコ商会", "ハチマキ寿司"]
 const ORDERS = {"wait": "臨時休業", "develop": "出店オート", "defend": "待ち伏せ", "reinforce": "応援", "build_base": "新装開店", "destroy_base": "店じまい", "reclaim": "宅地造成", "build_bridge": "踏切を作る", "destroy_bridge": "踏切を壊す", "build_fence": "生ゴミ捨てる", "destroy_fence": "生ゴミかたす", "seal_cave": "暴力追放運動"}
+const SLOT := 256
+const GUTTER := 32
+const PAINTED_SIZE := SLOT - GUTTER * 2
 const ATLAS = preload("res://assets/foods/atlas.svg")
 
 static func active(state: Dictionary) -> bool:
@@ -18,7 +21,8 @@ static func install(textures: Dictionary) -> void:
 	for index in range(names.size()):
 		var tile: AtlasTexture = AtlasTexture.new()
 		tile.atlas = ATLAS
-		tile.region = Rect2((index % 8) * 32, (index / 8) * 32, 32, 32)
+		tile.region = Rect2((index % 8) * SLOT + GUTTER, (index / 8) * SLOT + GUTTER, PAINTED_SIZE, PAINTED_SIZE)
+		tile.filter_clip = true
 		textures["food_" + names[index]] = tile
 
 static func rail_mask(state: Dictionary, pos: int) -> int:

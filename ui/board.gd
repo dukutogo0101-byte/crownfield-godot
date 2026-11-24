@@ -7,7 +7,7 @@ signal inspect_requested(cell: int)
 
 const Food = preload("res://ui/food_theme.gd")
 const COLORS = [Color("54b9f3"), Color("ee7771"), Color("e9b959"), Color("8bcfa6")]
-const LAND = [Color("77946c"), Color("586f53"), Color("356782"), Color("4c5759")]
+const LAND = [Color("849866"), Color("788567"), Color("377783"), Color("4c5759")]
 class PaintedLayer:
 	extends Control
 	var paint: Callable
@@ -59,6 +59,7 @@ var _last_two_center: Vector2
 var _last_two_distance: float = 0.0
 var _minimap: Rect2 = Rect2()
 var _fitted: bool = false
+var _map_touch := -1
 var view_padding: Vector4 = Vector4(8, 68, 8, 72)
 
 func _ready() -> void:
@@ -93,7 +94,7 @@ func _load_texture(key: String, path: String) -> void:
 func set_state(value: Dictionary) -> void:
 	state = value
 	if is_instance_valid(_map_layer):
-		var filtering: int = CanvasItem.TEXTURE_FILTER_NEAREST if Food.active(state) else CanvasItem.TEXTURE_FILTER_PARENT_NODE
+		var filtering: int = CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
 		_map_layer.texture_filter = filtering
 		_actor_layer.texture_filter = filtering
 	_sync_motion()
@@ -104,8 +105,46 @@ func set_state(value: Dictionary) -> void:
 	queue_redraw()
 
 func _resize_board() -> void:
-	if not state.is_empty():
+	if state.is_empty(): return
+	if not _fitted or is_overview(): fit_map()
+	else:
+		# The zoomed camera keeps its world center when orientation changes.
+		var center := Vector2(int(state.w), int(state.h))*0.5 - pan / cell_size()
+		var old_cs := cell_size()
 		fit_map()
+		zoom = clampf(old_cs / pixels_per_cell, 1, _max_zoom())
+		center_world(center)
+
+func pad_view(value: Vector4) -> void:
+	if view_padding.is_equal_approx(value): return
+	view_padding = value
+	_resize_board()
+
+func is_overview() -> bool:
+	return absf(zoom - 1.0) < 0.025 and pan.length_squared() < 1.0
+
+func _max_zoom() -> float:
+	return maxf(6.0, 56.0 / pixels_per_cell)
+
+func usable_rect() -> Rect2:
+	return Rect2(Vector2(view_padding.x, view_padding.y), size - Vector2(view_padding.x+view_padding.z, view_padding.y+view_padding.w))
+
+func center_world(world: Vector2) -> void:
+	pan = (Vector2(int(state.w),int(state.h))*0.5 - world)*cell_size()
+	_limit_camera()
+	queue_redraw()
+
+func _limit_camera() -> void:
+	var extent := Vector2(int(state.w),int(state.h))*cell_size()
+	var limit := ((extent - usable_rect().size) * 0.5).max(Vector2.ZERO)
+	pan = pan.clamp(-limit,limit)
+
+func focus_home() -> void:
+	if state.is_empty(): return
+	fit_map()
+	var home: int = state.factions[0].home
+	zoom = clampf(27.0/pixels_per_cell,1,_max_zoom())
+	center_world(Vector2(home % int(state.w) + 0.5, home / int(state.w) + 0.5))
 
 func fit_map() -> void:
 	if state.is_empty():
@@ -145,12 +184,14 @@ func zoom_at(factor: float, point: Vector2) -> void:
 	var old_origin: Vector2 = map_origin()
 	var old_cell: float = cell_size()
 	var world_point: Vector2 = (point - old_origin) / old_cell
-	zoom = clampf(zoom * factor, 0.55, 6.0)
+	zoom = clampf(zoom * factor, 1.0, _max_zoom())
 	pan += point - (map_origin() + world_point * cell_size())
+	_limit_camera()
 	queue_redraw()
 
 func clear_gestures() -> void:
 	touches.clear()
+	_map_touch = -1
 	gesture_active = false
 	_left_down = false
 	_right_down = false
@@ -230,6 +271,7 @@ func _gui_input(event: InputEvent) -> void:
 			return
 		if _right_down:
 			pan += event.position - _last_position
+			_limit_camera()
 			_last_position = event.position
 		elif _left_down:
 			_drag_end = event.position
@@ -253,10 +295,7 @@ func _mouse_button(event: InputEventMouseButton) -> void:
 	elif event.button_index == MOUSE_BUTTON_LEFT:
 		if event.pressed:
 			if _minimap.has_point(event.position):
-				var normalized: Vector2 = (event.position - _minimap.position) / _minimap.size
-				var position: Vector2 = Vector2(normalized.x * int(state.w), normalized.y * int(state.h)) * cell_size()
-				pan += size * 0.5 - (map_origin() + position)
-				queue_redraw()
+				_navigate_mini(event.position)
 				return
 			_left_down = true
 			_press_position = event.position
@@ -273,7 +312,20 @@ func _mouse_button(event: InputEventMouseButton) -> void:
 			_dragging_range = false
 	queue_redraw()
 
+func _navigate_mini(point: Vector2) -> void:
+	var uv := ((point - _minimap.position) / _minimap.size).clamp(Vector2.ZERO, Vector2.ONE)
+	if is_overview(): zoom = clampf(27.0/pixels_per_cell, 1, _max_zoom())
+	center_world(uv * Vector2(int(state.w),int(state.h)))
+
 func _touch(event: InputEventScreenTouch) -> void:
+	if _map_touch >= 0:
+		if event.index == _map_touch and not event.pressed: _map_touch = -1
+		return
+	if event.pressed and touches.is_empty() and _minimap.has_point(event.position):
+		_map_touch = event.index
+		_navigate_mini(event.position)
+		return
+	if not event.pressed and not touches.has(event.index): return
 	if event.pressed:
 		touches[event.index] = event.position
 		if touches.size() == 1:
@@ -286,7 +338,6 @@ func _touch(event: InputEventScreenTouch) -> void:
 		elif touches.size() >= 2:
 			gesture_active = true
 			_dragging_range = false
-			cancel_requested.emit()
 			_update_two_reference()
 	else:
 		var was_gesture: bool = gesture_active
@@ -312,8 +363,12 @@ func _update_two_reference() -> void:
 	_last_two_distance = values[0].distance_to(values[1])
 
 func _touch_drag(event: InputEventScreenDrag) -> void:
+	if event.index == _map_touch:
+		_navigate_mini(event.position)
+		return
 	if not touches.has(event.index):
 		return
+	var previous: Vector2 = touches[event.index]
 	touches[event.index] = event.position
 	if touches.size() >= 2:
 		var values: Array = touches.values()
@@ -325,7 +380,10 @@ func _touch_drag(event: InputEventScreenDrag) -> void:
 		_last_two_center = center
 		_last_two_distance = distance
 	elif not gesture_active:
-		_touch_moved = _touch_start.distance_to(event.position) > 10.0
+		_touch_moved = _touch_moved or _touch_start.distance_to(event.position) > 8.0
+		if _touch_moved and not range_mode:
+			pan += event.position - previous
+			_limit_camera()
 		_drag_end = event.position
 		_dragging_range = range_mode and _touch_moved
 	queue_redraw()
@@ -346,7 +404,10 @@ func _sprite(kind: String, rect: Rect2, tint: Color = Color.WHITE) -> void:
 		_canvas.draw_texture_rect(textures[kind], rect, false, tint)
 
 func _draw() -> void:
-	draw_rect(Rect2(Vector2.ZERO, size), Color("101c29"))
+	draw_rect(Rect2(Vector2.ZERO, size), Color("193539"))
+	# Faint survey grid stays behind the chart when showing the entire battlefield.
+	for x in range(0,ceili(size.x),32): draw_line(Vector2(x,0),Vector2(x,size.y),Color("#244145"),1)
+	for y in range(0,ceili(size.y),32): draw_line(Vector2(0,y),Vector2(size.x,y),Color("#244145"),1)
 	if is_instance_valid(_map_layer):
 		_map_layer.queue_redraw(); _actor_layer.queue_redraw(); _mini_layer.queue_redraw()
 
@@ -359,8 +420,8 @@ func _paint_map(canvas: CanvasItem) -> void:
 	var origin: Vector2 = map_origin()
 	var width: int = int(state.w)
 	var world_rect: Rect2 = Rect2(origin, Vector2(width, int(state.h)) * cs)
-	_canvas.draw_rect(world_rect.grow(7), Color("080f18"))
-	_canvas.draw_rect(world_rect.grow(4), Color("394746"), false, 2)
+	_canvas.draw_rect(world_rect.grow(4), Color("#10272a"))
+	_canvas.draw_rect(world_rect.grow(2), Color("#9eab86"), false, 1)
 	var first_x: int = clampi(floori(-origin.x / cs), 0, width - 1)
 	var last_x: int = clampi(ceili((size.x - origin.x) / cs), 0, width)
 	var first_y: int = clampi(floori(-origin.y / cs), 0, int(state.h) - 1)
@@ -379,17 +440,29 @@ func _paint_map(canvas: CanvasItem) -> void:
 		_canvas.draw_rect(rect, Color("918b6c") if food else LAND[clampi(terrain, 0, 3)])
 		_sprite(Food.tile_key(state, cell) if food else ["grass", "rough", "water", "cave"][clampi(terrain, 0, 3)], rect)
 		if owner >= 0 and owner < 4 and terrain != 2:
-			if not food: _canvas.draw_rect(rect, Color(_team_color(owner), 0.22))
+			if not food: _canvas.draw_rect(rect, Color(_team_color(owner), 0.17))
 			if cell % width == 0 or int(state.cells[cell - 1].get("owner", -1)) != owner:
 				_canvas.draw_line(rect.position, rect.position + Vector2(0, cs), Color(_team_color(owner), 0.7), 1.2)
 			if cell < width or int(state.cells[cell - width].get("owner", -1)) != owner:
 				_canvas.draw_line(rect.position, rect.position + Vector2(cs, 0), Color(_team_color(owner), 0.7), 1.2)
+			if cell % width == width-1 or state.cells[cell+1].owner < 0:
+				_canvas.draw_line(rect.end - Vector2(0,cs),rect.end,Color(_team_color(owner),0.7),1.2)
+			if cell + width >= state.cells.size() or state.cells[cell+width].owner < 0:
+				_canvas.draw_line(rect.end - Vector2(cs,0),rect.end,Color(_team_color(owner),0.7),1.2)
+		if not food and terrain == 2:
+			_shore(rect,cell,width,cs)
 		if int(data.get("bridge", 0)) > 0:
-			_sprite(Food.crossing_key(state, cell) if food else "bridge", rect if food else rect.grow(cs * 0.12))
+			if food: _sprite(Food.crossing_key(state, cell),rect)
+			else:
+				var horizontal: int = int(cell % width > 0 and state.cells[cell-1].terrain != 2) + int(cell % width + 1 < width and state.cells[cell+1].terrain != 2)
+				var vertical: int = int(cell >= width and state.cells[cell-width].terrain != 2) + int(cell + width < state.cells.size() and state.cells[cell+width].terrain != 2)
+				_canvas.draw_set_transform(rect.get_center(),PI*0.5 if vertical > horizontal else 0.0)
+				_sprite("bridge", Rect2(-rect.size*0.54,rect.size*1.08))
+				_canvas.draw_set_transform(Vector2.ZERO)
 		if int(data.get("fence", 0)) > 0:
 			_sprite("food_refuse" if food else "fence", rect)
-		if cs > 28:
-			_canvas.draw_rect(rect, Color(0, 0, 0, 0.08), false, 0.7)
+		if cs > 35 and not selected.is_empty():
+			_canvas.draw_rect(rect, Color(0.06, 0.18, 0.16, 0.11), false, 0.7)
 	for base in state.bases:
 		var team: int = int(base.team)
 		var p: Vector2 = cell_point(int(base.pos))
@@ -399,7 +472,7 @@ func _paint_map(canvas: CanvasItem) -> void:
 		if food:
 			_canvas.draw_rect(Rect2(p + Vector2(-cs * 0.43, cs * 0.46), Vector2(cs * 0.86, cs * 0.08)), _team_color(team))
 		else: _draw_flag(p + Vector2(cs * 0.3, -cs * 0.32), _team_color(team), cs)
-		if cs >= 21:
+		if cs >= 32:
 			_text(str(int(base.pop)), p + Vector2(0, cs * 0.5), 11, Color("f3f1df"))
 	for faction in state.factions:
 		if not bool(faction.alive):
@@ -409,6 +482,16 @@ func _paint_map(canvas: CanvasItem) -> void:
 		if food:
 			if cs >= 12: _text(Food.NAMES[int(faction.id)], p + Vector2(0, -cs * 1.35), clampi(int(cs * 0.42), 9, 14), _team_color(int(faction.id)))
 		else: _draw_flag(p + Vector2(cs * 0.15, -cs), _team_color(int(faction.id)), cs * 1.2)
+func _shore(r: Rect2, cell: int, w: int, cs: float) -> void:
+	var x := cell % w
+	var end := r.end
+	var edge := Color("#acc8a3")
+	var stroke := clampf(cs*0.06,0.7,2.5)
+	if cell >= w and state.cells[cell-w].terrain != 2: _canvas.draw_rect(Rect2(r.position,Vector2(cs,stroke)),edge)
+	if cell+w < state.cells.size() and state.cells[cell+w].terrain != 2: _canvas.draw_rect(Rect2(r.position.x,end.y-stroke,cs,stroke),edge)
+	if x > 0 and state.cells[cell-1].terrain != 2: _canvas.draw_rect(Rect2(r.position,Vector2(stroke,cs)),edge)
+	if x+1 < w and state.cells[cell+1].terrain != 2: _canvas.draw_rect(Rect2(end.x-stroke,r.position.y,stroke,cs),edge)
+
 func _paint_actors(canvas: CanvasItem) -> void:
 	_canvas = canvas
 	render_stats.actor_passes += 1
@@ -423,7 +506,8 @@ func _paint_actors(canvas: CanvasItem) -> void:
 			var points: PackedVector2Array = PackedVector2Array()
 			for cell in path:
 				points.append(cell_point(int(cell)))
-			_canvas.draw_polyline(points, Color(1, 0.91, 0.63, 0.8), 2.0)
+			_canvas.draw_polyline(points, Color("#24423b"), 3.5, true)
+			_canvas.draw_polyline(points, Color("#ffe4a2"), 1.8,true)
 			_canvas.draw_circle(points[-1], 4.0, Color("f7dd91"))
 	for unit in state.units:
 		_draw_entity(unit, false, cs)
@@ -442,17 +526,19 @@ func _draw_entity(entity: Dictionary, leader: bool, cs: float) -> void:
 	var power: int = int(entity.power)
 	var radius: float = maxf(5.0, cs * 0.34)
 	if selected.has(int(entity.id)):
-		_canvas.draw_arc(p, radius + 5, 0, TAU, 28, Color("fff0ac"), 2.0)
+		_canvas.draw_arc(p, radius + 4, 0, TAU, 48, Color("#183731"), 4.2, true)
+		for part in 4:
+			_canvas.draw_arc(p, radius + 4, part*PI/2+0.12, (part+1)*PI/2-0.12, 12, Color("#ffdc81"), 2.5, true)
 		_canvas.draw_circle(p, radius + 3, Color(1, 0.94, 0.7, 0.14))
 	draw_ellipse_shadow(p + Vector2(0, cs * 0.27), Vector2(radius, radius * 0.36))
-	var extent: float = maxf(14.0, cs * (1.15 if leader else 0.95))
+	var extent: float = maxf(13.0, cs * (1.30 if leader else 1.08))
 	var food: bool = Food.active(state)
 	var kind: String = ("food_manager" if leader else "food_courier") + str(team) if food else ("leader" if leader else "unit")
 	_sprite(kind, Rect2(p - Vector2(extent * 0.5, extent * 0.65), Vector2(extent, extent)))
 	if food:
 		_canvas.draw_circle(p + Vector2(extent * 0.4, -extent * 0.35), 2.0, _team_color(team))
 	else: _draw_flag(p + Vector2(extent * 0.24, -extent * 0.28), _team_color(team), maxf(cs * 0.8, 12.0))
-	if cs >= 17 or selected.has(int(entity.id)):
+	if cs >= 23 or selected.has(int(entity.id)):
 		var text_value: String = str(power)
 		if cs < 27 and power >= 1000:
 			text_value = str(power / 1000) + "k"
@@ -467,9 +553,14 @@ func draw_ellipse_shadow(center: Vector2, radii: Vector2) -> void:
 	_canvas.draw_set_transform(Vector2.ZERO)
 
 func _draw_flag(p: Vector2, color: Color, cs: float) -> void:
-	var height: float = maxf(7.0, cs * 0.4)
-	_canvas.draw_line(p + Vector2(0, height * 0.6), p - Vector2(0, height), Color("e1d5a4"), 1.1)
-	_canvas.draw_colored_polygon(PackedVector2Array([p - Vector2(0, height), p + Vector2(height * 0.85, -height * 0.8), p + Vector2(0, -height * 0.3)]), color)
+	var height: float = maxf(7.0, cs * 0.43)
+	var staff := p - Vector2(0,height)
+	_canvas.draw_line(p + Vector2(0,height*0.65),staff,Color("#31443b"),2.3,true)
+	_canvas.draw_line(p + Vector2(0,height*0.65),staff,Color("#f5dfae"),1,true)
+	var pennant := PackedVector2Array([staff,staff+Vector2(height,0.16*height),staff+Vector2(0.72*height,0.37*height),staff+Vector2(0.94*height,0.61*height),staff+Vector2(0,0.62*height)])
+	_canvas.draw_colored_polygon(pennant,color)
+	pennant.append(staff)
+	_canvas.draw_polyline(pennant,Color("#2e423c"),maxf(0.75,height*0.078),true)
 
 func _text(value: String, position: Vector2, font_size: int, color: Color) -> void:
 	var key: String = str(font_size) + ":" + value
@@ -502,14 +593,19 @@ func _paint_minimap(canvas: CanvasItem) -> void:
 	if not state.is_empty(): _draw_minimap()
 
 func _draw_minimap() -> void:
-	var width: float = minf(108, size.x * 0.18)
+	var width: float = clampf(usable_rect().size.y * 0.27, 56, 98)
 	var height: float = width * float(state.h) / float(state.w)
-	_minimap = Rect2(Vector2(size.x - width - 12, size.y - height - view_padding.w - 8), Vector2(width, height))
-	_canvas.draw_rect(_minimap.grow(4), Color("101b25"))
+	_minimap = Rect2(Vector2(view_padding.x + 3, size.y - height - view_padding.w - 3), Vector2(width, height))
+	_canvas.draw_rect(_minimap.grow(3), Color("#102c30"))
 	var mini_cell: Vector2 = _minimap.size / Vector2(int(state.w), int(state.h))
 	if _mini_texture != null: _canvas.draw_texture_rect(_mini_texture, _minimap, false)
 	for leader in state.leaders:
 		if bool(leader.get("alive", true)):
 			var p: Vector2 = _minimap.position + Vector2(int(leader.pos) % int(state.w) + 0.5, int(leader.pos) / int(state.w) + 0.5) * mini_cell
 			_canvas.draw_circle(p, 2.7, Color("ffffdc"))
-	_canvas.draw_rect(_minimap, Color("a1ad92"), false, 1)
+	var world := Rect2(map_origin(),Vector2(int(state.w),int(state.h))*cell_size())
+	var shown := world.intersection(usable_rect())
+	if shown.has_area():
+		var window_rect := Rect2(_minimap.position + (shown.position-world.position)/cell_size()*mini_cell, shown.size/cell_size()*mini_cell)
+		_canvas.draw_rect(window_rect,Color("#fff0bd"),false,1.2)
+	_canvas.draw_rect(_minimap.grow(2), Color("#9caa89"), false, 1)

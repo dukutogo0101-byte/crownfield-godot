@@ -12,7 +12,12 @@ DEFS='''<defs>
 <linearGradient id="grass" x2=".3" y2="1"><stop stop-color="#53876d"/><stop offset="1" stop-color="#356250"/></linearGradient>
 <linearGradient id="sea" x2=".2" y2="1"><stop stop-color="#3c7180"/><stop offset="1" stop-color="#254556"/></linearGradient>
 </defs>'''
+legacy_title_figures = {}
 def save(name,body,w=128,h=128,defs=DEFS):
+ # Hand-authored map SVGs are their own sources. Retain the old scenery only for the title.
+ if name.startswith(("terrain/", "entities/")):
+  if name in ("entities/castle.svg", "entities/village.svg"): legacy_title_figures[name] = body
+  return
  p=ROOT/name;p.parent.mkdir(parents=True,exist_ok=True)
  p.write_text(f'<svg xmlns="http://www.w3.org/2000/svg" width="{w}" height="{h}" viewBox="0 0 {w} {h}">{defs}{body}</svg>')
 def path(d,fill,stroke='',sw=1):return f'<path d="{d}" fill="{fill}"'+(f' stroke="{stroke}" stroke-width="{sw}" stroke-linecap="round" stroke-linejoin="round"' if stroke else '')+'/>'
@@ -114,8 +119,8 @@ body=rect(0,0,1600,800,'#122e3a')+'''<defs><linearGradient id="sky" x2="0" y2="1
 body+=path('M0 420L140 308 258 371 398 233 560 336 693 253 837 353 976 248 1132 366 1302 258 1442 346 1600 265V800H0z','#60847f')+path('M0 477L241 365 370 463 619 365 812 450 984 340 1178 443 1364 337 1600 435V800H0z','#47766d')+path('M0 590Q350 374 650 496T1600 469V800H0z','#315f55')+path('M790 460Q1050 521 912 574T998 800h-279q175 -174 126 -216t-55 -124z','#759aa0')+path('M817 482Q985 524 879 569T924 800h-66q112 -162 72 -207t-113 -111z','#92b3b1')
 body+=path('M0 701Q310 509 628 591L882 800H0z','#224b41')+path('M1062 800Q1176 494 1600 469V800z','#214d43')
 # ridge village and unique distant keep, detailed manually scaled existing originals.
-castle=(ROOT/'entities/castle.svg').read_text().split('</defs>',1)[1].rsplit('</svg>',1)[0]
-village=(ROOT/'entities/village.svg').read_text().split('</defs>',1)[1].rsplit('</svg>',1)[0]
+castle=legacy_title_figures["entities/castle.svg"]
+village=legacy_title_figures["entities/village.svg"]
 body+=f'<g transform="translate(363 343) scale(1.8)">{castle}</g>'
 for x,y,s in [(240,460,.8),(590,518,.65),(1148,555,.9),(1272,509,.6)]:body+=f'<g transform="translate({x} {y}) scale({s})">{village}</g>'
 for i in range(50):
@@ -130,4 +135,4 @@ save('android_foreground.svg',f'<g transform="translate(84 84) scale(1.375)">{ma
 if __name__=='__main__':
  for src,name in [('icon.svg','icon.png'),('android_background.svg','android_background.png'),('android_foreground.svg','android_foreground.png')]:
   subprocess.run(['inkscape',str(ROOT/src),'--export-type=png',f'--export-filename={ROOT/name}'],check=True,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
- print('Generated 14 original SVG assets and 3 PNG icons.')
+ print('Generated legacy title, icon SVGs and 3 PNG icons; hand-authored map art unchanged.')
